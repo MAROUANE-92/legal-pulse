@@ -1,4 +1,5 @@
 
+
 export interface QuestionnaireAnswer {
   id: string;
   dossierId: string;
@@ -19,6 +20,10 @@ export interface IdentityFormData {
   endDate?: string;
   salaryBrut: number;
   ccn?: string;
+  workingRegime: '35h' | '39h' | 'forfait_jours' | 'forfait_heures';
+  forfaitDays?: number;
+  contractualHours?: string;
+  actualHours: string;
 }
 
 export interface MotifsFormData {

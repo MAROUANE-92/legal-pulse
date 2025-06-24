@@ -7,13 +7,14 @@ export type Piece = {
 export type Question = {
   id: string;
   label: string;
-  type: "number" | "date" | "slider" | "radio" | "checkbox" | "textarea" | "multiselect";
+  type: "number" | "date" | "slider" | "radio" | "checkbox" | "textarea" | "multiselect" | "timerange";
   required: boolean;
   options?: string[];            // radio / select
   min?: number; 
   max?: number;                  // sliders / numbers
   dependsOn?: { questionId: string; value: any };
   triggerPieces?: Piece[];       // pièces à créer si réponse présente ou true
+  piecesMap?: Record<string, string>; // for checkbox options mapping to pieces
 };
 
 export type MotifBlock = { 
@@ -69,6 +70,13 @@ export const MOTIF_QUESTIONS: MotifBlock[] = [
         options: ["Oui", "Non"],
         label: "E-mails envoyés après 20h enregistrés ?",
         triggerPieces: [{ label: "Archive e-mails PST" }]
+      },
+      {
+        id: "H10_actualHours",
+        required: true,
+        type: "timerange",
+        label: "Horaire réel moyen",
+        triggerPieces: [{ label: "Planning réel" }]
       }
     ]
   },
@@ -98,6 +106,14 @@ export const MOTIF_QUESTIONS: MotifBlock[] = [
         type: "textarea", 
         label: "Motif indiqué dans la lettre (copier-coller)", 
         min: 30 
+      },
+      {
+        id: "L9_STC",
+        required: true,
+        type: "radio",
+        options: ["Oui", "Non"],
+        label: "Solde tout compte signé ?",
+        triggerPieces: [{ label: "STC scan" }]
       }
     ]
   },
@@ -167,5 +183,23 @@ export const MOTIF_QUESTIONS: MotifBlock[] = [
         min: 50 
       }
     ]
+  }
+];
+
+// Global questions that appear regardless of motifs
+export const GLOBAL_QUESTIONS: Question[] = [
+  {
+    id: "E1_channels",
+    required: true,
+    type: "checkbox",
+    label: "Canaux de preuve disponibles",
+    options: ["email", "sms", "whatsapp", "teams", "calls", "autre"],
+    piecesMap: {
+      email: "Archive PST/EML",
+      sms: "Export SMS",
+      whatsapp: "Export chat ZIP",
+      teams: "Export Teams",
+      calls: "CSV appels"
+    }
   }
 ];

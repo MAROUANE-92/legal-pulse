@@ -1,6 +1,6 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { MOTIF_QUESTIONS } from "@/lib/questions.config";
+import { MOTIF_QUESTIONS, GLOBAL_QUESTIONS } from "@/lib/questions.config";
 
 export interface ChecklistItem {
   id: string;
@@ -52,8 +52,12 @@ export function useChecklist(dossierId: string) {
   });
 
   const generateFromMotifs = useMutation({
-    mutationFn: async ({ motifs, answers }: { motifs: string[]; answers?: any }) => {
-      console.log('Generating checklist from motifs and answers:', { motifs, answers });
+    mutationFn: async ({ motifs, answers, identityData }: { 
+      motifs: string[]; 
+      answers?: any; 
+      identityData?: any;
+    }) => {
+      console.log('Generating checklist from motifs, answers, and identity:', { motifs, answers, identityData });
       
       // Enhanced generation logic with answers-based triggering
       const neededPieces = new Map<string, boolean>(); // label => required
@@ -62,6 +66,7 @@ export function useChecklist(dossierId: string) {
       neededPieces.set('Contrat de travail', true);
       neededPieces.set('Bulletins de paie', true);
       
+      // Process motif-specific questions
       motifs.forEach(motifKey => {
         const block = MOTIF_QUESTIONS.find(b => b.motifKey === motifKey);
         if (!block) return;
@@ -85,6 +90,26 @@ export function useChecklist(dossierId: string) {
           }
         });
       });
+
+      // Process global questions (like E1_channels)
+      GLOBAL_QUESTIONS.forEach(q => {
+        const value = answers?.[q.id];
+        if (!value || !Array.isArray(value)) return;
+        
+        if (q.piecesMap) {
+          value.forEach(selectedOption => {
+            const pieceLabel = q.piecesMap![selectedOption];
+            if (pieceLabel) {
+              neededPieces.set(pieceLabel, true);
+            }
+          });
+        }
+      });
+
+      // Add Badge logs CSV if not forfait_jours regime
+      if (identityData?.workingRegime && identityData.workingRegime !== 'forfait_jours') {
+        neededPieces.set('Badge logs CSV', true);
+      }
 
       const newItems: ChecklistItem[] = Array.from(neededPieces.entries()).map(([label, required]) => ({
         id: Math.random().toString(36).substr(2, 9),

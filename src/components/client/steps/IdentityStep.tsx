@@ -1,8 +1,9 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useForm } from 'react-hook-form';
@@ -26,13 +27,27 @@ const identitySchema = z.object({
   startDate: z.string().min(1, "La date de début est requise"),
   endDate: z.string().optional(),
   salaryBrut: z.number().min(600, "Salaire minimum 600€").max(25000, "Salaire maximum 25 000€"),
-  ccn: z.string().optional()
+  ccn: z.string().optional(),
+  workingRegime: z.enum(["35h", "39h", "forfait_jours", "forfait_heures"], {
+    required_error: "Le régime de temps de travail est requis"
+  }),
+  forfaitDays: z.number().min(120).max(235).optional(),
+  contractualHours: z.string().optional(),
+  actualHours: z.string().min(1, "Les horaires réels sont requis")
 }).refine((data) => {
   if (data.contractType === 'CDI') return true;
   return !!data.endDate;
 }, {
   message: "Date de fin requise pour les contrats à durée déterminée",
   path: ["endDate"]
+}).refine((data) => {
+  if (data.workingRegime === "forfait_jours") {
+    return !!data.forfaitDays;
+  }
+  return !!data.contractualHours;
+}, {
+  message: "Nombre de jours forfait requis pour le forfait-jours, horaires contractuels requis pour les autres régimes",
+  path: ["forfaitDays"]
 });
 
 export const IdentityStep = () => {
@@ -53,11 +68,16 @@ export const IdentityStep = () => {
       startDate: '',
       endDate: '',
       salaryBrut: 0,
-      ccn: ''
+      ccn: '',
+      workingRegime: '35h',
+      forfaitDays: undefined,
+      contractualHours: '',
+      actualHours: ''
     }
   });
 
   const contractType = form.watch('contractType');
+  const workingRegime = form.watch('workingRegime');
   
   // Auto-save form data
   useEffect(() => {
@@ -333,6 +353,107 @@ export const IdentityStep = () => {
                             </div>
                           )}
                         </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Working regime section */}
+              <div className="space-y-4 border-t pt-6">
+                <h3 className="text-lg font-medium">Régime de temps de travail</h3>
+                
+                <FormField
+                  control={form.control}
+                  name="workingRegime"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center">
+                        Régime de temps de travail *
+                        <HelpTooltip text="Figure dans la clause 2 de votre contrat." />
+                      </FormLabel>
+                      <FormControl>
+                        <RadioGroup value={field.value} onValueChange={field.onChange}>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="35h" id="35h" />
+                            <Label htmlFor="35h">35 heures/semaine</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="39h" id="39h" />
+                            <Label htmlFor="39h">39 heures/semaine</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="forfait_jours" id="forfait_jours" />
+                            <Label htmlFor="forfait_jours">Forfait jours</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="forfait_heures" id="forfait_heures" />
+                            <Label htmlFor="forfait_heures">Forfait heures</Label>
+                          </div>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {workingRegime === 'forfait_jours' && (
+                  <FormField
+                    control={form.control}
+                    name="forfaitDays"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nombre de jours forfait/an *</FormLabel>
+                        <FormControl>
+                          <Input 
+                            {...field}
+                            type="number"
+                            min="120"
+                            max="235"
+                            placeholder="218"
+                            onChange={(e) => field.onChange(Number(e.target.value))}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+
+                {workingRegime !== 'forfait_jours' && (
+                  <FormField
+                    control={form.control}
+                    name="contractualHours"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Horaires contractuels *</FormLabel>
+                        <FormControl>
+                          <Input 
+                            {...field} 
+                            placeholder="09:00-17:00"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+
+                <FormField
+                  control={form.control}
+                  name="actualHours"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center">
+                        Horaires réels *
+                        <HelpTooltip text="Moyenne constatée réellement." />
+                      </FormLabel>
+                      <FormControl>
+                        <Input 
+                          {...field} 
+                          placeholder="08:30-19:00"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

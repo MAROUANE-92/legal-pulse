@@ -11,20 +11,23 @@ import { StepNavigation } from '../StepNavigation';
 import { useClientStepper } from '../ClientStepperProvider';
 import { useChecklist } from '@/hooks/useChecklist';
 import { getQuestionsForMotifs, getTooltipForQuestion } from '@/hooks/useDynamicQuestions';
-import { Question } from '@/lib/questions.config';
+import { Question, GLOBAL_QUESTIONS } from '@/lib/questions.config';
 import { HelpTooltip } from '@/components/HelpTooltip';
 import { NumberQuestion } from '../questions/NumberQuestion';
 import { RadioQuestion } from '../questions/RadioQuestion';
 import { SliderQuestion } from '../questions/SliderQuestion';
 import { MultiselectQuestion } from '../questions/MultiselectQuestion';
+import { TimeRangeQuestion } from '../questions/TimeRangeQuestion';
+import { CheckboxQuestion } from '../questions/CheckboxQuestion';
 
 export const QuestionsStep = () => {
   const { formData, savePartial } = useClientStepper();
   const selectedMotifs = formData.motifs?.selectedMotifs || [];
   const { generateFromMotifs } = useChecklist('mock-dossier-id');
   
-  // Get questions for selected motifs
-  const questions = getQuestionsForMotifs(selectedMotifs);
+  // Get questions for selected motifs + global questions
+  const motifQuestions = getQuestionsForMotifs(selectedMotifs);
+  const questions = [...motifQuestions, ...GLOBAL_QUESTIONS];
   
   // Dynamically build zod schema
   const schemaShape: Record<string, z.ZodTypeAny> = {};
@@ -48,6 +51,12 @@ export const QuestionsStep = () => {
         break;
       case "multiselect": 
         rule = z.array(z.string()).min(1, "Au moins une sélection requise"); 
+        break;
+      case "timerange":
+        rule = z.string().min(1, "Horaire requis");
+        break;
+      case "checkbox":
+        rule = z.array(z.string()).min(1, "Au moins une sélection requise");
         break;
       default: 
         rule = z.any();
@@ -80,7 +89,8 @@ export const QuestionsStep = () => {
     try {
       await generateFromMotifs.mutateAsync({ 
         motifs: selectedMotifs,
-        answers: data 
+        answers: data,
+        identityData: formData.identity 
       });
       console.log('Checklist generated successfully');
     } catch (error) {
@@ -119,6 +129,8 @@ export const QuestionsStep = () => {
                 {question.type === 'radio' && <RadioQuestion question={question} control={form.control} />}
                 {question.type === 'slider' && <SliderQuestion question={question} control={form.control} />}
                 {question.type === 'multiselect' && <MultiselectQuestion question={question} control={form.control} />}
+                {question.type === 'timerange' && <TimeRangeQuestion question={question} control={form.control} />}
+                {question.type === 'checkbox' && <CheckboxQuestion question={question} control={form.control} />}
                 {question.type === 'textarea' && (
                   <Textarea 
                     {...field} 
