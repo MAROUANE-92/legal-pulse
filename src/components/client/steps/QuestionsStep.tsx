@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -6,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { useForm } from 'react-hook-form';
+import { useEffect } from 'react';
 import { StepNavigation } from '../StepNavigation';
 import { useClientStepper } from '../ClientStepperProvider';
 import { QuestionsFormData } from '@/types/questionnaire';
@@ -17,6 +17,14 @@ export const QuestionsStep = () => {
   const form = useForm<QuestionsFormData>({
     defaultValues: formData.questions || {}
   });
+
+  // Sauvegarde automatique des données du formulaire
+  useEffect(() => {
+    const subscription = form.watch((value) => {
+      savePartial('questions', value as QuestionsFormData);
+    });
+    return () => subscription.unsubscribe();
+  }, [form, savePartial]);
 
   const onSubmit = (data: QuestionsFormData) => {
     savePartial('questions', data);

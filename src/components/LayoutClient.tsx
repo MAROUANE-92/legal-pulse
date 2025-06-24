@@ -1,13 +1,20 @@
 
 import { Progress } from '@/components/ui/progress';
+import { ClientStepBar } from './client/ClientStepBar';
 
 interface LayoutClientProps {
   children: React.ReactNode;
   progressPct?: number;
   dossierName?: string;
+  showStepBar?: boolean;
 }
 
-export const LayoutClient = ({ children, progressPct = 0, dossierName = "Votre dossier" }: LayoutClientProps) => {
+export const LayoutClient = ({ 
+  children, 
+  progressPct = 0, 
+  dossierName = "Votre dossier",
+  showStepBar = true 
+}: LayoutClientProps) => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -38,6 +45,9 @@ export const LayoutClient = ({ children, progressPct = 0, dossierName = "Votre d
           </div>
         </div>
       </header>
+
+      {/* Step Navigation Bar */}
+      {showStepBar && <ClientStepBar />}
 
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

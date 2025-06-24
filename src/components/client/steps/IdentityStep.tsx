@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useEffect } from 'react';
 import { useClientStepper } from '../ClientStepperProvider';
 import { StepNavigation } from '../StepNavigation';
 import { IdentityFormData } from '@/types/questionnaire';
@@ -46,6 +47,14 @@ export const IdentityStep = () => {
   });
 
   const contractType = form.watch('contractType');
+  
+  // Sauvegarde automatique des données du formulaire
+  useEffect(() => {
+    const subscription = form.watch((value) => {
+      savePartial('identity', value as IdentityFormData);
+    });
+    return () => subscription.unsubscribe();
+  }, [form, savePartial]);
   
   const onSubmit = (data: IdentityFormData) => {
     savePartial('identity', data);
