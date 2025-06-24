@@ -20,6 +20,8 @@ export default {
 		},
 		extend: {
 			colors: {
+				amber: undefined,
+				yellow: undefined,
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
