@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { KPICardWithTooltip } from '@/components/KPICardWithTooltip';
 import { TimelineMini } from './TimelineMini';
+import { RisquesChancesWidget } from './RisquesChancesWidget';
 import { FileText, Calendar } from 'lucide-react';
 import { Dossier, Motif } from '@/types/dossier';
 
@@ -109,6 +110,9 @@ export const SyntheseTab = ({ dossier }: SyntheseTabProps) => {
 
       {/* RIGHT COLUMN */}
       <div className="space-y-6">
+        {/* Risques & Chances Widget */}
+        <RisquesChancesWidget dossierId={dossier.id} />
+        
         <Card className="rounded-2xl shadow-sm">
           <CardHeader>
             <CardTitle>Derniers événements</CardTitle>

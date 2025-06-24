@@ -35,6 +35,7 @@ export interface TimelineEvent {
   channel?: string;
   part?: string;
   tag?: string;
+  keyEvidence?: boolean;
 }
 
 export interface Piece {
@@ -44,6 +45,7 @@ export interface Piece {
   typeFinal?: string;
   pages: number;
   status: 'Pending' | 'Processing' | 'Validated' | 'Error';
+  mime?: string;
 }
 
 export interface ChatMessage {
@@ -52,6 +54,49 @@ export interface ChatMessage {
   timestamp: string;
   sender: string;
   attachments?: string[];
+}
+
+export interface Task {
+  id: string;
+  title: string;
+  assigneeId?: string;
+  dueAt?: string;
+  status: 'Todo' | 'Doing' | 'Done';
+  dossierId: string;
+}
+
+export interface AuditEntry {
+  id: string;
+  dossierId: string;
+  userId: string;
+  action: string;
+  payload: any;
+  createdAt: string;
+}
+
+export interface Simulation {
+  id: string;
+  dossierId: string;
+  montant: number;
+  motifs: string[];
+  roi: number;
+  createdAt: string;
+}
+
+export interface RisqueChance {
+  successProbability: number;
+  deltaTransaction: number;
+}
+
+export interface Citation {
+  article: string;
+  page: number;
+  context: string;
+}
+
+export interface Jurisprudence {
+  quote: string;
+  ref: string;
 }
 
 export type UserRole = 'lawyer' | 'paralegal' | 'client' | 'confrere_free';

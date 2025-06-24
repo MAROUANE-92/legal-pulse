@@ -7,6 +7,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import { SyntheseTab } from '@/components/dossier/SyntheseTab';
 import { ChronologieTab } from '@/components/dossier/ChronologieTab';
 import { EchangesTab } from '@/components/dossier/EchangesTab';
+import { TasksTab } from '@/components/dossier/TasksTab';
 import { PiecesTab } from '@/components/dossier/PiecesTab';
 import { ConclusionsTab } from '@/components/dossier/ConclusionsTab';
 import { ConclusionsAdversesTab } from '@/components/dossier/ConclusionsAdversesTab';
@@ -66,10 +67,11 @@ const Dossier = () => {
 
       {/* Tabs */}
       <Tabs defaultValue="synthese" className="w-full">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="synthese">Synthèse</TabsTrigger>
           <TabsTrigger value="chronologie">Chronologie</TabsTrigger>
           <TabsTrigger value="echanges">Échanges</TabsTrigger>
+          <TabsTrigger value="taches">Tâches</TabsTrigger>
           <TabsTrigger value="pieces">Pièces</TabsTrigger>
           <TabsTrigger value="conclusions">Conclusions</TabsTrigger>
           <TabsTrigger value="conclusions-adverses">Conclusions adverses</TabsTrigger>
@@ -85,6 +87,10 @@ const Dossier = () => {
 
         <TabsContent value="echanges" className="mt-6">
           <EchangesTab dossierId={id || ''} />
+        </TabsContent>
+
+        <TabsContent value="taches" className="mt-6">
+          <TasksTab dossierId={id || ''} />
         </TabsContent>
 
         <TabsContent value="pieces" className="mt-6">
