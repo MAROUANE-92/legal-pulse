@@ -4,13 +4,15 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useClientStepper } from '../ClientStepperProvider';
 import { StepNavigation } from '../StepNavigation';
 import { IdentityFormData } from '@/types/questionnaire';
+import { HelpTooltip } from '@/components/HelpTooltip';
 
 const identitySchema = z.object({
   fullName: z.string().min(2, "Le nom complet est requis"),
@@ -23,15 +25,24 @@ const identitySchema = z.object({
   }),
   startDate: z.string().min(1, "La date de début est requise"),
   endDate: z.string().optional(),
-  salaryBrut: z.number().min(0, "Le salaire doit être positif"),
+  salaryBrut: z.number().min(600, "Salaire minimum 600€").max(25000, "Salaire maximum 25 000€"),
   ccn: z.string().optional()
+}).refine((data) => {
+  if (data.contractType === 'CDI') return true;
+  return !!data.endDate;
+}, {
+  message: "Date de fin requise pour les contrats à durée déterminée",
+  path: ["endDate"]
 });
 
 export const IdentityStep = () => {
   const { formData, savePartial, goTo } = useClientStepper();
+  const [ccnSuggestions, setCcnSuggestions] = useState<Array<{idcc: string, name: string}>>([]);
+  const [ccnQuery, setCcnQuery] = useState('');
   
   const form = useForm<IdentityFormData>({
     resolver: zodResolver(identitySchema),
+    mode: 'onChange',
     defaultValues: formData.identity || {
       fullName: '',
       email: '',
@@ -48,13 +59,42 @@ export const IdentityStep = () => {
 
   const contractType = form.watch('contractType');
   
-  // Sauvegarde automatique des données du formulaire
+  // Auto-save form data
   useEffect(() => {
     const subscription = form.watch((value) => {
       savePartial('identity', value as IdentityFormData);
     });
     return () => subscription.unsubscribe();
   }, [form, savePartial]);
+
+  // Mock CCN autocomplete
+  const searchCCN = async (query: string) => {
+    if (query.length < 2) {
+      setCcnSuggestions([]);
+      return;
+    }
+    
+    // Mock data - in real app would call API
+    const mockCCNs = [
+      { idcc: '1486', name: 'Métallurgie' },
+      { idcc: '1516', name: 'Convention collective nationale des organismes de formation' },
+      { idcc: '1596', name: 'Bureaux d\'études techniques' },
+      { idcc: '1702', name: 'Commerce de détail et de gros' }
+    ];
+    
+    const filtered = mockCCNs.filter(ccn => 
+      ccn.name.toLowerCase().includes(query.toLowerCase()) || 
+      ccn.idcc.includes(query)
+    );
+    setCcnSuggestions(filtered);
+  };
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      searchCCN(ccnQuery);
+    }, 300);
+    return () => clearTimeout(timeoutId);
+  }, [ccnQuery]);
   
   const onSubmit = (data: IdentityFormData) => {
     savePartial('identity', data);
@@ -85,7 +125,10 @@ export const IdentityStep = () => {
                   name="fullName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Nom complet *</FormLabel>
+                      <FormLabel className="flex items-center">
+                        Nom complet *
+                        <HelpTooltip text="Votre nom complet figurant sur la carte d'identité" />
+                      </FormLabel>
                       <FormControl>
                         <Input {...field} placeholder="Jean Dupont" />
                       </FormControl>
@@ -99,7 +142,10 @@ export const IdentityStep = () => {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email *</FormLabel>
+                      <FormLabel className="flex items-center">
+                        Email *
+                        <HelpTooltip text="Adresse email pour les communications officielles" />
+                      </FormLabel>
                       <FormControl>
                         <Input {...field} type="email" placeholder="jean.dupont@email.com" />
                       </FormControl>
@@ -127,9 +173,12 @@ export const IdentityStep = () => {
                   name="employerName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Employeur *</FormLabel>
+                      <FormLabel className="flex items-center">
+                        Employeur *
+                        <HelpTooltip text="Dénomination sociale exacte de votre employeur" />
+                      </FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="SociétéXYZ" />
+                        <Input {...field} placeholder="SAS ACME" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -141,11 +190,14 @@ export const IdentityStep = () => {
                   name="employerSiren"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>SIREN employeur *</FormLabel>
+                      <FormLabel className="flex items-center">
+                        SIREN employeur *
+                        <HelpTooltip text="Numéro SIREN à 9 chiffres de votre employeur" />
+                      </FormLabel>
                       <FormControl>
                         <Input 
                           {...field} 
-                          placeholder="123 456 789"
+                          placeholder="732 829 320"
                           onChange={(e) => {
                             const formatted = formatSiren(e.target.value);
                             field.onChange(formatted);
@@ -162,7 +214,10 @@ export const IdentityStep = () => {
                   name="contractType"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Type de contrat *</FormLabel>
+                      <FormLabel className="flex items-center">
+                        Type de contrat *
+                        <HelpTooltip text="Type de contrat de travail selon le Code du travail" />
+                      </FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
@@ -202,7 +257,7 @@ export const IdentityStep = () => {
                     name="endDate"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Date de fin</FormLabel>
+                        <FormLabel>Date de fin *</FormLabel>
                         <FormControl>
                           <Input {...field} type="date" />
                         </FormControl>
@@ -217,14 +272,19 @@ export const IdentityStep = () => {
                   name="salaryBrut"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Salaire brut mensuel *</FormLabel>
+                      <FormLabel className="flex items-center">
+                        Salaire brut mensuel *
+                        <HelpTooltip text="Salaire brut mensuel hors primes et avantages" />
+                      </FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input 
                             {...field}
                             type="number"
                             step="50"
-                            placeholder="3500"
+                            min="600"
+                            max="25000"
+                            placeholder="3200"
                             onChange={(e) => field.onChange(Number(e.target.value))}
                           />
                           <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">€</span>
@@ -240,15 +300,55 @@ export const IdentityStep = () => {
                   name="ccn"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Convention collective</FormLabel>
+                      <FormLabel className="flex items-center">
+                        Convention collective
+                        <HelpTooltip text="Convention collective applicable (IDCC ou nom)" />
+                      </FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="Ex: Métallurgie" />
+                        <div className="relative">
+                          <Input 
+                            {...field} 
+                            placeholder="IDCC ou nom de la convention"
+                            onChange={(e) => {
+                              field.onChange(e.target.value);
+                              setCcnQuery(e.target.value);
+                            }}
+                          />
+                          {ccnSuggestions.length > 0 && ccnQuery && (
+                            <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto">
+                              {ccnSuggestions.map((ccn) => (
+                                <div
+                                  key={ccn.idcc}
+                                  className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                                  onClick={() => {
+                                    field.onChange(`IDCC ${ccn.idcc} - ${ccn.name}`);
+                                    setCcnSuggestions([]);
+                                    setCcnQuery('');
+                                  }}
+                                >
+                                  <div className="font-medium">IDCC {ccn.idcc}</div>
+                                  <div className="text-gray-600">{ccn.name}</div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
+
+              <Alert className="mt-6 border-justice-primary/20 bg-justice-mist/50">
+                <AlertDescription className="flex items-start gap-2">
+                  <span className="text-lg">⚖️</span>
+                  <div>
+                    Vos réponses sont couvertes par le <strong>secret professionnel</strong> (art. 66-5 Loi 1971) 
+                    et conservées selon le RGPD.
+                  </div>
+                </AlertDescription>
+              </Alert>
 
               <StepNavigation 
                 nextLabel="Continuer"
