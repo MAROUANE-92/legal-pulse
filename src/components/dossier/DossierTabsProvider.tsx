@@ -39,9 +39,9 @@ export const DossierTabsProvider = ({ children, defaultTab = 'synth' }: DossierT
     <DossierTabsContext.Provider value={{ activeTab, setActiveTab }}>
       <div className="container mx-auto p-6">
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as TabName)} className="w-full">
-          <TabsList className="grid w-full grid-cols-7">
+          <TabsList className="grid w-full grid-cols-7" data-tour="tabs">
             <TabsTrigger value="synth">Synthèse</TabsTrigger>
-            <TabsTrigger value="analyse">Analyse</TabsTrigger>
+            <TabsTrigger value="analyse" data-tour="analyse-tab">Analyse</TabsTrigger>
             <TabsTrigger value="pieces">Pièces</TabsTrigger>
             <TabsTrigger value="chronologie">Chronologie</TabsTrigger>
             <TabsTrigger value="taches">Tâches</TabsTrigger>

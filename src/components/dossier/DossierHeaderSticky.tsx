@@ -45,7 +45,7 @@ export const DossierHeaderSticky = () => {
         </Breadcrumb>
 
         {/* Header Info */}
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center" data-tour="dossier-name">
           <div>
             <h1 className="text-2xl font-bold text-main">{dossier.name}</h1>
           </div>
