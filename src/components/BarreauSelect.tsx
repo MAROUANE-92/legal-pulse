@@ -8,7 +8,7 @@ interface BarreauSelectProps {
 
 export const BarreauSelect = ({ value, onValueChange }: BarreauSelectProps) => {
   const barreaux = [
-    { value: '', label: 'Tous les barreaux' },
+    { value: 'all', label: 'Tous les barreaux' },
     { value: 'paris', label: 'Barreau de Paris' },
     { value: 'lyon', label: 'Barreau de Lyon' },
     { value: 'marseille', label: 'Barreau de Marseille' }

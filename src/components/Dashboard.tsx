@@ -16,7 +16,7 @@ const Dashboard = () => {
   const [dossiers, setDossiers] = useState<Dossier[]>([]);
   const [filteredDossiers, setFilteredDossiers] = useState<Dossier[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedBarreau, setSelectedBarreau] = useState<string>('');
+  const [selectedBarreau, setSelectedBarreau] = useState<string>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [sortField, setSortField] = useState<SortField>('name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
