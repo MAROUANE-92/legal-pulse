@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { KPICardWithTooltip } from '@/components/KPICardWithTooltip';
@@ -36,7 +35,7 @@ const mockPieces: Piece[] = [
 ];
 
 // Mock user role - in real app would come from auth context
-const currentUserRole: UserRole = 'lawyer';
+const currentUserRole = 'lawyer' as UserRole;
 
 export const SyntheseTab = ({ dossier }: SyntheseTabProps) => {
   const [editingSalaire, setEditingSalaire] = useState(false);
