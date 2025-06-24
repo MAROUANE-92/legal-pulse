@@ -46,12 +46,30 @@ export interface QuestionsFormData {
   };
 }
 
+export interface UploadFormData {
+  files: Array<{
+    id: string;
+    name: string;
+    size: number;
+    type: string;
+  }>;
+}
+
+export interface SignatureFormData {
+  acceptedTerms: boolean;
+  acceptedData: boolean;
+  signature: string;
+  signatureDate: string;
+}
+
 export interface StepperContextData {
   currentStep: string;
   formData: {
     identity?: IdentityFormData;
     motifs?: MotifsFormData;
     questions?: QuestionsFormData;
+    upload?: UploadFormData;
+    signature?: SignatureFormData;
   };
   goTo: (step: string) => void;
   savePartial: (step: string, data: any) => void;
