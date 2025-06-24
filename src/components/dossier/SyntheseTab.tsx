@@ -88,9 +88,9 @@ export const SyntheseTab = ({ dossier }: SyntheseTabProps) => {
 
   const keyPieces = mockPieces.filter(p => p.keyEvidence);
   const mockAlerts = [
-    { message: "Audience conciliation dans 12 jours", type: "amber" },
-    { message: "1 pièce manquante", type: "amber" },
-    { message: "Convention honoraires non signée", type: "red" }
+    { message: "Audience conciliation dans 12 jours", type: "amber" as const },
+    { message: "1 pièce manquante", type: "amber" as const },
+    { message: "Convention honoraires non signée", type: "red" as const }
   ];
 
   return (
