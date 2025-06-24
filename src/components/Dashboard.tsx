@@ -81,7 +81,7 @@ const Dashboard = () => {
         <div className="flex items-center gap-3">
           {/* Portail Client Button - highlighted */}
           <a 
-            href="https://preview--legal-pulse-equilibre.lovable.app/client/test-token/welcome"
+            href="https://preview--legal-pulse.lovable.app/client/test-token/welcome"
             target="_blank"
             rel="noopener noreferrer"
           >
