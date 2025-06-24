@@ -21,17 +21,22 @@ export const ClientStepperProvider = ({
   const navigate = useNavigate();
   const { step } = useParams<{ step?: string }>();
   
-  // Utiliser directement le paramètre URL ou la valeur par défaut
-  const [currentStep, setCurrentStep] = useState(step || initialStep);
+  // Déterminer le step actuel à partir de l'URL
+  const determineCurrentStep = () => {
+    const urlStep = step || initialStep;
+    return STEPS.includes(urlStep) ? urlStep : 'welcome';
+  };
+  
+  const [currentStep, setCurrentStep] = useState(determineCurrentStep());
   const [formData, setFormData] = useState<StepperContextData['formData']>({});
 
   // Synchroniser l'état avec le paramètre URL quand il change
   useEffect(() => {
-    const urlStep = step || 'welcome';
-    if (STEPS.includes(urlStep) && urlStep !== currentStep) {
-      setCurrentStep(urlStep);
+    const newStep = determineCurrentStep();
+    if (newStep !== currentStep) {
+      setCurrentStep(newStep);
     }
-  }, [step, currentStep]);
+  }, [step]);
 
   const goTo = useCallback((targetStep: string) => {
     if (STEPS.includes(targetStep)) {

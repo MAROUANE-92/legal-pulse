@@ -15,7 +15,11 @@ const WizardContent = () => {
   const { currentStep } = useClientStepper();
   const { progressPercentage } = useStepperProgress();
 
+  // Debug: log current step
+  console.log('WizardContent - currentStep:', currentStep);
+
   const renderStep = () => {
+    console.log('Rendering step:', currentStep);
     switch (currentStep) {
       case 'welcome':
         return <WelcomeStep />;
@@ -32,6 +36,7 @@ const WizardContent = () => {
       case 'confirm':
         return <ConfirmStep />;
       default:
+        console.log('Unknown step, defaulting to welcome:', currentStep);
         return <WelcomeStep />;
     }
   };
@@ -50,6 +55,8 @@ const WizardContent = () => {
 
 const ClientWizard = () => {
   const { token, step } = useParams<{ token: string; step?: string }>();
+
+  console.log('ClientWizard - URL params:', { token, step });
 
   return (
     <ClientStepperProvider token={token || ''} initialStep={step || 'welcome'}>
