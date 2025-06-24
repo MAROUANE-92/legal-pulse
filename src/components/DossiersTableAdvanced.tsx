@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { ChevronUp, ChevronDown } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Dossier, SortField, SortDirection } from '@/types/dashboard';
 
 interface DossiersTableAdvancedProps {
@@ -36,9 +37,15 @@ export const DossiersTableAdvanced = ({
   sortDirection,
   onSort
 }: DossiersTableAdvancedProps) => {
+  const navigate = useNavigate();
+
   const SortIcon = ({ field }: { field: SortField }) => {
     if (sortField !== field) return null;
     return sortDirection === 'asc' ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />;
+  };
+
+  const handleOpenDossier = (dossierId: string) => {
+    navigate(`/dossier/${dossierId}`);
   };
 
   return (
@@ -66,11 +73,12 @@ export const DossiersTableAdvanced = ({
               </div>
             </TableHead>
             <TableHead>Progression</TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {dossiers.map((dossier) => (
-            <TableRow key={dossier.id} className="hover:bg-lavender-mist/25 cursor-pointer">
+            <TableRow key={dossier.id} className="hover:bg-lavender-mist/25">
               <TableCell className="font-medium">{dossier.name}</TableCell>
               <TableCell>
                 <Badge className={getStageColor(dossier.stage)}>
@@ -85,6 +93,16 @@ export const DossiersTableAdvanced = ({
                   <Progress value={dossier.progressPct} className="h-2" />
                   <span className="text-xs text-muted-foreground">{dossier.progressPct}%</span>
                 </div>
+              </TableCell>
+              <TableCell>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleOpenDossier(dossier.id)}
+                  className="bg-primary-light hover:bg-primary/20 border-primary/20"
+                >
+                  Ouvrir
+                </Button>
               </TableCell>
             </TableRow>
           ))}
