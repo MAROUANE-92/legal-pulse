@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -23,8 +24,7 @@ import {
   AlertTriangle,
   Edit,
   Mail,
-  ExternalLink,
-  FileCheck2
+  ExternalLink
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -167,39 +167,6 @@ const SynthesisOverview = () => {
                 <span className="text-muted-foreground">Période:</span>
                 <span className="font-medium">2019-2024</span>
               </div>
-            </div>
-          </InfoCard>
-
-          {/* Bloc: Synthèse probatoire */}
-          <InfoCard title="Synthèse probatoire" icon={FileCheck2}>
-            <div className="space-y-3">
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold">{evidenceStats.valid} / {evidenceStats.required}</span>
-                <span className="text-sm text-muted-foreground">validées</span>
-              </div>
-              <Progress 
-                value={evidenceStats.pct} 
-                className="h-2"
-              />
-              <p className="text-xs text-muted-foreground">{evidenceStats.pct}% complété</p>
-              
-              {evidenceStats.missing.length > 0 && (
-                <div className="text-xs space-y-2">
-                  <p className="font-medium">Pièces manquantes :</p>
-                  <ul className="list-disc list-inside space-y-0.5 text-muted-foreground">
-                    {evidenceStats.missing.map(m => <li key={m}>{m}</li>)}
-                  </ul>
-                  <Button 
-                    size="sm" 
-                    variant="outline"
-                    className="mt-2 w-full"
-                    onClick={() => openRemindModal(evidenceStats.missing)}
-                  >
-                    <Mail className="h-3 w-3 mr-2" />
-                    Relancer client
-                  </Button>
-                </div>
-              )}
             </div>
           </InfoCard>
         </div>
