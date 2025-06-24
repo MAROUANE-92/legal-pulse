@@ -1,4 +1,3 @@
-
 export interface Dossier {
   id: string;
   name: string;
@@ -10,6 +9,20 @@ export interface Dossier {
   ccn?: string;
   montantReclame?: number;
   prochaineAudience?: string;
+  clientName?: string;
+  clientRole?: string;
+  salaire?: number;
+  employerName?: string;
+  siren?: string;
+  opponentLawyer?: string;
+  opponentBar?: string;
+  typeContrat?: string;
+  dateDebut?: string;
+  dateFin?: string;
+  clauseHoraire?: string;
+  barreau?: {
+    name: string;
+  };
 }
 
 export interface Partie {
@@ -46,6 +59,7 @@ export interface Piece {
   pages: number;
   status: 'Pending' | 'Processing' | 'Validated' | 'Error';
   mime?: string;
+  keyEvidence?: boolean;
 }
 
 export interface ChatMessage {
