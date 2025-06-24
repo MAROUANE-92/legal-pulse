@@ -1,3 +1,4 @@
+
 import { Link, useLocation } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
@@ -43,11 +44,12 @@ export const AppSidebar = () => {
     <Sidebar>
       <SidebarHeader>
         <div className="flex items-center gap-3 px-2 py-4">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center">
-            <span className="text-white font-bold text-sm">L</span>
-          </div>
+          <img 
+            src="/lovable-uploads/52561914-7132-4666-921a-bdf940b22fca.png" 
+            alt="LegalPulse" 
+            className="w-10 h-10"
+          />
           <div>
-            <h1 className="font-semibold text-gray-900">LegalPulse</h1>
             <p className="text-xs text-gray-500">Gestion juridique</p>
           </div>
         </div>

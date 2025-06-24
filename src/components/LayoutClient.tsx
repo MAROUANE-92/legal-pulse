@@ -23,11 +23,12 @@ export const LayoutClient = ({
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center">
-                <span className="text-white font-bold text-sm">L</span>
-              </div>
+              <img 
+                src="/lovable-uploads/52561914-7132-4666-921a-bdf940b22fca.png" 
+                alt="LegalPulse" 
+                className="w-10 h-10"
+              />
               <div>
-                <h1 className="font-semibold text-gray-900">LegalPulse</h1>
                 <p className="text-xs text-gray-500">Portail Client</p>
               </div>
             </div>
