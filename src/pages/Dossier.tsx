@@ -9,6 +9,7 @@ import { ChronologieTab } from '@/components/dossier/ChronologieTab';
 import { EchangesTab } from '@/components/dossier/EchangesTab';
 import { TasksTab } from '@/components/dossier/TasksTab';
 import { PiecesTab } from '@/components/dossier/PiecesTab';
+import { InboxTab } from '@/components/dossier/InboxTab';
 import { ConclusionsTab } from '@/components/dossier/ConclusionsTab';
 import { ConclusionsAdversesTab } from '@/components/dossier/ConclusionsAdversesTab';
 import { toast } from '@/hooks/use-toast';
@@ -67,8 +68,9 @@ const Dossier = () => {
 
       {/* Tabs */}
       <Tabs defaultValue="synthese" className="w-full">
-        <TabsList className="grid w-full grid-cols-7">
+        <TabsList className="grid w-full grid-cols-8">
           <TabsTrigger value="synthese">Synthèse</TabsTrigger>
+          <TabsTrigger value="inbox">Inbox</TabsTrigger>
           <TabsTrigger value="chronologie">Chronologie</TabsTrigger>
           <TabsTrigger value="echanges">Échanges</TabsTrigger>
           <TabsTrigger value="taches">Tâches</TabsTrigger>
@@ -79,6 +81,10 @@ const Dossier = () => {
 
         <TabsContent value="synthese" className="mt-6">
           <SyntheseTab dossier={mockDossier} />
+        </TabsContent>
+
+        <TabsContent value="inbox" className="mt-6">
+          <InboxTab dossierId={id || ''} />
         </TabsContent>
 
         <TabsContent value="chronologie" className="mt-6">

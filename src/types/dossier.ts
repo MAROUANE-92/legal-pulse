@@ -1,3 +1,4 @@
+
 export interface Dossier {
   id: string;
   name: string;
@@ -23,6 +24,43 @@ export interface Dossier {
   barreau?: {
     name: string;
   };
+  token?: string; // Client portal access token
+}
+
+export interface PieceRaw {
+  id: string;
+  dossierId: string;
+  originalName: string;
+  mimeType: string;
+  size: number;
+  sha256: string;
+  uploadUserId: string;
+  status: 'uploaded' | 'ingested' | 'parsed';
+  createdAt: string;
+}
+
+export interface Piece {
+  id: string;
+  nom: string;
+  typeIA: string;
+  typeFinal?: string;
+  pages: number;
+  status: 'Pending' | 'Processing' | 'Validated' | 'Error';
+  mime?: string;
+  keyEvidence?: boolean;
+  dossierId: string;
+  pieceRawId?: string;
+  confidence?: number;
+  meta?: any;
+}
+
+export interface ChecklistItem {
+  id: string;
+  dossierId: string;
+  label: string;
+  isRequired: boolean;
+  isSatisfied: boolean;
+  fileId?: string;
 }
 
 export interface Partie {
@@ -48,17 +86,6 @@ export interface TimelineEvent {
   channel?: string;
   part?: string;
   tag?: string;
-  keyEvidence?: boolean;
-}
-
-export interface Piece {
-  id: string;
-  nom: string;
-  typeIA: string;
-  typeFinal?: string;
-  pages: number;
-  status: 'Pending' | 'Processing' | 'Validated' | 'Error';
-  mime?: string;
   keyEvidence?: boolean;
 }
 
