@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import Clients from "./pages/Clients";
 import Calendrier from "./pages/Calendrier";
 import Parametres from "./pages/Parametres";
+import Dossier from "./pages/Dossier";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
