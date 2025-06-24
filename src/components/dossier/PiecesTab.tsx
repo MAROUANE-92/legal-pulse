@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -19,7 +18,8 @@ const mockPieces: Piece[] = [
     typeIA: 'Contrat CDI',
     typeFinal: 'Contrat CDI',
     pages: 3,
-    status: 'Validated'
+    status: 'Validated',
+    dossierId: '1'
   },
   {
     id: '2',
@@ -27,7 +27,8 @@ const mockPieces: Piece[] = [
     typeIA: 'Bulletins salaire',
     typeFinal: undefined,
     pages: 24,
-    status: 'Pending'
+    status: 'Pending',
+    dossierId: '1'
   },
   {
     id: '3',
@@ -35,7 +36,8 @@ const mockPieces: Piece[] = [
     typeIA: 'Document administratif',
     typeFinal: 'Attestation PE',
     pages: 2,
-    status: 'Processing'
+    status: 'Processing',
+    dossierId: '1'
   }
 ];
 
@@ -81,7 +83,8 @@ export const PiecesTab = ({ dossierId }: PiecesTabProps) => {
         nom: file.name,
         typeIA: 'Document',
         pages: Math.floor(Math.random() * 10) + 1,
-        status: 'Pending'
+        status: 'Pending',
+        dossierId: dossierId
       };
       setPieces(prev => [...prev, newPiece]);
     });

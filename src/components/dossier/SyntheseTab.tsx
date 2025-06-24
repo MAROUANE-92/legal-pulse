@@ -28,11 +28,11 @@ const mockMotifs: Motif[] = [
 ];
 
 const mockPieces: Piece[] = [
-  { id: '1', nom: 'Contrat de travail', typeIA: 'contrat', pages: 3, status: 'Validated', keyEvidence: true },
-  { id: '2', nom: 'Bulletins de paie', typeIA: 'bulletin', pages: 24, status: 'Validated', keyEvidence: true },
-  { id: '3', nom: 'Planning équipes', typeIA: 'planning', pages: 8, status: 'Validated', keyEvidence: false },
-  { id: '4', nom: 'Emails manager', typeIA: 'email', pages: 12, status: 'Validated', keyEvidence: true },
-  { id: '5', nom: 'Attestation RH', typeIA: 'attestation', pages: 2, status: 'Validated', keyEvidence: true }
+  { id: '1', nom: 'Contrat de travail', typeIA: 'contrat', pages: 3, status: 'Validated', keyEvidence: true, dossierId: '1' },
+  { id: '2', nom: 'Bulletins de paie', typeIA: 'bulletin', pages: 24, status: 'Validated', keyEvidence: true, dossierId: '1' },
+  { id: '3', nom: 'Planning équipes', typeIA: 'planning', pages: 8, status: 'Validated', keyEvidence: false, dossierId: '1' },
+  { id: '4', nom: 'Emails manager', typeIA: 'email', pages: 12, status: 'Validated', keyEvidence: true, dossierId: '1' },
+  { id: '5', nom: 'Attestation RH', typeIA: 'attestation', pages: 2, status: 'Validated', keyEvidence: true, dossierId: '1' }
 ];
 
 // Mock user role - in real app would come from auth context
