@@ -15,6 +15,7 @@ interface DossiersTableAdvancedProps {
   sortField: SortField;
   sortDirection: SortDirection;
   onSort: (field: SortField) => void;
+  onDossierClick?: (dossier: Dossier) => void;
 }
 
 const getStageColor = (stage: Dossier['stage']) => {
@@ -35,7 +36,8 @@ export const DossiersTableAdvanced = ({
   onPageChange,
   sortField,
   sortDirection,
-  onSort
+  onSort,
+  onDossierClick
 }: DossiersTableAdvancedProps) => {
   const navigate = useNavigate();
 
@@ -44,8 +46,12 @@ export const DossiersTableAdvanced = ({
     return sortDirection === 'asc' ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />;
   };
 
-  const handleOpenDossier = (dossierId: string) => {
-    navigate(`/dossier/${dossierId}`);
+  const handleOpenDossier = (dossier: Dossier) => {
+    if (onDossierClick) {
+      onDossierClick(dossier);
+    } else {
+      navigate(`/dossier/${dossier.id}`);
+    }
   };
 
   return (
@@ -98,7 +104,7 @@ export const DossiersTableAdvanced = ({
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => handleOpenDossier(dossier.id)}
+                  onClick={() => handleOpenDossier(dossier)}
                   className="bg-primary-light hover:bg-primary/20 border-primary/20"
                 >
                   Ouvrir
