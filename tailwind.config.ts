@@ -69,7 +69,18 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				'text-main': 'rgb(27 27 41)',
-				'lavender-mist': 'rgb(228 224 255)'
+				'lavender-mist': 'rgb(228 224 255)',
+				// Justice Pulse palette
+				justice: {
+					primary: '#6B4BFF',
+					dark: '#5139D4',
+					mist: '#E4E0FF',
+					green: '#00C48C',
+					amber: '#FFB547',
+					red: '#FF5D5D',
+					bg: '#F7F7F9',
+					text: '#1B1B29'
+				}
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
