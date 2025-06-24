@@ -11,6 +11,7 @@ import Clients from "./pages/Clients";
 import Calendrier from "./pages/Calendrier";
 import Parametres from "./pages/Parametres";
 import Dossier from "./pages/Dossier";
+import DossierDemo from "./pages/DossierDemo";
 import ClientPortal from "./pages/ClientPortal";
 import ClientWizard from "./pages/ClientWizard";
 import InboxDemo from "./pages/InboxDemo";
@@ -41,6 +42,9 @@ const App = () => (
             
             {/* Legacy client portal */}
             <Route path="/client/:token/portal" element={<ClientPortal />} />
+            
+            {/* Dossier Demo (no layout) */}
+            <Route path="/dossier-demo/:id" element={<DossierDemo />} />
             
             {/* Main App Routes (with layout) */}
             <Route path="/*" element={
