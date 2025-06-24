@@ -15,10 +15,10 @@ const DossierDemo = () => {
       <LawyerLayout title="Dossier introuvable">
         <div className="text-center py-8">
           <p className="text-gray-500 mb-4">Dossier introuvable.</p>
-          <Link to="/clients">
+          <Link to="/">
             <Button variant="outline">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Revenir à la liste
+              Revenir au tableau de bord
             </Button>
           </Link>
         </div>
@@ -30,7 +30,7 @@ const DossierDemo = () => {
     <LawyerLayout title={`${dossier.client} vs ${dossier.adversaire}`}>
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <Link to="/clients">
+          <Link to="/">
             <Button variant="outline" size="sm">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Retour

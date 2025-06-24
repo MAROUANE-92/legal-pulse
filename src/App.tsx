@@ -7,7 +7,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { IngestProvider } from "./lib/IngestStore";
 import Index from "./pages/Index";
-import Clients from "./pages/Clients";
 import Calendrier from "./pages/Calendrier";
 import Parametres from "./pages/Parametres";
 import Dossier from "./pages/Dossier";
@@ -51,7 +50,6 @@ const App = () => (
               <Layout>
                 <Routes>
                   <Route path="/" element={<Index />} />
-                  <Route path="/clients" element={<Clients />} />
                   <Route path="/calendrier" element={<Calendrier />} />
                   <Route path="/parametres" element={<Parametres />} />
                   <Route path="/dossier/:id" element={<Dossier />} />

@@ -1,4 +1,3 @@
-
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -9,11 +8,6 @@ const navItems = [
     label: 'Dossiers',
     path: '/',
     description: 'Gérer vos contentieux'
-  },
-  {
-    label: 'Clients',
-    path: '/clients',
-    description: 'Base de données clients'
   },
   {
     label: 'Calendrier',

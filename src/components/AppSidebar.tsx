@@ -1,4 +1,3 @@
-
 import { Link, useLocation } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
@@ -14,7 +13,7 @@ import {
   SidebarHeader,
   SidebarFooter,
 } from '@/components/ui/sidebar';
-import { FileText, Users, Calendar, Settings } from 'lucide-react';
+import { FileText, Calendar, Settings } from 'lucide-react';
 
 const navItems = [
   {
@@ -22,12 +21,6 @@ const navItems = [
     path: '/',
     description: 'Gérer vos contentieux',
     icon: FileText,
-  },
-  {
-    label: 'Clients',
-    path: '/clients',
-    description: 'Base de données clients',
-    icon: Users,
   },
   {
     label: 'Calendrier',
