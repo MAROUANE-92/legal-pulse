@@ -1,9 +1,10 @@
+
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Plus, ExternalLink, Users, Calendar, DollarSign, FileText } from 'lucide-react';
+import { ExternalLink, Users, Calendar, DollarSign, FileText } from 'lucide-react';
 import { DossiersTableAdvanced } from './DossiersTableAdvanced';
 import { SearchBar } from './SearchBar';
 import { BarreauSelect } from './BarreauSelect';
@@ -78,27 +79,15 @@ const Dashboard = () => {
           <p className="text-gray-600">Vue d'ensemble de vos dossiers</p>
         </div>
         <div className="flex items-center gap-3">
-          {/* Test Portail Client Button */}
+          {/* Portail Client Button - highlighted */}
           <Link 
             to="/client/test-token/welcome" 
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Button variant="outline" size="sm">
+            <Button className="bg-primary hover:bg-primary/90 shadow-lg">
               <ExternalLink className="w-4 h-4 mr-2" />
-              Test Portail Client
-            </Button>
-          </Link>
-          
-          {/* Nouveau Dossier Button */}
-          <Link 
-            to="/client/new-dossier/welcome" 
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Button>
-              <Plus className="w-4 h-4 mr-2" />
-              Nouveau dossier
+              Portail Client
             </Button>
           </Link>
         </div>
