@@ -1,117 +1,48 @@
 
-import { useParams } from 'react-router-dom';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
-import { SyntheseTab } from '@/components/dossier/SyntheseTab';
-import { ChronologieTab } from '@/components/dossier/ChronologieTab';
-import { EchangesTab } from '@/components/dossier/EchangesTab';
-import { TasksTab } from '@/components/dossier/TasksTab';
-import { PiecesTab } from '@/components/dossier/PiecesTab';
-import { InboxTab } from '@/components/dossier/InboxTab';
-import { ConclusionsTab } from '@/components/dossier/ConclusionsTab';
-import { ConclusionsAdversesTab } from '@/components/dossier/ConclusionsAdversesTab';
-import { toast } from '@/hooks/use-toast';
+import React, { Suspense } from 'react';
+import { DossierLayout } from '@/components/dossier/DossierLayout';
+import { DossierHeaderSticky } from '@/components/dossier/DossierHeaderSticky';
+import { DossierTabsProvider, TabPanel } from '@/components/dossier/DossierTabsProvider';
 
-// Mock data - in real app would come from API
-const mockDossier = {
-  id: '1',
-  name: 'Dupont vs. SociétéXYZ',
-  stage: 'Rédaction' as const,
-  nextDeadline: '2024-07-15',
-  progressPct: 65,
-  client: 'Jean Dupont',
-  employeur: 'SociétéXYZ',
-  ccn: 'Convention Collective Métallurgie',
-  montantReclame: 45000,
-  prochaineAudience: '2024-08-20'
-};
+// Lazy imports for tabs
+const SyntheseTabLazy = React.lazy(() => import('@/components/dossier/tabs/SyntheseTabLazy'));
+const PiecesTabLazy = React.lazy(() => import('@/components/dossier/tabs/PiecesTabLazy'));
+const ChronologieTabLazy = React.lazy(() => import('@/components/dossier/tabs/ChronologieTabLazy'));
+const TasksTabLazy = React.lazy(() => import('@/components/dossier/tabs/TasksTabLazy'));
+const EchangesTabLazy = React.lazy(() => import('@/components/dossier/tabs/EchangesTabLazy'));
+const ConclusionsTabLazy = React.lazy(() => import('@/components/dossier/tabs/ConclusionsTabLazy'));
 
 const Dossier = () => {
-  const { id } = useParams<{ id: string }>();
-
-  const handleDeposerRPVA = () => {
-    toast({
-      title: "Dépôt RPVA",
-      description: "Dépôt simulé OK",
-    });
-  };
-
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      {/* Breadcrumb */}
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/">Dossiers</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>{mockDossier.name}</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-main">{mockDossier.name}</h1>
-        <div className="flex items-center gap-3">
-          <Badge variant="secondary" className="px-3 py-1">
-            {mockDossier.stage}
-          </Badge>
-          <Button onClick={handleDeposerRPVA} className="bg-primary hover:bg-primary-dark">
-            Déposer RPVA
-          </Button>
-        </div>
-      </div>
-
-      {/* Tabs */}
-      <Tabs defaultValue="synthese" className="w-full">
-        <TabsList className="grid w-full grid-cols-8">
-          <TabsTrigger value="synthese">Synthèse</TabsTrigger>
-          <TabsTrigger value="inbox">Inbox</TabsTrigger>
-          <TabsTrigger value="chronologie">Chronologie</TabsTrigger>
-          <TabsTrigger value="echanges">Échanges</TabsTrigger>
-          <TabsTrigger value="taches">Tâches</TabsTrigger>
-          <TabsTrigger value="pieces">Pièces</TabsTrigger>
-          <TabsTrigger value="conclusions">Conclusions</TabsTrigger>
-          <TabsTrigger value="conclusions-adverses">Conclusions adverses</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="synthese" className="mt-6">
-          <SyntheseTab dossier={mockDossier} />
-        </TabsContent>
-
-        <TabsContent value="inbox" className="mt-6">
-          <InboxTab dossierId={id || ''} />
-        </TabsContent>
-
-        <TabsContent value="chronologie" className="mt-6">
-          <ChronologieTab dossierId={id || ''} />
-        </TabsContent>
-
-        <TabsContent value="echanges" className="mt-6">
-          <EchangesTab dossierId={id || ''} />
-        </TabsContent>
-
-        <TabsContent value="taches" className="mt-6">
-          <TasksTab dossierId={id || ''} />
-        </TabsContent>
-
-        <TabsContent value="pieces" className="mt-6">
-          <PiecesTab dossierId={id || ''} />
-        </TabsContent>
-
-        <TabsContent value="conclusions" className="mt-6">
-          <ConclusionsTab dossierId={id || ''} />
-        </TabsContent>
-
-        <TabsContent value="conclusions-adverses" className="mt-6">
-          <ConclusionsAdversesTab dossierId={id || ''} />
-        </TabsContent>
-      </Tabs>
-    </div>
+    <DossierLayout>
+      <DossierHeaderSticky />
+      
+      <DossierTabsProvider defaultTab="synth">
+        <TabPanel name="synth">
+          <SyntheseTabLazy />
+        </TabPanel>
+        
+        <TabPanel name="pieces">
+          <PiecesTabLazy />
+        </TabPanel>
+        
+        <TabPanel name="chronologie">
+          <ChronologieTabLazy />
+        </TabPanel>
+        
+        <TabPanel name="taches">
+          <TasksTabLazy />
+        </TabPanel>
+        
+        <TabPanel name="discussions">
+          <EchangesTabLazy />
+        </TabPanel>
+        
+        <TabPanel name="rpva">
+          <ConclusionsTabLazy />
+        </TabPanel>
+      </DossierTabsProvider>
+    </DossierLayout>
   );
 };
 
