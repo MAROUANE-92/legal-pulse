@@ -3,7 +3,8 @@ import React from 'react';
 import { DossierLayout } from '@/components/dossier/DossierLayout';
 import { DossierHeaderSticky } from '@/components/dossier/DossierHeaderSticky';
 import { DossierTabsProvider, TabPanel } from '@/components/dossier/DossierTabsProvider';
-import SyntheseTabLazy from '@/components/dossier/tabs/SyntheseTabLazy';
+
+const SynthesisOverview = React.lazy(() => import('@/components/dossier/SynthesisOverview'));
 
 const Dossier = () => {
   return (
@@ -12,7 +13,7 @@ const Dossier = () => {
       
       <DossierTabsProvider defaultTab="synth">
         <TabPanel name="synth">
-          <SyntheseTabLazy />
+          <SynthesisOverview />
         </TabPanel>
         
         <TabPanel name="pieces">
