@@ -31,10 +31,10 @@ export const Navbar = () => {
           {/* Logo */}
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center">
-              <span className="text-white font-bold text-sm">J</span>
+              <span className="text-white font-bold text-sm">L</span>
             </div>
             <div>
-              <h1 className="font-semibold text-gray-900">JusticePulse</h1>
+              <h1 className="font-semibold text-gray-900">LegalPulse</h1>
               <p className="text-xs text-gray-500">Gestion juridique</p>
             </div>
           </div>

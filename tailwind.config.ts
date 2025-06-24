@@ -70,8 +70,8 @@ export default {
 				},
 				'text-main': 'rgb(27 27 41)',
 				'lavender-mist': 'rgb(228 224 255)',
-				// Justice Pulse palette
-				justice: {
+				// Legal Pulse palette
+				legal: {
 					primary: '#6B4BFF',
 					dark: '#5139D4',
 					mist: '#E4E0FF',
