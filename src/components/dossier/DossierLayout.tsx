@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Dossier } from '@/types/dossier';
@@ -21,15 +20,15 @@ interface DossierLayoutProps {
   children: React.ReactNode;
 }
 
-// Mock data - same as before
+// Mock data - updated with new name
 const mockDossier = {
   id: '1',
-  name: 'Dupont vs. SociétéXYZ',
+  name: 'Marouane vs. Mordor',
   stage: 'Rédaction' as const,
   nextDeadline: '2024-07-15',
   progressPct: 65,
-  client: 'Jean Dupont',
-  employeur: 'SociétéXYZ',
+  client: 'Marouane E.',
+  employeur: 'Mordor Corporation',
   ccn: 'Convention Collective Métallurgie',
   montantReclame: 45000,
   prochaineAudience: '2024-08-20'

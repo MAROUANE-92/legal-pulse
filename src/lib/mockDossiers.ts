@@ -1,7 +1,7 @@
 
 export const mockDossiers = [
   {
-    id: "marouane-e-mordor",
+    id: "marouane-vs-mordor",
     client: "Marouane E.",
     adversaire: "Mordor Corporation",
     motifs: ["Heures sup", "Licenciement"],

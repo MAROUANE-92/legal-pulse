@@ -18,35 +18,21 @@ const Dashboard = () => {
   const [sortField, setSortField] = useState<SortField>('name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
-  // Mock dossiers data
+  // Mock dossiers data - only Marouane vs Mordor
   const mockDossiers: Dossier[] = [
     {
       id: '1',
-      name: 'Dupont vs Martin',
+      name: 'Marouane vs Mordor',
       stage: 'Découverte',
       nextDeadline: '2024-02-15',
       progressPct: 35
-    },
-    {
-      id: '2',
-      name: 'SAS TechCorp vs Freelance',
-      stage: 'Rédaction',
-      nextDeadline: '2024-02-20',
-      progressPct: 65
-    },
-    {
-      id: '3',
-      name: 'Succession Moreau',
-      stage: 'Audience',
-      nextDeadline: '2024-02-10',
-      progressPct: 85
     }
   ];
 
   const kpiData = [
     {
       title: "Dossiers actifs",
-      value: "42",
+      value: "1",
       icon: FileText,
       color: 'primary' as const,
       tooltip: "Nombre de dossiers en cours de traitement"
