@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -158,6 +159,18 @@ const SynthesisOverview = () => {
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Contrat:</span>
                 <span className="font-medium">CDI</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Statut:</span>
+                <span className="font-medium">Cadre</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Forfait horaire:</span>
+                <span className="font-medium">Non</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Durée Horaire:</span>
+                <span className="font-medium">35h</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">CCN:</span>
@@ -394,3 +407,4 @@ const SynthesisOverview = () => {
 };
 
 export default SynthesisOverview;
+
