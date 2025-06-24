@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState, Suspense } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-type TabName = 'synth' | 'pieces' | 'chronologie' | 'taches' | 'discussions' | 'rpva' | 'analyse';
+type TabName = 'synth' | 'analyse' | 'pieces' | 'chronologie' | 'taches' | 'discussions' | 'rpva';
 
 interface DossierTabsContextType {
   activeTab: TabName;
@@ -41,12 +41,12 @@ export const DossierTabsProvider = ({ children, defaultTab = 'synth' }: DossierT
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as TabName)} className="w-full">
           <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="synth">Synthèse</TabsTrigger>
+            <TabsTrigger value="analyse">Analyse</TabsTrigger>
             <TabsTrigger value="pieces">Pièces</TabsTrigger>
             <TabsTrigger value="chronologie">Chronologie</TabsTrigger>
             <TabsTrigger value="taches">Tâches</TabsTrigger>
             <TabsTrigger value="discussions">Discussions</TabsTrigger>
             <TabsTrigger value="rpva">RPVA</TabsTrigger>
-            <TabsTrigger value="analyse">Analyse</TabsTrigger>
           </TabsList>
           
           <Suspense fallback={<TabSpinner />}>

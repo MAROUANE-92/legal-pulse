@@ -3,6 +3,7 @@ import React from 'react';
 import { DossierLayout } from '@/components/dossier/DossierLayout';
 import { DossierHeaderSticky } from '@/components/dossier/DossierHeaderSticky';
 import { DossierTabsProvider, TabPanel } from '@/components/dossier/DossierTabsProvider';
+import { ConstructionPage } from '@/components/dossier/ConstructionPage';
 
 const SynthesisOverview = React.lazy(() => import('@/components/dossier/SynthesisOverview'));
 const AnalyseTrimTab = React.lazy(() => import('@/components/dossier/AnalyseTrimTab'));
@@ -17,38 +18,43 @@ const Dossier = () => {
           <SynthesisOverview />
         </TabPanel>
         
+        <TabPanel name="analyse">
+          <AnalyseTrimTab />
+        </TabPanel>
+        
         <TabPanel name="pieces">
-          <div className="p-6">
-            <p className="text-gray-600">Onglet Pièces - À développer</p>
-          </div>
+          <ConstructionPage 
+            title="Pièces du dossier" 
+            subtitle="Gestion des documents et pièces justificatives"
+          />
         </TabPanel>
         
         <TabPanel name="chronologie">
-          <div className="p-6">
-            <p className="text-gray-600">Onglet Chronologie - À développer</p>
-          </div>
+          <ConstructionPage 
+            title="Chronologie du dossier" 
+            subtitle="Timeline des événements et procédures"
+          />
         </TabPanel>
         
         <TabPanel name="taches">
-          <div className="p-6">
-            <p className="text-gray-600">Onglet Tâches - À développer</p>
-          </div>
+          <ConstructionPage 
+            title="Tâches et suivi" 
+            subtitle="Gestion des tâches et échéances"
+          />
         </TabPanel>
         
         <TabPanel name="discussions">
-          <div className="p-6">
-            <p className="text-gray-600">Onglet Discussions - À développer</p>
-          </div>
+          <ConstructionPage 
+            title="Discussions" 
+            subtitle="Échanges avec le client et correspondance"
+          />
         </TabPanel>
         
         <TabPanel name="rpva">
-          <div className="p-6">
-            <p className="text-gray-600">Onglet RPVA - À développer</p>
-          </div>
-        </TabPanel>
-
-        <TabPanel name="analyse">
-          <AnalyseTrimTab />
+          <ConstructionPage 
+            title="RPVA" 
+            subtitle="Réseau Privé Virtuel des Avocats"
+          />
         </TabPanel>
       </DossierTabsProvider>
     </DossierLayout>
