@@ -116,7 +116,7 @@ export const DossiersTableAdvanced = ({
                         </span>
                         {deadlineStatus === 'urgent' && (
                           <Badge className="bg-amber-100 text-amber-800 text-xs px-2 py-0.5 rounded-full">
-                            < 7j
+                            &lt; 7j
                           </Badge>
                         )}
                         {deadlineStatus === 'overdue' && (
@@ -201,7 +201,7 @@ export const DossiersTableAdvanced = ({
                     </span>
                     {deadlineStatus === 'urgent' && (
                       <Badge className="bg-amber-100 text-amber-800 text-xs px-1.5 py-0.5 rounded-full">
-                        < 7j
+                        &lt; 7j
                       </Badge>
                     )}
                     {deadlineStatus === 'overdue' && (
