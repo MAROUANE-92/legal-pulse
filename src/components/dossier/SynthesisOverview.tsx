@@ -11,7 +11,9 @@ import { usePieces } from '@/hooks/usePieces';
 import { useTimeline } from '@/hooks/useTimeline';
 import { useOvertime } from '@/hooks/useOvertime';
 import { MotifDetailDrawer } from './MotifDetailDrawer';
+import { RelanceModal } from '@/components/RelanceModal';
 import { motifsDemo } from '@/lib/mockMotifDetails';
+import { getEvidenceStats } from '@/lib/evidenceStats';
 import { 
   Users, 
   FileText, 
@@ -21,7 +23,8 @@ import {
   AlertTriangle,
   Edit,
   Mail,
-  ExternalLink
+  ExternalLink,
+  FileCheck2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -36,7 +39,14 @@ const SynthesisOverview = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedMotifKey, setSelectedMotifKey] = useState<string | null>(null);
 
+  // Relance modal state
+  const [isRelanceModalOpen, setIsRelanceModalOpen] = useState(false);
+  const [missingPiecesToRemind, setMissingPiecesToRemind] = useState<string[]>([]);
+
   if (!dossier) return null;
+
+  // Evidence statistics
+  const evidenceStats = getEvidenceStats(dossier.id);
 
   // Calculs pour la synthèse probatoire
   const validatedPieces = pieces.filter(p => p.validated).length;
@@ -90,6 +100,11 @@ const SynthesisOverview = () => {
   const handlePiecesClick = (motifKey: string) => {
     setSelectedMotifKey(motifKey);
     setIsDrawerOpen(true);
+  };
+
+  const openRemindModal = (missing: string[]) => {
+    setMissingPiecesToRemind(missing);
+    setIsRelanceModalOpen(true);
   };
 
   const selectedMotifDetail = selectedMotifKey ? motifsDemo[selectedMotifKey] : null;
@@ -152,6 +167,39 @@ const SynthesisOverview = () => {
                 <span className="text-muted-foreground">Période:</span>
                 <span className="font-medium">2019-2024</span>
               </div>
+            </div>
+          </InfoCard>
+
+          {/* Bloc: Synthèse probatoire */}
+          <InfoCard title="Synthèse probatoire" icon={FileCheck2}>
+            <div className="space-y-3">
+              <div className="flex items-baseline gap-2">
+                <span className="text-2xl font-bold">{evidenceStats.valid} / {evidenceStats.required}</span>
+                <span className="text-sm text-muted-foreground">validées</span>
+              </div>
+              <Progress 
+                value={evidenceStats.pct} 
+                className="h-2"
+              />
+              <p className="text-xs text-muted-foreground">{evidenceStats.pct}% complété</p>
+              
+              {evidenceStats.missing.length > 0 && (
+                <div className="text-xs space-y-2">
+                  <p className="font-medium">Pièces manquantes :</p>
+                  <ul className="list-disc list-inside space-y-0.5 text-muted-foreground">
+                    {evidenceStats.missing.map(m => <li key={m}>{m}</li>)}
+                  </ul>
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    className="mt-2 w-full"
+                    onClick={() => openRemindModal(evidenceStats.missing)}
+                  >
+                    <Mail className="h-3 w-3 mr-2" />
+                    Relancer client
+                  </Button>
+                </div>
+              )}
             </div>
           </InfoCard>
         </div>
@@ -361,11 +409,18 @@ const SynthesisOverview = () => {
         </div>
       </div>
 
-      {/* Motif Detail Drawer */}
+      {/* Modals */}
       <MotifDetailDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         motifDetail={selectedMotifDetail}
+      />
+
+      <RelanceModal
+        isOpen={isRelanceModalOpen}
+        onClose={() => setIsRelanceModalOpen(false)}
+        missingPieces={missingPiecesToRemind}
+        clientName={dossier.client || 'Client'}
       />
     </>
   );
