@@ -7,72 +7,72 @@
 
 @layer base {
   :root {
-    --background: 247 247 249;
-    --foreground: 27 27 41;
+    --background: 247, 247, 249;
+    --foreground: 27, 27, 41;
 
-    --card: 255 255 255;
-    --card-foreground: 27 27 41;
+    --card: 255, 255, 255;
+    --card-foreground: 27, 27, 41;
 
-    --popover: 255 255 255;
-    --popover-foreground: 27 27 41;
+    --popover: 255, 255, 255;
+    --popover-foreground: 27, 27, 41;
 
-    --primary: 107 75 255;
-    --primary-foreground: 255 255 255;
+    --primary: 107, 75, 255;
+    --primary-foreground: 255, 255, 255;
 
-    --secondary: 240 240 246;
-    --secondary-foreground: 27 27 41;
+    --secondary: 240, 240, 246;
+    --secondary-foreground: 27, 27, 41;
 
-    --muted: 240 240 246;
-    --muted-foreground: 115 115 134;
+    --muted: 240, 240, 246;
+    --muted-foreground: 115, 115, 134;
 
-    --accent: 228 224 255;
-    --accent-foreground: 81 57 212;
+    --accent: 228, 224, 255;
+    --accent-foreground: 81, 57, 212;
 
-    --destructive: 239 68 68;
-    --destructive-foreground: 255 255 255;
+    --destructive: 239, 68, 68;
+    --destructive-foreground: 255, 255, 255;
 
-    --border: 228 228 231;
-    --input: 228 228 231;
-    --ring: 107 75 255;
+    --border: 228, 228, 231;
+    --input: 228, 228, 231;
+    --ring: 107, 75, 255;
 
     --radius: 1rem;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 0, 0%, 98%;
+    --sidebar-foreground: 240, 5.3%, 26.1%;
+    --sidebar-primary: 240, 5.9%, 10%;
+    --sidebar-primary-foreground: 0, 0%, 98%;
+    --sidebar-accent: 240, 4.8%, 95.9%;
+    --sidebar-accent-foreground: 240, 5.9%, 10%;
+    --sidebar-border: 220, 13%, 91%;
+    --sidebar-ring: 217.2, 91.2%, 59.8%;
 
     /* Custom colors for the legal dashboard */
-    --primary-dark: 81 57 212;
-    --text-main: 27 27 41;
-    --divider-gray: 200 200 200;
-    --lavender-mist: 228 224 255;
+    --primary-dark: 81, 57, 212;
+    --text-main: 27, 27, 41;
+    --divider-gray: 200, 200, 200;
+    --lavender-mist: 228, 224, 255;
   }
 
   .dark {
-    --background: 27 27 41;
-    --foreground: 247 247 249;
-    --card: 39 39 54;
-    --card-foreground: 247 247 249;
-    --popover: 39 39 54;
-    --popover-foreground: 247 247 249;
-    --primary: 107 75 255;
-    --primary-foreground: 255 255 255;
-    --secondary: 39 39 54;
-    --secondary-foreground: 247 247 249;
-    --muted: 39 39 54;
-    --muted-foreground: 115 115 134;
-    --accent: 61 61 85;
-    --accent-foreground: 228 224 255;
-    --destructive: 239 68 68;
-    --destructive-foreground: 255 255 255;
-    --border: 61 61 85;
-    --input: 61 61 85;
-    --ring: 107 75 255;
+    --background: 27, 27, 41;
+    --foreground: 247, 247, 249;
+    --card: 39, 39, 54;
+    --card-foreground: 247, 247, 249;
+    --popover: 39, 39, 54;
+    --popover-foreground: 247, 247, 249;
+    --primary: 107, 75, 255;
+    --primary-foreground: 255, 255, 255;
+    --secondary: 39, 39, 54;
+    --secondary-foreground: 247, 247, 249;
+    --muted: 39, 39, 54;
+    --muted-foreground: 115, 115, 134;
+    --accent: 61, 61, 85;
+    --accent-foreground: 228, 224, 255;
+    --destructive: 239, 68, 68;
+    --destructive-foreground: 255, 255, 255;
+    --border: 61, 61, 85;
+    --input: 61, 61, 85;
+    --ring: 107, 75, 255;
   }
 }
 
@@ -83,11 +83,11 @@
 
   body {
     @apply bg-background text-foreground;
-    background-color: hsl(var(--background)) !important;
+    background-color: rgb(var(--background)) !important;
   }
 
   html {
-    background-color: hsl(var(--background)) !important;
+    background-color: rgb(var(--background)) !important;
   }
 }
 
