@@ -9,45 +9,79 @@ import { DossiersTableAdvanced } from './DossiersTableAdvanced';
 import { SearchBar } from './SearchBar';
 import { BarreauSelect } from './BarreauSelect';
 import { KPICardWithTooltip } from './KPICardWithTooltip';
+import { Dossier, SortField, SortDirection } from '@/types/dashboard';
 
 const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBarreau, setSelectedBarreau] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sortField, setSortField] = useState<SortField>('name');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+
+  // Mock dossiers data
+  const mockDossiers: Dossier[] = [
+    {
+      id: '1',
+      name: 'Dupont vs Martin',
+      stage: 'Découverte',
+      nextDeadline: '2024-02-15',
+      progressPct: 35
+    },
+    {
+      id: '2',
+      name: 'SAS TechCorp vs Freelance',
+      stage: 'Rédaction',
+      nextDeadline: '2024-02-20',
+      progressPct: 65
+    },
+    {
+      id: '3',
+      name: 'Succession Moreau',
+      stage: 'Audience',
+      nextDeadline: '2024-02-10',
+      progressPct: 85
+    }
+  ];
 
   const kpiData = [
     {
       title: "Dossiers actifs",
       value: "42",
       icon: FileText,
-      trend: "+12%",
-      trendUp: true,
+      color: 'primary' as const,
       tooltip: "Nombre de dossiers en cours de traitement"
     },
     {
       title: "Pièces à valider",
       value: "8",
       icon: Users,
-      trend: "-3",
-      trendUp: false,
+      color: 'blue' as const,
       tooltip: "Documents en attente de validation"
     },
     {
       title: "Échéances",
       value: "15j",
       icon: Calendar,
-      trend: "Moyenne",
-      trendUp: true,
+      color: 'green' as const,
       tooltip: "Prochaine échéance importante"
     },
     {
       title: "Montant réclamé",
       value: "€847K",
       icon: DollarSign,
-      trend: "+18%",
-      trendUp: true,
+      color: 'primary' as const,
       tooltip: "Total des montants en réclamation"
     }
   ];
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -97,12 +131,11 @@ const Dashboard = () => {
           <SearchBar 
             value={searchQuery}
             onChange={setSearchQuery}
-            placeholder="Rechercher un dossier, client, adversaire..."
           />
         </div>
         <BarreauSelect 
           value={selectedBarreau}
-          onChange={setSelectedBarreau}
+          onValueChange={setSelectedBarreau}
         />
       </div>
 
@@ -116,8 +149,13 @@ const Dashboard = () => {
         </CardHeader>
         <CardContent>
           <DossiersTableAdvanced 
-            searchQuery={searchQuery}
-            selectedBarreau={selectedBarreau}
+            dossiers={mockDossiers}
+            currentPage={currentPage}
+            totalPages={1}
+            onPageChange={setCurrentPage}
+            sortField={sortField}
+            sortDirection={sortDirection}
+            onSort={handleSort}
           />
         </CardContent>
       </Card>
