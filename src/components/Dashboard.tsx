@@ -80,8 +80,8 @@ const Dashboard = () => {
         </div>
         <div className="flex items-center gap-3">
           {/* Portail Client Button - highlighted */}
-          <Link 
-            to="/client/test-token/welcome" 
+          <a 
+            href="https://preview--legal-pulse-equilibre.lovable.app/client/test-token/welcome"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -89,7 +89,7 @@ const Dashboard = () => {
               <ExternalLink className="w-4 h-4 mr-2" />
               Portail Client
             </Button>
-          </Link>
+          </a>
         </div>
       </div>
 
