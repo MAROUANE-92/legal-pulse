@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -25,7 +24,8 @@ const Dashboard = () => {
       name: 'Marouane vs Mordor',
       stage: 'Découverte',
       nextDeadline: '2024-02-15',
-      progressPct: 35
+      progressPct: 35,
+      typeLitige: 'Heures supplémentaires'
     }
   ];
 

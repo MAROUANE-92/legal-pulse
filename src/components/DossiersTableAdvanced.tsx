@@ -68,6 +68,7 @@ export const DossiersTableAdvanced = ({
                 <SortIcon field="name" />
               </div>
             </TableHead>
+            <TableHead>Type de litige</TableHead>
             <TableHead>Étape</TableHead>
             <TableHead 
               className="cursor-pointer hover:bg-gray-50"
@@ -86,6 +87,9 @@ export const DossiersTableAdvanced = ({
           {dossiers.map((dossier) => (
             <TableRow key={dossier.id} className="hover:bg-lavender-mist/25">
               <TableCell className="font-medium">{dossier.name}</TableCell>
+              <TableCell>
+                <span className="text-sm text-muted-foreground">{dossier.typeLitige || '-'}</span>
+              </TableCell>
               <TableCell>
                 <Badge className={getStageColor(dossier.stage)}>
                   {dossier.stage}

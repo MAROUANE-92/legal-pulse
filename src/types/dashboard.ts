@@ -12,6 +12,7 @@ export interface Dossier {
   stage: 'Découverte' | 'Rédaction' | 'Dépôt' | 'Audience' | 'Clos';
   nextDeadline: string;
   progressPct: number;
+  typeLitige?: string;
   client?: string;
   employeur?: string;
   ccn?: string;
