@@ -24,14 +24,7 @@ export const ConclusionsAdversesTab = ({ dossierId }: ConclusionsAdversesTabProp
         </CardHeader>
         <CardContent>
           <div className="border rounded-lg h-96 bg-gray-50 flex items-center justify-center">
-            <iframe
-              src="/api/placeholder/pdf-viewer"
-              className="w-full h-full rounded-lg"
-              title="Conclusions adverses"
-            />
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-lg">
-              <p className="text-muted-foreground">Visualiseur PDF - Document des conclusions adverses</p>
-            </div>
+            <p className="text-muted-foreground">Visualiseur PDF - Document des conclusions adverses</p>
           </div>
         </CardContent>
       </Card>
