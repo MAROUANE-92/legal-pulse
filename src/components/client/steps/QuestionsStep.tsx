@@ -3,13 +3,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useEffect } from 'react';
 import { StepNavigation } from '../StepNavigation';
 import { useClientStepper } from '../ClientStepperProvider';
-import { QuestionsFormData } from '@/types/questionnaire';
 import { useChecklist } from '@/hooks/useChecklist';
 import { getQuestionsForMotifs, getTooltipForQuestion } from '@/hooks/useDynamicQuestions';
 import { Question } from '@/lib/questions.config';
@@ -28,9 +27,9 @@ export const QuestionsStep = () => {
   const questions = getQuestionsForMotifs(selectedMotifs);
   
   // Dynamically build zod schema
-  const schemaShape: any = {};
+  const schemaShape: Record<string, z.ZodTypeAny> = {};
   questions.forEach(q => {
-    let rule: any = z.any();
+    let rule: z.ZodTypeAny = z.any();
     switch (q.type) {
       case "number": 
         rule = z.coerce.number().min(q.min ?? 0).max(q.max ?? 1000000); 
@@ -59,7 +58,7 @@ export const QuestionsStep = () => {
   
   const schema = z.object(schemaShape);
   
-  const form = useForm({
+  const form = useForm<Record<string, any>>({
     resolver: zodResolver(schema),
     mode: "onChange",
     defaultValues: formData.questions || {}
@@ -68,12 +67,12 @@ export const QuestionsStep = () => {
   // Auto-save form data
   useEffect(() => {
     const subscription = form.watch((value) => {
-      savePartial('questions', value as QuestionsFormData);
+      savePartial('questions', value);
     });
     return () => subscription.unsubscribe();
   }, [form, savePartial]);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: Record<string, any>) => {
     savePartial('questions', data);
     
     // Generate checklist from selected motifs and answers
@@ -91,8 +90,9 @@ export const QuestionsStep = () => {
 
   const renderQuestionField = (question: Question) => {
     // Check if question should be visible based on dependencies
+    const currentValues = form.getValues();
     const isVisible = !question.dependsOn || 
-      form.watch(question.dependsOn.questionId) === question.dependsOn.value;
+      currentValues[question.dependsOn.questionId] === question.dependsOn.value;
     
     if (!isVisible) return null;
 
@@ -114,7 +114,7 @@ export const QuestionsStep = () => {
               <div>
                 {question.type === 'number' && <NumberQuestion question={question} control={form.control} />}
                 {question.type === 'date' && (
-                  <Input {...field} type="date" />
+                  <Input {...field} type="date" value={field.value || ''} />
                 )}
                 {question.type === 'radio' && <RadioQuestion question={question} control={form.control} />}
                 {question.type === 'slider' && <SliderQuestion question={question} control={form.control} />}
@@ -124,6 +124,7 @@ export const QuestionsStep = () => {
                     {...field} 
                     rows={4} 
                     placeholder={`Minimum ${question.min || 10} caractères`}
+                    value={field.value || ''}
                   />
                 )}
               </div>

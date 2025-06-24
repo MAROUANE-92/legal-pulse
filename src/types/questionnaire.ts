@@ -26,24 +26,9 @@ export interface MotifsFormData {
   detailAutre?: string;
 }
 
+// Updated to support dynamic questions
 export interface QuestionsFormData {
-  heures_supp?: {
-    weeklyOvertime: number;
-    nightWork: boolean;
-    badgeExists: boolean;
-  };
-  licenciement?: {
-    notifDate: string;
-    motifLettre: string;
-  };
-  harcelement?: {
-    facts: string;
-    witnesses: boolean;
-  };
-  accident?: {
-    accidentDate: string;
-    declarationSent: boolean;
-  };
+  [questionId: string]: any;
 }
 
 export interface UploadFormData {
