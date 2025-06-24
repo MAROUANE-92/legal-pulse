@@ -48,13 +48,6 @@ export const DossierHeaderSticky = () => {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold text-main">{dossier.name}</h1>
-            <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
-              <span>Client: {dossier.client}</span>
-              <span>•</span>
-              <span>Employeur: {dossier.employeur}</span>
-              <span>•</span>
-              <span>Échéance: {new Date(dossier.nextDeadline).toLocaleDateString('fr-FR')}</span>
-            </div>
           </div>
           <div className="flex items-center gap-3">
             <Badge variant="secondary" className="px-3 py-1">
