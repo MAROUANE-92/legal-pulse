@@ -12,6 +12,7 @@ import { FileText, Calendar, AlertTriangle, Star, Plus, Edit2, ChevronDown } fro
 import { useState } from 'react';
 import { Dossier, Motif, Piece, UserRole } from '@/types/dossier';
 import { toast } from '@/hooks/use-toast';
+import { HoursSuppTable } from '@/components/HoursSuppTable';
 
 interface SyntheseTabProps {
   dossier: Dossier;
@@ -385,6 +386,9 @@ export const SyntheseTab = ({ dossier }: SyntheseTabProps) => {
           </Card>
         </div>
       </div>
+
+      {/* Hours Supp Table */}
+      <HoursSuppTable />
     </div>
   );
 };
