@@ -94,7 +94,7 @@ export const DossiersTable = ({ dossiers, currentPage, totalPages, onPageChange 
                         {formatDate(dossier.prochaineEcheance)}
                       </span>
                       {isDateUrgent(dossier.prochaineEcheance) && (
-                        <Badge className="bg-amber-100 text-amber-800 text-xs px-2 py-0.5 rounded-full">
+                        <Badge className="bg-white text-gray-800 border border-gray-400 text-xs px-2 py-0.5 rounded-full">
                           Urgent
                         </Badge>
                       )}
@@ -160,7 +160,7 @@ export const DossiersTable = ({ dossiers, currentPage, totalPages, onPageChange 
                     {formatDate(dossier.prochaineEcheance)}
                   </span>
                   {isDateUrgent(dossier.prochaineEcheance) && (
-                    <Badge className="bg-amber-100 text-amber-800 text-xs px-1.5 py-0.5 rounded-full">
+                    <Badge className="bg-white text-gray-800 border border-gray-400 text-xs px-1.5 py-0.5 rounded-full">
                       Urgent
                     </Badge>
                   )}

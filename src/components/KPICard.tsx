@@ -7,7 +7,7 @@ interface KPICardProps {
   icon: LucideIcon;
   title: string;
   value: string | number;
-  color: 'primary' | 'blue' | 'amber' | 'green';
+  color: 'primary' | 'blue' | 'white' | 'green';
   urgent?: boolean;
   isAmount?: boolean;
 }
@@ -15,7 +15,7 @@ interface KPICardProps {
 const colorVariants = {
   primary: 'text-primary bg-primary/10',
   blue: 'text-blue-600 bg-blue-50',
-  amber: 'text-amber-600 bg-amber-50',
+  white: 'text-gray-600 bg-white border border-gray-200',
   green: 'text-green-600 bg-green-50'
 };
 
@@ -40,7 +40,7 @@ export const KPICard = ({ icon: Icon, title, value, color, urgent, isAmount }: K
             </p>
           </div>
           {urgent && (
-            <div className="w-3 h-3 bg-amber-500 rounded-full animate-pulse"></div>
+            <div className="w-3 h-3 bg-white border-2 border-gray-400 rounded-full animate-pulse"></div>
           )}
         </div>
       </CardContent>

@@ -136,7 +136,7 @@ const Dashboard = () => {
               icon={FileCheck}
               title="Échéances < 7 j"
               value={dashboardData.countUpcomingDeadlines}
-              color="amber"
+              color="white"
               urgent
             />
           </motion.div>
