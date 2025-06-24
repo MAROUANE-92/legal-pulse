@@ -5,6 +5,10 @@ import { ClientStepperProvider, useStepperProgress } from '@/components/client/C
 import { WelcomeStep } from '@/components/client/steps/WelcomeStep';
 import { IdentityStep } from '@/components/client/steps/IdentityStep';
 import { MotifsStep } from '@/components/client/steps/MotifsStep';
+import { QuestionsStep } from '@/components/client/steps/QuestionsStep';
+import { UploadStep } from '@/components/client/steps/UploadStep';
+import { SignatureStep } from '@/components/client/steps/SignatureStep';
+import { ConfirmStep } from '@/components/client/steps/ConfirmStep';
 import { useClientStepper } from '@/components/client/ClientStepperProvider';
 
 const WizardContent = () => {
@@ -20,13 +24,13 @@ const WizardContent = () => {
       case 'motifs':
         return <MotifsStep />;
       case 'questions':
-        return <div>Questions step - Coming soon</div>;
+        return <QuestionsStep />;
       case 'upload':
-        return <div>Upload step - Coming soon</div>;
+        return <UploadStep />;
       case 'signature':
-        return <div>Signature step - Coming soon</div>;
+        return <SignatureStep />;
       case 'confirm':
-        return <div>Confirmation step - Coming soon</div>;
+        return <ConfirmStep />;
       default:
         return <WelcomeStep />;
     }

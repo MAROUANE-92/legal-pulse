@@ -138,9 +138,12 @@ const Dashboard = () => {
 
   const handleNewDossier = async () => {
     try {
-      // Simulate POST /api/dossiers
-      console.log('Creating new dossier...');
-      // TODO: Navigate to new dossier form or open modal
+      // Generate a unique token for the new dossier
+      const token = Math.random().toString(36).substr(2, 12);
+      console.log('Creating new dossier with token:', token);
+      
+      // Navigate to the client wizard
+      window.open(`/client/${token}/welcome`, '_blank');
     } catch (error) {
       console.error('Error creating new dossier:', error);
     }
