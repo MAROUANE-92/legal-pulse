@@ -4,12 +4,14 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Folder, FileCheck, Euro } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { KPICardWithTooltip } from './KPICardWithTooltip';
 import { DossiersTableAdvanced } from './DossiersTableAdvanced';
 import { EmptyState } from './EmptyState';
 import { BarreauSelect } from './BarreauSelect';
 import { SearchBar } from './SearchBar';
 import { DashboardSummary, Dossier, SortField, SortDirection } from '@/types/dashboard';
+import { mockDossiers } from '@/lib/mockDossiers';
 
 const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState<DashboardSummary | null>(null);
@@ -40,15 +42,17 @@ const Dashboard = () => {
           totalClaim: 145000
         };
 
-        // Mock dossiers data
-        const mockDossiers: Dossier[] = [
-          {
-            id: '1',
-            name: 'Dupont vs Société ABC',
-            stage: 'Découverte',
-            nextDeadline: '2024-06-30',
-            progressPct: 35
-          },
+        // Convert mock dossiers to dashboard format
+        const dashboardDossiers: Dossier[] = mockDossiers.map(d => ({
+          id: d.id,
+          name: `${d.client} vs ${d.adversaire}`,
+          stage: d.status === 'Collecte en cours' ? 'Découverte' : 'Rédaction',
+          nextDeadline: '2024-07-15',
+          progressPct: d.status === 'Collecte en cours' ? 35 : 70
+        }));
+
+        // Add some additional mock dossiers to have more data
+        const additionalDossiers: Dossier[] = [
           {
             id: '2',
             name: 'Martin - Licenciement abusif',
@@ -80,7 +84,7 @@ const Dashboard = () => {
         ];
 
         setDashboardData(mockSummary);
-        setDossiers(mockDossiers);
+        setDossiers([...dashboardDossiers, ...additionalDossiers]);
       } catch (error) {
         console.error('Error loading dashboard data:', error);
       } finally {
@@ -146,6 +150,13 @@ const Dashboard = () => {
       window.open(`/client/${token}/welcome`, '_blank');
     } catch (error) {
       console.error('Error creating new dossier:', error);
+    }
+  };
+
+  // Custom row click handler for the Mordor dossier
+  const handleDossierClick = (dossier: Dossier) => {
+    if (dossier.id === 'marouane-e-mordor') {
+      window.location.href = `/dossier-demo/${dossier.id}`;
     }
   };
 
@@ -287,6 +298,7 @@ const Dashboard = () => {
                   sortField={sortField}
                   sortDirection={sortDirection}
                   onSort={handleSort}
+                  onDossierClick={handleDossierClick}
                 />
               </CardContent>
             </Card>
