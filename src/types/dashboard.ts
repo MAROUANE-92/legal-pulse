@@ -12,18 +12,11 @@ export interface Dossier {
   stage: 'Découverte' | 'Rédaction' | 'Dépôt' | 'Audience' | 'Clos';
   nextDeadline: string;
   progressPct: number;
-}
-
-export interface Barreau {
-  id: string;
-  name: string;
-}
-
-export interface DossiersListParams {
-  page?: number;
-  size?: number;
-  barreau?: string;
-  search?: string;
+  client?: string;
+  employeur?: string;
+  ccn?: string;
+  montantReclame?: number;
+  prochaineAudience?: string;
 }
 
 export type SortField = 'name' | 'nextDeadline';
