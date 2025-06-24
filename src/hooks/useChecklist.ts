@@ -1,5 +1,6 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { MOTIF_QUESTIONS } from "@/lib/questions.config";
 
 export interface ChecklistItem {
   id: string;
@@ -17,10 +18,9 @@ export function useChecklist(dossierId: string) {
   const query = useQuery({
     queryKey: ["checklist", dossierId],
     queryFn: async () => {
-      // Stub API call - in real app would fetch from Supabase
       console.log('Fetching checklist for dossier:', dossierId);
       
-      // Mock data based on common motifs
+      // Mock data - in real app would fetch from Supabase
       const mockChecklist: ChecklistItem[] = [
         {
           id: '1',
@@ -29,24 +29,6 @@ export function useChecklist(dossierId: string) {
           required: true,
           satisfied: false,
           generatedBy: 'general',
-          createdAt: new Date().toISOString()
-        },
-        {
-          id: '2',
-          dossierId,
-          label: 'Bulletins de paie',
-          required: true,
-          satisfied: false,
-          generatedBy: 'heures_supp',
-          createdAt: new Date().toISOString()
-        },
-        {
-          id: '3',
-          dossierId,
-          label: 'Badge logs CSV',
-          required: true,
-          satisfied: false,
-          generatedBy: 'heures_supp',
           createdAt: new Date().toISOString()
         }
       ];
@@ -70,65 +52,56 @@ export function useChecklist(dossierId: string) {
   });
 
   const generateFromMotifs = useMutation({
-    mutationFn: async ({ motifs }: { motifs: string[] }) => {
-      console.log('Generating checklist from motifs:', motifs);
+    mutationFn: async ({ motifs, answers }: { motifs: string[]; answers?: any }) => {
+      console.log('Generating checklist from motifs and answers:', { motifs, answers });
       
-      // Mock generation logic
-      const motifToItems: Record<string, string[]> = {
-        "heures_supp": [
-          "Badge logs CSV",
-          "Emails >20h (PST)", 
-          "Planning PDF"
-        ],
-        "licenciement": [
-          "Lettre de licenciement",
-          "Accusé réception LRAR"
-        ],
-        "harcelement": [
-          "Captures WhatsApp/Teams",
-          "Plainte interne RH"
-        ],
-        "conges_impayes": [
-          "Demandes de congés",
-          "Refus employeur"
-        ],
-        "discrimination": [
-          "Témoignages",
-          "Preuves discrimination"
-        ],
-        "accident": [
-          "Déclaration accident",
-          "Certificat médical"
-        ]
-      };
-
-      const newItems = motifs.flatMap(motif => 
-        (motifToItems[motif] || []).map(label => ({
-          id: Math.random().toString(36).substr(2, 9),
-          dossierId,
-          label,
-          required: true,
-          satisfied: false,
-          generatedBy: motif,
-          createdAt: new Date().toISOString()
-        }))
-      );
-
-      // Add general required items
-      newItems.unshift({
-        id: Math.random().toString(36).substr(2, 9),
-        dossierId,
-        label: 'Contrat de travail',
-        required: true,
-        satisfied: false,
-        generatedBy: 'general',
-        createdAt: new Date().toISOString()
+      // Enhanced generation logic with answers-based triggering
+      const neededPieces = new Map<string, boolean>(); // label => required
+      
+      // Add general items
+      neededPieces.set('Contrat de travail', true);
+      neededPieces.set('Bulletins de paie', true);
+      
+      motifs.forEach(motifKey => {
+        const block = MOTIF_QUESTIONS.find(b => b.motifKey === motifKey);
+        if (!block) return;
+        
+        block.questions.forEach(q => {
+          if (!q.triggerPieces) return;
+          
+          const value = answers?.[q.id];
+          const visible = !q.dependsOn || answers?.[q.dependsOn.questionId] === q.dependsOn.value;
+          
+          if (!visible) return;
+          
+          // Trigger pieces if answer is meaningful
+          const shouldTrigger = value && value !== "Non" && value !== 0 && 
+            (Array.isArray(value) ? value.length > 0 : true);
+          
+          if (shouldTrigger) {
+            q.triggerPieces.forEach(piece => {
+              neededPieces.set(piece.label, piece.required !== false);
+            });
+          }
+        });
       });
 
+      const newItems: ChecklistItem[] = Array.from(neededPieces.entries()).map(([label, required]) => ({
+        id: Math.random().toString(36).substr(2, 9),
+        dossierId,
+        label,
+        required,
+        satisfied: false,
+        generatedBy: 'auto',
+        createdAt: new Date().toISOString()
+      }));
+
+      console.log('Generated checklist items:', newItems);
       return newItems;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["checklist", dossierId] });
+    onSuccess: (newItems) => {
+      // Update the query cache with new items
+      queryClient.setQueryData(["checklist", dossierId], newItems);
     }
   });
 
