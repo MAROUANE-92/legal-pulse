@@ -40,7 +40,7 @@ export const Navbar = () => {
               <span className="text-white font-bold text-sm">J</span>
             </div>
             <div>
-              <h1 className="font-semibold text-gray-900">JusticeApp</h1>
+              <h1 className="font-semibold text-gray-900">JusticePulse</h1>
               <p className="text-xs text-gray-500">Gestion juridique</p>
             </div>
           </div>
