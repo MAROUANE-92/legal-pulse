@@ -22,6 +22,7 @@ export default {
 			colors: {
 				amber: undefined,
 				yellow: undefined,
+				orange: undefined,
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',

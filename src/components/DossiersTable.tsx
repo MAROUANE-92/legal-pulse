@@ -25,7 +25,7 @@ const stadeColors = {
   'Découverte': 'bg-blue-100 text-blue-800',
   'Rédaction': 'bg-purple-100 text-purple-800',
   'Dépôt': 'bg-purple-100 text-purple-800',
-  'Audience': 'bg-orange-100 text-orange-800',
+  'Audience': 'bg-violet-100 text-violet-800',
   'Clos': 'bg-gray-100 text-gray-800'
 };
 
