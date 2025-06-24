@@ -52,6 +52,7 @@ export interface UploadFormData {
     name: string;
     size: number;
     type: string;
+    validated?: boolean;
   }>;
 }
 
@@ -60,6 +61,16 @@ export interface SignatureFormData {
   acceptedData: boolean;
   signature: string;
   signatureDate: string;
+}
+
+export interface ChecklistItem {
+  id: string;
+  dossierId: string;
+  label: string;
+  required: boolean;
+  satisfied: boolean;
+  generatedBy?: string;
+  createdAt: string;
 }
 
 export interface StepperContextData {

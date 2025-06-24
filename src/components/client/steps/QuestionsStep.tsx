@@ -9,10 +9,12 @@ import { useEffect } from 'react';
 import { StepNavigation } from '../StepNavigation';
 import { useClientStepper } from '../ClientStepperProvider';
 import { QuestionsFormData } from '@/types/questionnaire';
+import { useChecklist } from '@/hooks/useChecklist';
 
 export const QuestionsStep = () => {
   const { formData, savePartial } = useClientStepper();
   const selectedMotifs = formData.motifs?.selectedMotifs || [];
+  const { generateFromMotifs } = useChecklist('mock-dossier-id'); // In real app, get from context
   
   const form = useForm<QuestionsFormData>({
     defaultValues: formData.questions || {}
@@ -26,8 +28,17 @@ export const QuestionsStep = () => {
     return () => subscription.unsubscribe();
   }, [form, savePartial]);
 
-  const onSubmit = (data: QuestionsFormData) => {
+  const onSubmit = async (data: QuestionsFormData) => {
     savePartial('questions', data);
+    
+    // Generate checklist from selected motifs
+    console.log('Generating checklist from motifs:', selectedMotifs);
+    try {
+      await generateFromMotifs.mutateAsync({ motifs: selectedMotifs });
+      console.log('Checklist generated successfully');
+    } catch (error) {
+      console.error('Failed to generate checklist:', error);
+    }
   };
 
   const renderQuestionsByMotif = () => {
@@ -195,7 +206,8 @@ export const QuestionsStep = () => {
               {renderQuestionsByMotif()}
               
               <StepNavigation 
-                nextLabel="Continuer vers l'upload"
+                nextLabel="Générer la checklist et continuer"
+                onNext={form.handleSubmit(onSubmit)}
               />
             </form>
           </Form>
