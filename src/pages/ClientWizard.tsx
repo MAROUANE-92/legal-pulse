@@ -4,6 +4,7 @@ import { LayoutClient } from '@/components/LayoutClient';
 import { ClientStepperProvider, useStepperProgress } from '@/components/client/ClientStepperProvider';
 import { WelcomeStep } from '@/components/client/steps/WelcomeStep';
 import { IdentityStep } from '@/components/client/steps/IdentityStep';
+import { MotifsStep } from '@/components/client/steps/MotifsStep';
 import { useClientStepper } from '@/components/client/ClientStepperProvider';
 
 const WizardContent = () => {
@@ -17,7 +18,7 @@ const WizardContent = () => {
       case 'identity':
         return <IdentityStep />;
       case 'motifs':
-        return <div>Motifs step - Coming soon</div>;
+        return <MotifsStep />;
       case 'questions':
         return <div>Questions step - Coming soon</div>;
       case 'upload':
