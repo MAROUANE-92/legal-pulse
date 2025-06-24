@@ -1,5 +1,6 @@
 
-import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { StepperContextData } from '@/types/questionnaire';
 
 const ClientStepperContext = createContext<StepperContextData | null>(null);
@@ -17,16 +18,24 @@ export const ClientStepperProvider = ({
   token, 
   initialStep = 'welcome' 
 }: ClientStepperProviderProps) => {
-  const [currentStep, setCurrentStep] = useState(initialStep);
+  const navigate = useNavigate();
+  const { step } = useParams<{ step?: string }>();
+  const [currentStep, setCurrentStep] = useState(step || initialStep);
   const [formData, setFormData] = useState<StepperContextData['formData']>({});
 
-  const goTo = useCallback((step: string) => {
-    if (STEPS.includes(step)) {
+  // Synchroniser l'état avec le paramètre URL
+  useEffect(() => {
+    if (step && STEPS.includes(step) && step !== currentStep) {
       setCurrentStep(step);
-      // Update URL without page reload
-      window.history.pushState({}, '', `/client/${token}/${step}`);
     }
-  }, [token]);
+  }, [step, currentStep]);
+
+  const goTo = useCallback((targetStep: string) => {
+    if (STEPS.includes(targetStep)) {
+      setCurrentStep(targetStep);
+      navigate(`/client/${token}/${targetStep}`, { replace: true });
+    }
+  }, [token, navigate]);
 
   const savePartial = useCallback((step: string, data: any) => {
     setFormData(prev => ({

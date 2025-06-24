@@ -1,5 +1,5 @@
 
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { LayoutClient } from '@/components/LayoutClient';
 import { ClientStepperProvider, useStepperProgress } from '@/components/client/ClientStepperProvider';
 import { WelcomeStep } from '@/components/client/steps/WelcomeStep';
