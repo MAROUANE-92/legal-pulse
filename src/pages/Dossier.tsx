@@ -5,6 +5,7 @@ import { DossierHeaderSticky } from '@/components/dossier/DossierHeaderSticky';
 import { DossierTabsProvider, TabPanel } from '@/components/dossier/DossierTabsProvider';
 
 const SynthesisOverview = React.lazy(() => import('@/components/dossier/SynthesisOverview'));
+const AnalyseTrimTab = React.lazy(() => import('@/components/dossier/AnalyseTrimTab'));
 
 const Dossier = () => {
   return (
@@ -44,6 +45,10 @@ const Dossier = () => {
           <div className="p-6">
             <p className="text-gray-600">Onglet RPVA - À développer</p>
           </div>
+        </TabPanel>
+
+        <TabPanel name="analyse">
+          <AnalyseTrimTab />
         </TabPanel>
       </DossierTabsProvider>
     </DossierLayout>
