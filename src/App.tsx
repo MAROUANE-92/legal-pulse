@@ -25,11 +25,16 @@ const App = () => (
         <Routes>
           {/* Client Portal Routes (no layout) */}
           <Route path="/client/:token" element={<Navigate to="/client/:token/welcome" replace />} />
-          <Route path="/client/:token/:step" element={<ClientWizard />} />
+          <Route path="/client/:token/welcome" element={<ClientWizard />} />
+          <Route path="/client/:token/identity" element={<ClientWizard />} />
+          <Route path="/client/:token/motifs" element={<ClientWizard />} />
+          <Route path="/client/:token/questions" element={<ClientWizard />} />
+          <Route path="/client/:token/upload" element={<ClientWizard />} />
+          <Route path="/client/:token/signature" element={<ClientWizard />} />
+          <Route path="/client/:token/confirm" element={<ClientWizard />} />
           
-          {/* Legacy client portal routes - redirect to wizard */}
-          <Route path="/client/:token/upload" element={<Navigate to="/client/:token/upload" replace />} />
-          <Route path="/client/:token/progress" element={<Navigate to="/client/:token/upload" replace />} />
+          {/* Legacy client portal */}
+          <Route path="/client/:token/portal" element={<ClientPortal />} />
           
           {/* Main App Routes (with layout) */}
           <Route path="/*" element={
@@ -40,7 +45,6 @@ const App = () => (
                 <Route path="/calendrier" element={<Calendrier />} />
                 <Route path="/parametres" element={<Parametres />} />
                 <Route path="/dossier/:id" element={<Dossier />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Layout>
