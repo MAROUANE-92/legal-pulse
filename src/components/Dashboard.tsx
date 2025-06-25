@@ -79,18 +79,27 @@ const Dashboard = () => {
           <p className="text-gray-600">Vue d'ensemble de vos dossiers</p>
         </div>
         <div className="flex items-center gap-3">
-          {/* Portail Client Button - highlighted */}
+          {/* Portail Client Button - made more prominent */}
           <a 
             href="https://preview--legal-pulse.lovable.app/client/test-token/welcome"
             target="_blank"
             rel="noopener noreferrer"
+            className="inline-block"
           >
-            <Button className="bg-primary hover:bg-primary/90 shadow-lg">
-              <ExternalLink className="w-4 h-4 mr-2" />
+            <Button 
+              className="bg-primary hover:bg-primary/90 text-white font-medium px-4 py-2 rounded-md shadow-lg border-2 border-primary flex items-center gap-2"
+              size="default"
+            >
+              <ExternalLink className="w-4 h-4" />
               Portail Client
             </Button>
           </a>
         </div>
+      </div>
+
+      {/* Debug info - temporary */}
+      <div className="bg-yellow-100 border border-yellow-300 rounded p-2 text-sm">
+        Debug: Le bouton Portail Client devrait être visible ci-dessus
       </div>
 
       {/* KPI Cards */}
