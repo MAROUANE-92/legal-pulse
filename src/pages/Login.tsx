@@ -39,21 +39,20 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen flex bg-white">
       {/* Left side - Logo and citation */}
-      <div className="flex-1 flex items-center justify-center p-12 bg-gradient-to-br from-blue-600 to-blue-800">
-        <div className="text-center text-white">
+      <div className="flex-1 flex items-center justify-center p-12">
+        <div className="text-center">
           <div className="mb-8">
             <img 
               src="/lovable-uploads/52561914-7132-4666-921a-bdf940b22fca.png" 
               alt="LegalPulse" 
-              className="mx-auto h-32 w-32 mb-6 drop-shadow-lg"
+              className="mx-auto h-48 w-48 mb-8"
             />
           </div>
-          <h1 className="text-5xl font-bold mb-6 drop-shadow-md">LegalPulse</h1>
-          <div className="border-t border-blue-300 pt-6 mt-6">
-            <p className="text-2xl font-light italic tracking-wide">Refacere ius</p>
-            <p className="text-blue-100 text-sm mt-2">Remaking law</p>
+          <h1 className="text-6xl font-bold mb-8 text-gray-900">LegalPulse</h1>
+          <div className="border-t border-gray-300 pt-8 mt-8">
+            <p className="text-3xl font-light italic tracking-wide text-gray-700">Refacere ius</p>
           </div>
         </div>
       </div>
@@ -79,7 +78,6 @@ const Login = () => {
                     onChange={(e) => setUsername(e.target.value)}
                     required
                     className="mt-2 h-12"
-                    placeholder="MeG"
                   />
                 </div>
                 
@@ -92,7 +90,6 @@ const Login = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     className="mt-2 h-12"
-                    placeholder="MeG_2025"
                   />
                 </div>
                 
