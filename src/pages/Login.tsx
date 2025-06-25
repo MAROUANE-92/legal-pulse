@@ -39,75 +39,77 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen flex bg-gray-50">
+      {/* Left side - Logo and citation */}
+      <div className="flex-1 flex items-center justify-center p-12">
         <div className="text-center">
           <img 
             src="/lovable-uploads/52561914-7132-4666-921a-bdf940b22fca.png" 
             alt="LegalPulse" 
-            className="mx-auto h-16 w-16"
+            className="mx-auto h-24 w-24 mb-8"
           />
-          <h2 className="mt-6 text-3xl font-bold text-gray-900">
-            Connexion à LegalPulse
-          </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Accédez à votre tableau de bord
-          </p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">LegalPulse</h1>
+          <p className="text-xl text-gray-600 italic">Refacere ius</p>
         </div>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle>Se connecter</CardTitle>
-            <CardDescription>
-              Entrez vos identifiants pour accéder à l'application
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="username">Nom d'utilisateur</Label>
-                <Input
-                  id="username"
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  required
-                  className="mt-1"
-                  placeholder="admin"
-                />
-              </div>
+      </div>
+
+      {/* Right side - Login form */}
+      <div className="flex-1 flex items-center justify-center p-12">
+        <div className="w-full max-w-md">
+          <Card>
+            <CardHeader>
+              <CardTitle>Se connecter</CardTitle>
+              <CardDescription>
+                Entrez vos identifiants pour accéder à l'application
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <Label htmlFor="username">Nom d'utilisateur</Label>
+                  <Input
+                    id="username"
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                    className="mt-1"
+                    placeholder="admin"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="password">Mot de passe</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="mt-1"
+                    placeholder="password123"
+                  />
+                </div>
+                
+                <Button 
+                  type="submit" 
+                  className="w-full"
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Connexion...' : 'Se connecter'}
+                </Button>
+              </form>
               
-              <div>
-                <Label htmlFor="password">Mot de passe</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="mt-1"
-                  placeholder="password123"
-                />
+              <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                <p className="text-sm text-blue-700">
+                  <strong>Identifiants de test :</strong><br />
+                  Nom d'utilisateur : admin<br />
+                  Mot de passe : password123
+                </p>
               </div>
-              
-              <Button 
-                type="submit" 
-                className="w-full"
-                disabled={isLoading}
-              >
-                {isLoading ? 'Connexion...' : 'Se connecter'}
-              </Button>
-            </form>
-            
-            <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-              <p className="text-sm text-blue-700">
-                <strong>Identifiants de test :</strong><br />
-                Nom d'utilisateur : admin<br />
-                Mot de passe : password123
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
