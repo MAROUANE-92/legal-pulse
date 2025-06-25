@@ -50,7 +50,6 @@ const Login = () => {
               className="mx-auto h-48 w-48 mb-8"
             />
           </div>
-          <h1 className="text-6xl font-bold mb-8 text-gray-900">LegalPulse</h1>
           <div className="border-t border-gray-300 pt-8 mt-8">
             <p className="text-3xl font-light italic tracking-wide text-gray-700">Refacere ius</p>
           </div>
