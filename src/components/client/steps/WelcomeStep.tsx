@@ -1,6 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 import { Play } from 'lucide-react';
 import { useClientStepper } from '../ClientStepperProvider';
 
@@ -34,6 +35,39 @@ export const WelcomeStep = () => {
               </p>
             </div>
           </div>
+
+          {/* New procedure explanation card */}
+          <Card className="bg-slate-50 rounded-xl p-5">
+            <h3 className="text-lg font-semibold mb-2 text-slate-800">
+              Comment se déroule une procédure prud'homale&nbsp;?
+            </h3>
+            <ol className="pl-5 list-decimal space-y-1 text-sm">
+              <li><b>Saisine</b> – votre dossier est déposé auprès du Conseil.</li>
+              <li><b>Conciliation</b> – tentative d'accord rapide avec l'employeur.</li>
+              <li><b>Audience de jugement</b> – plaidoiries et examen des preuves.</li>
+              <li><b>Décision</b> – le Conseil rend un jugement exécutoire.</li>
+            </ol>
+            
+            <h4 className="font-semibold mt-4 text-slate-800">Pourquoi vos pièces sont cruciales ?</h4>
+            <p className="text-sm mt-1">
+              Le juge statue uniquement sur des <strong>preuves écrites</strong> :
+              contrat, bulletins de paie, badgeages, e-mails, échanges WhatsApp…
+              Plus elles sont complètes, plus vos chances de succès augmentent.
+            </p>
+            
+            <h4 className="font-semibold mt-4 text-slate-800">Vos prochaines actions</h4>
+            <ul className="text-sm list-disc pl-5 space-y-0.5">
+              <li>Répondre aux questions du formulaire</li>
+              <li>Téléverser chaque document demandé</li>
+              <li>Suivre l'avancement via la barre violette en haut de l'écran</li>
+            </ul>
+            
+            <p className="text-xs text-gray-500 mt-4">
+              Vos données sont chiffrées et restent strictement confidentielles.
+            </p>
+          </Card>
+
+          <Separator />
 
           <div className="space-y-4">
             <div className="bg-blue-50 rounded-lg p-4">
