@@ -39,74 +39,71 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
+    <div className="min-h-screen flex bg-gradient-to-br from-slate-50 to-blue-50">
       {/* Left side - Logo and citation */}
-      <div className="flex-1 flex items-center justify-center p-12">
-        <div className="text-center">
-          <img 
-            src="/lovable-uploads/52561914-7132-4666-921a-bdf940b22fca.png" 
-            alt="LegalPulse" 
-            className="mx-auto h-24 w-24 mb-8"
-          />
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">LegalPulse</h1>
-          <p className="text-xl text-gray-600 italic">Refacere ius</p>
+      <div className="flex-1 flex items-center justify-center p-12 bg-gradient-to-br from-blue-600 to-blue-800">
+        <div className="text-center text-white">
+          <div className="mb-8">
+            <img 
+              src="/lovable-uploads/52561914-7132-4666-921a-bdf940b22fca.png" 
+              alt="LegalPulse" 
+              className="mx-auto h-32 w-32 mb-6 drop-shadow-lg"
+            />
+          </div>
+          <h1 className="text-5xl font-bold mb-6 drop-shadow-md">LegalPulse</h1>
+          <div className="border-t border-blue-300 pt-6 mt-6">
+            <p className="text-2xl font-light italic tracking-wide">Refacere ius</p>
+            <p className="text-blue-100 text-sm mt-2">Remaking law</p>
+          </div>
         </div>
       </div>
 
       {/* Right side - Login form */}
       <div className="flex-1 flex items-center justify-center p-12">
         <div className="w-full max-w-md">
-          <Card>
-            <CardHeader>
-              <CardTitle>Se connecter</CardTitle>
-              <CardDescription>
+          <Card className="shadow-xl border-0">
+            <CardHeader className="text-center pb-8">
+              <CardTitle className="text-2xl font-bold text-gray-800">Se connecter</CardTitle>
+              <CardDescription className="text-gray-600">
                 Entrez vos identifiants pour accéder à l'application
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <Label htmlFor="username">Nom d'utilisateur</Label>
+                  <Label htmlFor="username" className="text-gray-700 font-medium">Nom d'utilisateur</Label>
                   <Input
                     id="username"
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     required
-                    className="mt-1"
-                    placeholder="admin"
+                    className="mt-2 h-12"
+                    placeholder="MeG"
                   />
                 </div>
                 
                 <div>
-                  <Label htmlFor="password">Mot de passe</Label>
+                  <Label htmlFor="password" className="text-gray-700 font-medium">Mot de passe</Label>
                   <Input
                     id="password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="mt-1"
-                    placeholder="password123"
+                    className="mt-2 h-12"
+                    placeholder="MeG_2025"
                   />
                 </div>
                 
                 <Button 
                   type="submit" 
-                  className="w-full"
+                  className="w-full h-12 text-lg font-medium bg-blue-600 hover:bg-blue-700"
                   disabled={isLoading}
                 >
                   {isLoading ? 'Connexion...' : 'Se connecter'}
                 </Button>
               </form>
-              
-              <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                <p className="text-sm text-blue-700">
-                  <strong>Identifiants de test :</strong><br />
-                  Nom d'utilisateur : admin<br />
-                  Mot de passe : password123
-                </p>
-              </div>
             </CardContent>
           </Card>
         </div>

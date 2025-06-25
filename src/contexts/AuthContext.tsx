@@ -22,10 +22,10 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Données de test pour la maquette
+  // Identifiants mis à jour
   const mockCredentials = {
-    username: 'admin',
-    password: 'password123'
+    username: 'MeG',
+    password: 'MeG_2025'
   };
 
   const login = (username: string, password: string): boolean => {
