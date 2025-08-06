@@ -66,7 +66,10 @@ export interface ChecklistItem {
 export interface StepperContextData {
   currentStep: string;
   formData: {
-    identity?: IdentityFormData;
+    identity?: any;
+    contract?: any;
+    remuneration?: any;
+    working_time?: any;
     motifs?: MotifsFormData;
     questions?: QuestionsFormData;
     upload?: UploadFormData;

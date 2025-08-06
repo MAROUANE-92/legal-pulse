@@ -6,7 +6,7 @@ import { useQuestionnaire } from '@/hooks/useQuestionnaire';
 
 const ClientStepperContext = createContext<StepperContextData | null>(null);
 
-const STEPS = ['welcome', 'identity', 'motifs', 'questions', 'upload', 'signature', 'confirm'];
+const STEPS = ['welcome', 'identity', 'contract', 'remuneration', 'working_time', 'motifs', 'questions', 'upload', 'signature', 'confirm'];
 
 interface ClientStepperProviderProps {
   children: ReactNode;

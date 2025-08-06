@@ -4,6 +4,7 @@ import { LayoutClient } from '@/components/LayoutClient';
 import { ClientStepperProvider, useStepperProgress } from '@/components/client/ClientStepperProvider';
 import { WelcomeStep } from '@/components/client/steps/WelcomeStep';
 import { IdentityStep } from '@/components/client/steps/IdentityStep';
+import { ContractStep } from '@/components/client/steps/ContractStep';
 import { MotifsStep } from '@/components/client/steps/MotifsStep';
 import { QuestionsStep } from '@/components/client/steps/QuestionsStep';
 import { UploadStep } from '@/components/client/steps/UploadStep';
@@ -25,6 +26,12 @@ const WizardContent = () => {
         return <WelcomeStep />;
       case 'identity':
         return <IdentityStep />;
+      case 'contract':
+        return <ContractStep />;
+      case 'remuneration':
+        return <div>Rémunération step - À créer</div>;
+      case 'working_time':
+        return <div>Temps de travail step - À créer</div>;
       case 'motifs':
         return <MotifsStep />;
       case 'questions':
