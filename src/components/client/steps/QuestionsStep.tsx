@@ -23,9 +23,11 @@ import { TimeRangeQuestion } from '../questions/TimeRangeQuestion';
 import { CheckboxQuestion } from '../questions/CheckboxQuestion';
 
 export const QuestionsStep = () => {
-  const { formData, savePartial } = useClientStepper();
+  const { formData, savePartial, goTo } = useClientStepper();
   const selectedMotifs = formData.motifs?.motifs_selected || [];
-  const { generateFromMotifs } = useChecklist('mock-dossier-id');
+  
+  // Pour le moment, on utilise des données mockées sans appel Supabase
+  // const { generateFromMotifs } = useChecklist('mock-dossier-id');
   
   // Use new schema with conditional sections
   const allAnswers = { ...formData.identity, ...formData.motifs, ...formData.questions };
@@ -88,18 +90,12 @@ export const QuestionsStep = () => {
   const onSubmit = async (data: Record<string, any>) => {
     savePartial('questions', data);
     
-    // Generate checklist from selected motifs and answers
+    // Log pour debug - génération de checklist mockée
     console.log('Generating checklist from motifs and answers:', { selectedMotifs, answers: data });
-    try {
-      await generateFromMotifs.mutateAsync({ 
-        motifs: selectedMotifs,
-        answers: data,
-        identityData: formData.identity 
-      });
-      console.log('Checklist generated successfully');
-    } catch (error) {
-      console.error('Failed to generate checklist:', error);
-    }
+    console.log('Checklist generated successfully (mocked)');
+    
+    // Naviguer vers l'étape suivante
+    goTo('upload');
   };
 
   const renderQuestionField = (question: SchemaQuestion) => {
