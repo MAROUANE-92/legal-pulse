@@ -29,7 +29,7 @@ const identitySchema = z.object({
 type IdentityFormData = z.infer<typeof identitySchema>;
 
 export const IdentityStep = () => {
-  const { formData, savePartial } = useClientStepper();
+  const { formData, savePartial, goTo } = useClientStepper();
   const { getSectionByStep } = useQuestionnaireSchema();
   
   // Get identity section from schema
@@ -61,6 +61,8 @@ export const IdentityStep = () => {
   const onSubmit = (data: IdentityFormData) => {
     console.log('Identity form submitted:', data);
     savePartial('identity', data);
+    // Navigate to next step
+    goTo('contract');
   };
 
   // Debug: log form state
