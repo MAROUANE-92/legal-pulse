@@ -1,7 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { QuestionnaireAnswer } from "@/types/questionnaire";
-import { mockQuestionnaires } from "@/data/mockClientData";
 
 export function useQuestionnaire(dossierId: string) {
   const queryClient = useQueryClient();
@@ -10,12 +9,6 @@ export function useQuestionnaire(dossierId: string) {
     queryKey: ["questionnaire", dossierId],
     queryFn: async () => {
       console.log('Fetching questionnaire answers for dossier:', dossierId);
-      
-      // Utiliser les données fictives pour la démo
-      const mockData = mockQuestionnaires.find(q => q.token === dossierId);
-      if (mockData) {
-        return mockData;
-      }
       
       const { data, error } = await supabase
         .from('Soumissions_formulaires_form_clients')

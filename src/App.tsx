@@ -14,8 +14,6 @@ import Calendrier from "./pages/Calendrier";
 import Parametres from "./pages/Parametres";
 import Dossier from "./pages/Dossier";
 import DossierDemo from "./pages/DossierDemo";
-import ClientPortal from "./pages/ClientPortal";
-import ClientWizard from "./pages/ClientWizard";
 import InboxDemo from "./pages/InboxDemo";
 import NotFound from "./pages/NotFound";
 
@@ -35,23 +33,6 @@ const App = () => (
               
               {/* Demo route (no auth required) */}
               <Route path="/demo-inbox" element={<InboxDemo />} />
-              
-              {/* Client Portal Routes (no auth required for clients) */}
-              <Route path="/demo-client" element={<Navigate to="/client/abc123demo/welcome" replace />} />
-              <Route path="/client/:token" element={<Navigate to="/client/:token/welcome" replace />} />
-              <Route path="/client/:token/welcome" element={<ClientWizard />} />
-              <Route path="/client/:token/identity" element={<ClientWizard />} />
-              <Route path="/client/:token/contract" element={<ClientWizard />} />
-              <Route path="/client/:token/remuneration" element={<ClientWizard />} />
-              <Route path="/client/:token/working_time" element={<ClientWizard />} />
-              <Route path="/client/:token/motifs" element={<ClientWizard />} />
-              <Route path="/client/:token/questions" element={<ClientWizard />} />
-              <Route path="/client/:token/upload" element={<ClientWizard />} />
-              <Route path="/client/:token/signature" element={<ClientWizard />} />
-              <Route path="/client/:token/confirm" element={<ClientWizard />} />
-              
-              {/* Legacy client portal */}
-              <Route path="/client/:token/portal" element={<ClientPortal />} />
               
               {/* Dossier Demo (no auth required) */}
               <Route path="/dossier-demo/:id" element={<DossierDemo />} />
