@@ -5,6 +5,7 @@ import { ClientStepperProvider, useStepperProgress } from '@/components/client/C
 import { WelcomeStep } from '@/components/client/steps/WelcomeStep';
 import { IdentityStep } from '@/components/client/steps/IdentityStep';
 import { ContractStep } from '@/components/client/steps/ContractStep';
+import { RemunerationStep } from '@/components/client/steps/RemunerationStep';
 import { MotifsStep } from '@/components/client/steps/MotifsStep';
 import { QuestionsStep } from '@/components/client/steps/QuestionsStep';
 import { UploadStep } from '@/components/client/steps/UploadStep';
@@ -29,7 +30,7 @@ const WizardContent = () => {
       case 'contract':
         return <ContractStep />;
       case 'remuneration':
-        return <div>Rémunération step - À créer</div>;
+        return <RemunerationStep />;
       case 'working_time':
         return <div>Temps de travail step - À créer</div>;
       case 'motifs':
