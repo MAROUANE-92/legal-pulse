@@ -245,36 +245,34 @@ export const QuestionsStep = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {conditionalSections.map(section => (
-        <Card key={section.id}>
-          <CardHeader>
-            <CardTitle>{section.label}</CardTitle>
-            <CardDescription>
-              Questions spécifiques pour ce motif
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {section.questions.map(renderQuestionField)}
-            </div>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        {conditionalSections.map(section => (
+          <Card key={section.id}>
+            <CardHeader>
+              <CardTitle>{section.label}</CardTitle>
+              <CardDescription>
+                Questions spécifiques pour ce motif
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {section.questions.map(renderQuestionField)}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+        
+        <Card>
+          <CardContent className="pt-6">
+            <StepNavigation 
+              nextLabel="Générer la checklist et continuer"
+              onNext={form.handleSubmit(onSubmit)}
+              nextDisabled={!form.formState.isValid}
+            />
           </CardContent>
         </Card>
-      ))}
-      
-      <Card>
-        <CardContent className="pt-6">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              <StepNavigation 
-                nextLabel="Générer la checklist et continuer"
-                onNext={form.handleSubmit(onSubmit)}
-                nextDisabled={!form.formState.isValid}
-              />
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
-    </div>
+      </form>
+    </Form>
   );
 };
