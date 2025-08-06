@@ -53,10 +53,12 @@ export const ClientStepperProvider = ({
       [step]: { ...prev[step as keyof typeof prev], ...data }
     }));
     
-    // Save to Supabase
-    saveAnswers.mutate({ step, answers: data });
+    // Save to Supabase with debounce to avoid infinite loops
+    setTimeout(() => {
+      saveAnswers.mutate({ step, answers: data });
+    }, 300);
     console.log('Saving partial data for step:', step, data);
-  }, [saveAnswers]);
+  }, []); // Remove saveAnswers from dependencies
 
   const isStepValid = useCallback((step: string) => {
     switch (step) {

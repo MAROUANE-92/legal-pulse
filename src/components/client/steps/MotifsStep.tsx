@@ -87,7 +87,7 @@ export const MotifsStep = () => {
     // Update form values for validation
     form.setValue('selectedMotifs', selectedMotifs);
     form.setValue('detailAutre', detailAutre);
-  }, [selectedMotifs, detailAutre, savePartial, form]);
+  }, [selectedMotifs, detailAutre]); // Remove savePartial and form from dependencies
 
   const handleMotifChange = (motifId: string, checked: boolean) => {
     if (checked) {
