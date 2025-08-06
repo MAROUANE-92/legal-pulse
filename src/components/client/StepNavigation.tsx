@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useClientStepper } from './ClientStepperProvider';
 
-const STEPS = ['welcome', 'identity', 'motifs', 'questions', 'upload', 'signature', 'confirm'];
+const STEPS = ['welcome', 'identity', 'contract', 'remuneration', 'working_time', 'motifs', 'questions', 'upload', 'signature', 'confirm'];
 
 interface StepNavigationProps {
   onNext?: () => void;
