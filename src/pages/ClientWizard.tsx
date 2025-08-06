@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { StepperProvider } from '@/components/client/StepperProvider';
+import { StepProgress } from '@/components/client/StepProgress';
 import { WelcomeStep } from '@/components/client/steps/WelcomeStep';
 import { IdentityStep } from '@/components/client/steps/IdentityStep';
 import { ContractStep } from '@/components/client/steps/ContractStep';
@@ -42,6 +43,7 @@ export default function ClientWizard() {
   return (
     <StepperProvider token={token}>
       <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
+        <StepProgress />
         <div className="container mx-auto px-4 py-8">
           <StepComponent />
         </div>
