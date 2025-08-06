@@ -2,6 +2,7 @@
 import { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { StepperContextData } from '@/types/questionnaire';
+import { useQuestionnaire } from '@/hooks/useQuestionnaire';
 
 const ClientStepperContext = createContext<StepperContextData | null>(null);
 
@@ -29,6 +30,7 @@ export const ClientStepperProvider = ({
   
   const [currentStep, setCurrentStep] = useState(determineCurrentStep());
   const [formData, setFormData] = useState<StepperContextData['formData']>({});
+  const { saveAnswers } = useQuestionnaire(token);
 
   // Synchroniser l'état avec le paramètre URL quand il change
   useEffect(() => {
@@ -51,9 +53,10 @@ export const ClientStepperProvider = ({
       [step]: { ...prev[step as keyof typeof prev], ...data }
     }));
     
-    // TODO: Debounced API call to save draft
+    // Save to Supabase
+    saveAnswers.mutate({ step, answers: data });
     console.log('Saving partial data for step:', step, data);
-  }, []);
+  }, [saveAnswers]);
 
   const isStepValid = useCallback((step: string) => {
     switch (step) {

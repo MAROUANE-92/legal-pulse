@@ -1,6 +1,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { MOTIF_QUESTIONS, GLOBAL_QUESTIONS } from "@/lib/questions.config";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface ChecklistItem {
   id: string;
@@ -20,20 +21,22 @@ export function useChecklist(dossierId: string) {
     queryFn: async () => {
       console.log('Fetching checklist for dossier:', dossierId);
       
-      // Mock data - in real app would fetch from Supabase
-      const mockChecklist: ChecklistItem[] = [
-        {
-          id: '1',
-          dossierId,
-          label: 'Contrat de travail',
-          required: true,
-          satisfied: false,
-          generatedBy: 'general',
-          createdAt: new Date().toISOString()
-        }
-      ];
+      const { data, error } = await supabase
+        .from('forms')
+        .select('*')
+        .eq('id', dossierId)
+        .maybeSingle();
       
-      return mockChecklist;
+      if (error) {
+        console.error('Error fetching checklist:', error);
+        return [];
+      }
+      
+      // Transform form data to checklist items
+      const definition = data?.definition as any;
+      const checklistItems: ChecklistItem[] = definition?.checklist || [];
+      
+      return checklistItems;
     },
     enabled: !!dossierId
   });
@@ -41,10 +44,20 @@ export function useChecklist(dossierId: string) {
   const setSatisfied = useMutation({
     mutationFn: async (itemId: string) => {
       console.log('Setting checklist item as satisfied:', itemId);
-      // Stub API call
-      return fetch(`/api/checklist/${itemId}/satisfy`, { 
-        method: "PATCH" 
-      });
+      
+      const { error } = await supabase
+        .from('forms')
+        .update({ 
+          definition: {
+            checklist: query.data?.map(item => 
+              item.id === itemId ? { ...item, satisfied: true } : item
+            )
+          } as any
+        })
+        .eq('id', dossierId);
+        
+      if (error) throw error;
+      return true;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["checklist", dossierId] });
@@ -122,6 +135,16 @@ export function useChecklist(dossierId: string) {
       }));
 
       console.log('Generated checklist items:', newItems);
+      
+      // Save to Supabase
+      const { error } = await supabase
+        .from('forms')
+        .upsert({ 
+          id: dossierId,
+          definition: { checklist: newItems } as any
+        });
+        
+      if (error) throw error;
       return newItems;
     },
     onSuccess: (newItems) => {
