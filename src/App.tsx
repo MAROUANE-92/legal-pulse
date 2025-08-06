@@ -40,6 +40,9 @@ const App = () => (
               <Route path="/client/:token" element={<Navigate to="/client/:token/welcome" replace />} />
               <Route path="/client/:token/welcome" element={<ClientWizard />} />
               <Route path="/client/:token/identity" element={<ClientWizard />} />
+              <Route path="/client/:token/contract" element={<ClientWizard />} />
+              <Route path="/client/:token/remuneration" element={<ClientWizard />} />
+              <Route path="/client/:token/working_time" element={<ClientWizard />} />
               <Route path="/client/:token/motifs" element={<ClientWizard />} />
               <Route path="/client/:token/questions" element={<ClientWizard />} />
               <Route path="/client/:token/upload" element={<ClientWizard />} />
