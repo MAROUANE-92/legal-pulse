@@ -46,6 +46,7 @@ const App = () => (
               <Route path="/client/:token/motifs" element={<ClientWizard />} />
               <Route path="/client/:token/questions" element={<ClientWizard />} />
               <Route path="/client/:token/upload" element={<ClientWizard />} />
+              <Route path="/client/:token/chronologie" element={<ClientWizard />} />
               <Route path="/client/:token/signature" element={<ClientWizard />} />
               <Route path="/client/:token/confirm" element={<ClientWizard />} />
               
