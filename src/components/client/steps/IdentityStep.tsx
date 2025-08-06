@@ -230,9 +230,9 @@ export const IdentityStep = () => {
               <StepNavigation 
                 nextLabel="Continuer vers les données contrat"
                 nextDisabled={!form.formState.isValid}
-                onNext={form.handleSubmit(onNext => {
+                onNext={form.handleSubmit((data) => {
                   console.log('StepNavigation onNext called with valid form');
-                  onSubmit(form.getValues());
+                  onSubmit(data);
                 })}
               />
               
