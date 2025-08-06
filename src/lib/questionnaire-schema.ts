@@ -18,6 +18,7 @@ export type Section = {
   label: string;
   always_shown?: boolean;
   show_if?: string;
+  files_expected?: string[];
   questions: Question[];
 };
 
@@ -159,6 +160,17 @@ export const QUESTIONNAIRE_SCHEMA: Section[] = [
     id: "overtime_block",
     show_if: "motifs_selected includes 'overtime'",
     label: "Bloc Heures supplémentaires",
+    files_expected: [
+      "badge.csv/pointeuse.pdf",
+      "emails_tardifs.zip", 
+      "planning_excel.xlsx",
+      "journaux_appels.csv",
+      "sms_export.zip",
+      "whatsapp_chat.txt",
+      "teams_log.html",
+      "slack_history.json",
+      "skype_chat.txt"
+    ],
     questions: [
       { id: "weekly_hours_avg", type: "number", label: "Heures hebdo moyennes", required: true },
       { id: "overtime_paid", type: "yes_no", label: "Heures récupérées / payées ?", required: true },
@@ -169,6 +181,12 @@ export const QUESTIONNAIRE_SCHEMA: Section[] = [
     id: "dismissal_block",
     show_if: "motifs_selected includes 'dismissal'",
     label: "Bloc Licenciement",
+    files_expected: [
+      "convocation.pdf",
+      "PV_entretien.pdf", 
+      "lettre_licenciement.pdf",
+      "solde_tout_compte.pdf"
+    ],
     questions: [
       { id: "convo_date", type: "date", label: "Date convocation EP", required: true },
       { id: "interview_date", type: "date", label: "Date entretien préalable", required: true },
@@ -185,6 +203,11 @@ export const QUESTIONNAIRE_SCHEMA: Section[] = [
     id: "harassment_block",
     show_if: "motifs_selected includes 'harassment'",
     label: "Bloc Harcèlement",
+    files_expected: [
+      "preuves_messages.zip",
+      "certificats_medicaux.pdf",
+      "rapport_enquete_CSE.pdf"
+    ],
     questions: [
       { id: "facts_description", type: "text", label: "Description des faits", required: true },
       { id: "medical_impact", type: "yes_no", label: "Arrêts / traitement médical ?" }
@@ -194,6 +217,10 @@ export const QUESTIONNAIRE_SCHEMA: Section[] = [
     id: "unpaid_leave_block",
     show_if: "motifs_selected includes 'unpaid_leave'",
     label: "Bloc Congés non payés",
+    files_expected: [
+      "compteurs_RH.pdf",
+      "emails_demandes_conges.zip"
+    ],
     questions: [
       { id: "days_due", type: "number", label: "Jours CP/RTT non payés", required: true },
       { id: "refus_cp", type: "yes_no", label: "Refus injustifié ?" }
@@ -203,6 +230,10 @@ export const QUESTIONNAIRE_SCHEMA: Section[] = [
     id: "discrimination_block",
     show_if: "motifs_selected includes 'discrimination'",
     label: "Bloc Discrimination",
+    files_expected: [
+      "tableau_comparatif_salaires.xlsx",
+      "bulletins_comparateurs.pdf"
+    ],
     questions: [
       {
         id: "protected_criteria",
@@ -215,7 +246,12 @@ export const QUESTIONNAIRE_SCHEMA: Section[] = [
   {
     id: "accident_block",
     show_if: "motifs_selected includes 'accident'",
-    label: "Bloc Accident du travail / maladie professionnelle",
+    label: "Bloc Accident du travail / maladie professionnelle", 
+    files_expected: [
+      "cerfa_14463.pdf",
+      "certificat_medical.pdf",
+      "courrier_CPAM.pdf"
+    ],
     questions: [
       { id: "accident_date", type: "date", label: "Date accident", required: true },
       { id: "declaration_cpam", type: "yes_no", label: "Déclaration CPAM faite ?", required: true }
