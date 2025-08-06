@@ -110,7 +110,8 @@ export const MotifsStep = () => {
     // Navigation will be handled by StepNavigation
   };
 
-  const isValid = form.formState.isValid && selectedMotifs.length > 0 && 
+  // Simplifier la validation : si au moins un motif est sélectionné ET si "other" est sélectionné, alors other_description doit être valide
+  const isValid = selectedMotifs.length > 0 && 
     (!selectedMotifs.includes('other') || (otherDescription.trim().length >= 20));
 
   return (
