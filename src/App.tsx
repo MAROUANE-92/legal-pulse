@@ -37,6 +37,7 @@ const App = () => (
               <Route path="/demo-inbox" element={<InboxDemo />} />
               
               {/* Client Portal Routes (no auth required for clients) */}
+              <Route path="/demo-client" element={<Navigate to="/client/abc123demo/welcome" replace />} />
               <Route path="/client/:token" element={<Navigate to="/client/:token/welcome" replace />} />
               <Route path="/client/:token/welcome" element={<ClientWizard />} />
               <Route path="/client/:token/identity" element={<ClientWizard />} />

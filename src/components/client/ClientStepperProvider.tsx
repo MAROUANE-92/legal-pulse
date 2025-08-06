@@ -30,7 +30,14 @@ export const ClientStepperProvider = ({
   
   const [currentStep, setCurrentStep] = useState(determineCurrentStep());
   const [formData, setFormData] = useState<StepperContextData['formData']>({});
-  const { saveAnswers } = useQuestionnaire(token);
+  const { questionnaire, saveAnswers } = useQuestionnaire(token);
+
+  // Charger les données du questionnaire au démarrage
+  useEffect(() => {
+    if (questionnaire && 'form_data' in questionnaire) {
+      setFormData(questionnaire.form_data);
+    }
+  }, [questionnaire]);
 
   // Synchroniser l'état avec le paramètre URL quand il change
   useEffect(() => {
