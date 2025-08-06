@@ -10,6 +10,7 @@ import { WorkingTimeStep } from '@/components/client/steps/WorkingTimeStep';
 import { MotifsStep } from '@/components/client/steps/MotifsStep';
 import { QuestionsStep } from '@/components/client/steps/QuestionsStep';
 import { UploadStep } from '@/components/client/steps/UploadStep';
+import { ChronologieStep } from '@/components/client/steps/ChronologieStep';
 import { SignatureStep } from '@/components/client/steps/SignatureStep';
 import { ConfirmStep } from '@/components/client/steps/ConfirmStep';
 
@@ -22,6 +23,7 @@ const stepComponents = {
   motifs: MotifsStep,
   questions: QuestionsStep,
   upload: UploadStep,
+  chronologie: ChronologieStep,
   signature: SignatureStep,
   confirm: ConfirmStep,
 };

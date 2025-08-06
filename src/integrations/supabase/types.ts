@@ -94,12 +94,48 @@ export type Database = {
           },
         ]
       }
+      timeline_events: {
+        Row: {
+          created_at: string
+          details: Json | null
+          event_date: string
+          event_type: string
+          id: string
+          submission_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          details?: Json | null
+          event_date: string
+          event_type: string
+          id?: string
+          submission_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          details?: Json | null
+          event_date?: string
+          event_type?: string
+          id?: string
+          submission_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      export_timeline_csv: {
+        Args: { p_submission_id: string }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never

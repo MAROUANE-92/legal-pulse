@@ -38,6 +38,7 @@ export function StepperProvider({ children, token }: StepperProviderProps) {
     'motifs',
     'questions',
     'upload',
+    'chronologie',
     'signature',
     'confirm'
   ];
