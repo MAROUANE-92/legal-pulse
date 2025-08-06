@@ -12,6 +12,8 @@ import { useClientStepper } from '../ClientStepperProvider';
 import { useChecklist } from '@/hooks/useChecklist';
 import { getQuestionsForMotifs, getTooltipForQuestion } from '@/hooks/useDynamicQuestions';
 import { Question, GLOBAL_QUESTIONS } from '@/lib/questions.config';
+import { useQuestionnaireSchema } from '@/hooks/useQuestionnaireSchema';
+import { Question as SchemaQuestion } from '@/lib/questionnaire-schema';
 import { HelpTooltip } from '@/components/HelpTooltip';
 import { NumberQuestion } from '../questions/NumberQuestion';
 import { RadioQuestion } from '../questions/RadioQuestion';
@@ -25,38 +27,40 @@ export const QuestionsStep = () => {
   const selectedMotifs = formData.motifs?.selectedMotifs || [];
   const { generateFromMotifs } = useChecklist('mock-dossier-id');
   
-  // Get questions for selected motifs + global questions
-  const motifQuestions = getQuestionsForMotifs(selectedMotifs);
-  const questions = [...motifQuestions, ...GLOBAL_QUESTIONS];
+  // Use new schema with conditional sections
+  const allAnswers = { ...formData.identity, ...formData.motifs, ...formData.questions };
+  const { getConditionalSections, getAllVisibleQuestions } = useQuestionnaireSchema(allAnswers);
   
-  // Dynamically build zod schema
+  // Get conditional sections based on selected motifs
+  const conditionalSections = getConditionalSections();
+  const questions = getAllVisibleQuestions().filter(q => 
+    conditionalSections.some(section => section.questions.some(sq => sq.id === q.id))
+  );
+  
+  // Simplified schema - just check if required fields have values
   const schemaShape: Record<string, z.ZodTypeAny> = {};
   questions.forEach(q => {
     let rule: z.ZodTypeAny = z.any();
     switch (q.type) {
       case "number": 
-        rule = z.coerce.number().min(q.min ?? 0).max(q.max ?? 1000000); 
+        rule = z.coerce.number(); 
         break;
       case "date":   
         rule = z.string().min(10, "Date requise"); 
         break;
-      case "slider": 
-        rule = z.number().min(q.min ?? 0).max(q.max ?? 30); 
-        break;
-      case "radio":  
+      case "yes_no":  
         rule = z.string().min(1, "Sélection requise"); 
         break;
-      case "textarea": 
-        rule = z.string().min(q.min ?? 10, `Minimum ${q.min ?? 10} caractères`); 
+      case "select_one":  
+        rule = z.string().min(1, "Sélection requise"); 
         break;
-      case "multiselect": 
+      case "select_many": 
         rule = z.array(z.string()).min(1, "Au moins une sélection requise"); 
         break;
-      case "timerange":
-        rule = z.string().min(1, "Horaire requis");
-        break;
-      case "checkbox":
-        rule = z.array(z.string()).min(1, "Au moins une sélection requise");
+      case "text":
+      case "email":
+      case "tel":
+        rule = z.string().min(1, "Champ requis");
         break;
       default: 
         rule = z.any();
@@ -98,11 +102,11 @@ export const QuestionsStep = () => {
     }
   };
 
-  const renderQuestionField = (question: Question) => {
+  const renderQuestionField = (question: SchemaQuestion) => {
     // Check if question should be visible based on dependencies
     const currentValues = form.getValues();
-    const isVisible = !question.dependsOn || 
-      currentValues[question.dependsOn.questionId] === question.dependsOn.value;
+    const isVisible = !question.show_if || 
+      evaluateCondition(question.show_if, currentValues);
     
     if (!isVisible) return null;
 
@@ -122,22 +126,80 @@ export const QuestionsStep = () => {
             </FormLabel>
             <FormControl>
               <div>
-                {question.type === 'number' && <NumberQuestion question={question} control={form.control} />}
+                {question.type === 'number' && (
+                  <Input {...field} type="number" value={field.value || ''} />
+                )}
                 {question.type === 'date' && (
                   <Input {...field} type="date" value={field.value || ''} />
                 )}
-                {question.type === 'radio' && <RadioQuestion question={question} control={form.control} />}
-                {question.type === 'slider' && <SliderQuestion question={question} control={form.control} />}
-                {question.type === 'multiselect' && <MultiselectQuestion question={question} control={form.control} />}
-                {question.type === 'timerange' && <TimeRangeQuestion question={question} control={form.control} />}
-                {question.type === 'checkbox' && <CheckboxQuestion question={question} control={form.control} />}
-                {question.type === 'textarea' && (
-                  <Textarea 
-                    {...field} 
-                    rows={4} 
-                    placeholder={`Minimum ${question.min || 10} caractères`}
-                    value={field.value || ''}
-                  />
+                {question.type === 'yes_no' && (
+                  <div className="flex gap-4">
+                    <label className="flex items-center gap-2">
+                      <input 
+                        type="radio" 
+                        {...field} 
+                        value="Oui"
+                        checked={field.value === "Oui"}
+                      />
+                      Oui
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input 
+                        type="radio" 
+                        {...field} 
+                        value="Non"
+                        checked={field.value === "Non"}
+                      />
+                      Non
+                    </label>
+                  </div>
+                )}
+                {question.type === 'select_one' && (
+                  <select {...field} className="w-full p-2 border rounded">
+                    <option value="">Sélectionnez...</option>
+                    {question.options?.map(opt => {
+                      const value = typeof opt === 'string' ? opt : opt.code;
+                      const label = typeof opt === 'string' ? opt : opt.label;
+                      return <option key={value} value={value}>{label}</option>;
+                    })}
+                  </select>
+                )}
+                {question.type === 'select_many' && (
+                  <div className="space-y-2">
+                    {question.options?.map(opt => {
+                      const value = typeof opt === 'string' ? opt : opt.code;
+                      const label = typeof opt === 'string' ? opt : opt.label;
+                      return (
+                        <label key={value} className="flex items-center gap-2">
+                          <input 
+                            type="checkbox"
+                            checked={field.value?.includes(value) || false}
+                            onChange={(e) => {
+                              const current = field.value || [];
+                              if (e.target.checked) {
+                                field.onChange([...current, value]);
+                              } else {
+                                field.onChange(current.filter((v: string) => v !== value));
+                              }
+                            }}
+                          />
+                          {label}
+                        </label>
+                      );
+                    })}
+                  </div>
+                )}
+                {question.type === 'text' && (
+                  <Input {...field} type="text" value={field.value || ''} />
+                )}
+                {question.type === 'email' && (
+                  <Input {...field} type="email" value={field.value || ''} />
+                )}
+                {question.type === 'tel' && (
+                  <Input {...field} type="tel" value={field.value || ''} />
+                )}
+                {question.type === 'file' && (
+                  <Input {...field} type="file" />
                 )}
               </div>
             </FormControl>
@@ -146,6 +208,19 @@ export const QuestionsStep = () => {
         )}
       />
     );
+  };
+
+  // Helper function to evaluate conditions
+  const evaluateCondition = (condition: string, values: Record<string, any>): boolean => {
+    if (condition.includes("motifs_selected includes")) {
+      const motif = condition.match(/'([^']+)'/)?.[1];
+      return motif ? values.motifs_selected?.includes(motif) : false;
+    }
+    if (condition.includes("==")) {
+      const [field, value] = condition.split("==").map(s => s.trim().replace(/'/g, ""));
+      return values[field] === value;
+    }
+    return true;
   };
 
   if (questions.length === 0) {
@@ -171,18 +246,26 @@ export const QuestionsStep = () => {
 
   return (
     <div className="space-y-6">
+      {conditionalSections.map(section => (
+        <Card key={section.id}>
+          <CardHeader>
+            <CardTitle>{section.label}</CardTitle>
+            <CardDescription>
+              Questions spécifiques pour ce motif
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {section.questions.map(renderQuestionField)}
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+      
       <Card>
-        <CardHeader>
-          <CardTitle>Questions spécifiques</CardTitle>
-          <CardDescription>
-            Répondez aux questions relatives à votre situation pour générer la checklist personnalisée
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              {questions.map(renderQuestionField)}
-              
+            <form onSubmit={form.handleSubmit(onSubmit)}>
               <StepNavigation 
                 nextLabel="Générer la checklist et continuer"
                 onNext={form.handleSubmit(onSubmit)}
