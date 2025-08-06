@@ -11,6 +11,7 @@ const stepLabels = {
   motifs: "Motifs",
   questions: "Questions",
   upload: "Documents",
+  chronologie: "Chronologie",
   signature: "Signature",
   confirm: "Confirmation"
 };
@@ -21,7 +22,7 @@ export function StepProgress() {
   const stepOrder = [
     'welcome', 'identity', 'contract', 'remuneration', 
     'working_time', 'motifs', 'questions', 'upload', 
-    'signature', 'confirm'
+    'chronologie', 'signature', 'confirm'
   ];
   
   const currentIndex = stepOrder.indexOf(currentStep);
