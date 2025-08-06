@@ -40,7 +40,7 @@ const contractSchema = z.object({
 type ContractFormData = z.infer<typeof contractSchema>;
 
 export const ContractStep = () => {
-  const { formData, savePartial } = useClientStepper();
+  const { formData, savePartial, goTo } = useClientStepper();
   
   const form = useForm<ContractFormData>({
     resolver: zodResolver(contractSchema),
@@ -70,6 +70,7 @@ export const ContractStep = () => {
 
   const onSubmit = (data: ContractFormData) => {
     savePartial('contract', data);
+    goTo('remuneration');
   };
 
   return (
