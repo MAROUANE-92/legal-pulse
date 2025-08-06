@@ -64,7 +64,7 @@ export const ClientStepperProvider = ({
     switch (step) {
       case 'identity':
         const identity = formData.identity;
-        return !!(identity?.fullName && identity?.email && identity?.employerName && identity?.employerSiren);
+        return !!(identity?.full_name && identity?.birth_date && identity?.postal_address && identity?.phone_personal);
       case 'motifs':
         const motifs = formData.motifs;
         return !!(motifs?.motifs_selected && motifs.motifs_selected.length > 0);
