@@ -27,8 +27,8 @@ export interface IdentityFormData {
 }
 
 export interface MotifsFormData {
-  selectedMotifs: string[];
-  detailAutre?: string;
+  motifs_selected: string[];
+  other_description?: string;
 }
 
 // Updated to support dynamic questions

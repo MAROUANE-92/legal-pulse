@@ -38,7 +38,7 @@ export const ConfirmStep = () => {
               </div>
               <div>
                 <span className="text-green-700">Motifs :</span>
-                <span className="font-medium ml-2">{formData.motifs?.selectedMotifs?.length || 0}</span>
+                <span className="font-medium ml-2">{formData.motifs?.motifs_selected?.length || 0}</span>
               </div>
               <div>
                 <span className="text-green-700">Pièces :</span>

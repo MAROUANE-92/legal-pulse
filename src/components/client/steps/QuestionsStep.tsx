@@ -24,7 +24,7 @@ import { CheckboxQuestion } from '../questions/CheckboxQuestion';
 
 export const QuestionsStep = () => {
   const { formData, savePartial } = useClientStepper();
-  const selectedMotifs = formData.motifs?.selectedMotifs || [];
+  const selectedMotifs = formData.motifs?.motifs_selected || [];
   const { generateFromMotifs } = useChecklist('mock-dossier-id');
   
   // Use new schema with conditional sections

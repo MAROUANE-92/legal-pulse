@@ -94,7 +94,7 @@ export const SignatureStep = () => {
             <h3 className="font-medium mb-2">Récapitulatif de votre dossier</h3>
             <div className="text-sm text-gray-600 space-y-1">
               <p>• Informations personnelles: ✓ Complétées</p>
-              <p>• Motifs sélectionnés: {formData.motifs?.selectedMotifs?.length || 0}</p>
+              <p>• Motifs sélectionnés: {formData.motifs?.motifs_selected?.length || 0}</p>
               <p>• Questions spécifiques: ✓ Répondues</p>
               <p>• Pièces téléchargées: {formData.upload?.files?.length || 0} fichier(s)</p>
             </div>

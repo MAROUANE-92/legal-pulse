@@ -67,7 +67,7 @@ export const ClientStepperProvider = ({
         return !!(identity?.fullName && identity?.email && identity?.employerName && identity?.employerSiren);
       case 'motifs':
         const motifs = formData.motifs;
-        return !!(motifs?.selectedMotifs && motifs.selectedMotifs.length > 0);
+        return !!(motifs?.motifs_selected && motifs.motifs_selected.length > 0);
       case 'questions':
         return true; // Questions validation handled per motif
       default:
