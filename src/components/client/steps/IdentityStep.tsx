@@ -59,8 +59,16 @@ export const IdentityStep = () => {
   }, [savePartial]);
 
   const onSubmit = (data: IdentityFormData) => {
+    console.log('Identity form submitted:', data);
     savePartial('identity', data);
   };
+
+  // Debug: log form state
+  console.log('IdentityStep - form state:', {
+    isValid: form.formState.isValid,
+    errors: form.formState.errors,
+    values: form.getValues()
+  });
 
   return (
     <div className="space-y-6">
@@ -222,8 +230,17 @@ export const IdentityStep = () => {
               <StepNavigation 
                 nextLabel="Continuer vers les données contrat"
                 nextDisabled={!form.formState.isValid}
-                onNext={form.handleSubmit(onSubmit)}
+                onNext={form.handleSubmit(onNext => {
+                  console.log('StepNavigation onNext called with valid form');
+                  onSubmit(form.getValues());
+                })}
               />
+              
+              {/* Debug info */}
+              <div className="mt-4 p-2 bg-gray-100 text-xs">
+                <p>Form valid: {form.formState.isValid ? 'Yes' : 'No'}</p>
+                <p>Errors: {JSON.stringify(form.formState.errors)}</p>
+              </div>
             </form>
           </Form>
         </CardContent>
