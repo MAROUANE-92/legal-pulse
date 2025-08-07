@@ -10,7 +10,9 @@ export default function AccessPage() {
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
   
-  const formSlug = new URLSearchParams(window.location.search).get("form");
+  const formSlug = new URLSearchParams(window.location.search).get("form") || "test";
+  
+  console.log('AccessPage loaded with:', { formSlug, currentUrl: window.location.href });
 
   const sendMagicLink = async () => {
     if (!email || !formSlug) {
@@ -82,7 +84,7 @@ export default function AccessPage() {
                   placeholder="votre-email@exemple.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && sendMagicLink()}
+                  onKeyPress={(e) => e.key === 'Enter' && email && sendMagicLink()}
                 />
               </div>
               
@@ -93,6 +95,10 @@ export default function AccessPage() {
               >
                 {loading ? "Envoi en cours..." : "Recevoir mon lien magique"}
               </Button>
+              
+              <p className="text-xs text-muted-foreground text-center">
+                Formulaire: {formSlug} | Email: {email || 'non saisi'}
+              </p>
               
               <p className="text-xs text-muted-foreground text-center">
                 Le lien sera valide pendant 60 minutes
