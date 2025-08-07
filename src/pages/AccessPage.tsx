@@ -11,8 +11,9 @@ export default function AccessPage() {
   const [loading, setLoading] = useState(false);
   
   const formSlug = new URLSearchParams(window.location.search).get("form") || "test";
+  const hasError = new URLSearchParams(window.location.search).get("error");
   
-  console.log('AccessPage loaded with:', { formSlug, currentUrl: window.location.href });
+  console.log('AccessPage loaded with:', { formSlug, hasError, currentUrl: window.location.href });
 
   const sendMagicLink = async () => {
     if (!email || !formSlug) {
@@ -98,6 +99,7 @@ export default function AccessPage() {
               
               <p className="text-xs text-muted-foreground text-center">
                 Formulaire: {formSlug} | Email: {email || 'non saisi'}
+                {hasError && <span className="text-red-500"> | Erreur: {hasError}</span>}
               </p>
               
               <p className="text-xs text-muted-foreground text-center">

@@ -83,8 +83,22 @@ export default function FormRedirect() {
       }
       
       // Si aucune redirection n'a fonctionné
-      console.log('Redirect failed, going back to access page');
-      navigate('/access?form=test');
+      console.log('Redirect failed, creating simple test submission');
+      // Au lieu de renvoyer vers access, créer une soumission simple
+      const { data: testSubmission } = await supabase
+        .from('Soumissions_formulaires_form_clients')
+        .insert({
+          form_id: session?.user?.id || crypto.randomUUID(),
+          status: 'in_progress'
+        })
+        .select()
+        .single();
+        
+      if (testSubmission) {
+        navigate(`/form/${testSubmission.id}`);
+      } else {
+        navigate('/access?form=test&error=redirect_failed');
+      }
     };
 
     handleRedirect();
