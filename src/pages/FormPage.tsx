@@ -22,6 +22,8 @@ export default function FormPage() {
   const [lawyer, setLawyer] = useState<LawyerInfo | null>(null);
   const [overtimeResult, setOvertimeResult] = useState<{ hours: number; euros: number } | null>(null);
   
+  console.log('FormPage loaded with ID:', id);
+  
   const { questionnaire, isLoading: questionnaireLoading } = useQuestionnaire(id || '');
   const { data: timeline, isLoading: timelineLoading } = useTimeline(id || '');
 
