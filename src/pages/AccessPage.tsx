@@ -12,8 +12,9 @@ export default function AccessPage() {
   
   const formSlug = new URLSearchParams(window.location.search).get("form") || "test";
   const hasError = new URLSearchParams(window.location.search).get("error");
+  const errorDetails = new URLSearchParams(window.location.search).get("details");
   
-  console.log('AccessPage loaded with:', { formSlug, hasError, currentUrl: window.location.href });
+  console.log('AccessPage loaded with:', { formSlug, hasError, errorDetails, currentUrl: window.location.href });
 
   const sendMagicLink = async () => {
     if (!email || !formSlug) {
@@ -99,7 +100,13 @@ export default function AccessPage() {
               
               <p className="text-xs text-muted-foreground text-center">
                 Formulaire: {formSlug} | Email: {email || 'non saisi'}
-                {hasError && <span className="text-red-500"> | Erreur: {hasError}</span>}
+                {hasError && (
+                  <span className="text-red-500">
+                    <br />Erreur: {hasError}
+                    {errorDetails && <br />}
+                    {errorDetails && <>Détails: {errorDetails}</>}
+                  </span>
+                )}
               </p>
               
               <p className="text-xs text-muted-foreground text-center">

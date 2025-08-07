@@ -35,7 +35,10 @@ export default function FormRedirect() {
             
           if (submissionError) {
             console.error('Error creating submission:', submissionError);
-            navigate('/access?form=test&error=submission_failed');
+            console.error('Full error details:', JSON.stringify(submissionError, null, 2));
+            console.error('User ID:', session.user.id);
+            console.error('User email:', session.user.email);
+            navigate(`/access?form=test&error=submission_failed&details=${encodeURIComponent(submissionError.message)}`);
             return;
           }
           
