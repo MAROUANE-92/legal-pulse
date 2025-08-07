@@ -177,11 +177,11 @@ USING (submission_id IN (
 ### ✅ MVP Core
 - [x] Magic-link client invitation
 - [x] Questionnaire adaptatif 11 étapes
-- [x] Upload et gestion de pièces
+- [x] Upload et gestion de pièces (interface front-end uniquement)
 - [x] Timeline automatique
 - [x] Interface avocat avec onglets
-- [x] Calculs heures supplémentaires
-- [x] Export données (CSV timeline)
+- [x] Calculs heures supplémentaires (front-end avec données mockées)
+- [x] Export données CSV timeline (front-end uniquement)
 
 ### 🚧 En Développement
 - [ ] Moteur IA conclusions
