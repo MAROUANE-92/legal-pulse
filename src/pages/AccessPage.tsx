@@ -13,23 +13,38 @@ export default function AccessPage() {
   const formSlug = new URLSearchParams(window.location.search).get("form");
 
   const sendMagicLink = async () => {
-    if (!email || !formSlug) return;
+    if (!email || !formSlug) {
+      console.log('Missing email or formSlug:', { email, formSlug });
+      return;
+    }
     
+    console.log('Sending magic link for:', { email, formSlug });
     setLoading(true);
     
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: { 
-        data: { formSlug },
-        shouldCreateUser: false,
-        emailRedirectTo: `${window.location.origin}/form/redirect`
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: { 
+          data: { formSlug },
+          shouldCreateUser: false,
+          emailRedirectTo: `${window.location.origin}/form/redirect`
+        }
+      });
+      
+      console.log('Supabase response:', { error });
+      
+      if (!error) {
+        console.log('Magic link sent successfully');
+        setSent(true);
+      } else {
+        console.error('Magic link error:', error);
+        alert(`Erreur: ${error.message}`);
       }
-    });
-    
-    setLoading(false);
-    
-    if (!error) {
-      setSent(true);
+    } catch (err) {
+      console.error('Unexpected error:', err);
+      alert('Erreur inattendue lors de l\'envoi');
+    } finally {
+      setLoading(false);
     }
   };
 
