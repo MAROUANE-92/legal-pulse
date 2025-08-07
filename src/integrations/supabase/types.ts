@@ -111,15 +111,7 @@ export type Database = {
           score?: number | null
           status?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "Soumissions_formulaires_form_clients_form_id_fkey"
-            columns: ["form_id"]
-            isOneToOne: false
-            referencedRelation: "forms"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       submissions: {
         Row: {

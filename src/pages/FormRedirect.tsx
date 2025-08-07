@@ -21,36 +21,14 @@ export default function FormRedirect() {
         console.log('Session:', session?.user?.email, 'Metadata:', session?.user?.user_metadata);
         
         if (session?.user) {
-          // Créer ou récupérer un formulaire par défaut
           console.log('Creating submission for user:', session.user.id);
           
-          // 1. D'abord, s'assurer qu'un formulaire existe
-          let { data: form } = await supabase
-            .from('forms')
-            .select('*')
-            .limit(1)
-            .maybeSingle();
-            
-          if (!form) {
-            // Créer un formulaire par défaut
-            const { data: newForm } = await supabase
-              .from('forms')
-              .insert({
-                name: 'Formulaire Client',
-                definition: {}
-              })
-              .select()
-              .single();
-            form = newForm;
-          }
-          
-          console.log('Using form:', form);
-          
-          // 2. Créer la soumission avec l'ID du formulaire
+          // Créer la soumission avec l'ID utilisateur comme form_id
+          // (c'est ce que les politiques RLS attendent)
           const { data: submission, error: submissionError } = await supabase
             .from('Soumissions_formulaires_form_clients')
             .insert({
-              form_id: form.id, // Utiliser l'ID du formulaire (pas l'ID utilisateur)
+              form_id: session.user.id, // ID utilisateur comme form_id
               status: 'in_progress'
             })
             .select()
