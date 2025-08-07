@@ -1,4 +1,4 @@
-# 📑 LegalPulse - MVP Droit Social
+# 📑 LegalPulse - MVP Dro Socialit
 
 ## 🎯 Vision Métier
 
