@@ -17,6 +17,9 @@ import DossierDemo from "./pages/DossierDemo";
 import ClientWizard from "./pages/ClientWizard";
 import InboxDemo from "./pages/InboxDemo";
 import NotFound from "./pages/NotFound";
+import AccessPage from "./pages/AccessPage";
+import FormRedirect from "./pages/FormRedirect";
+import FormPage from "./pages/FormPage";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +37,11 @@ const App = () => (
               
               {/* Demo route (no auth required) */}
               <Route path="/demo-inbox" element={<InboxDemo />} />
+              
+              {/* Nouvelles routes pour le flow magic-link */}
+              <Route path="/access" element={<AccessPage />} />
+              <Route path="/form/redirect" element={<FormRedirect />} />
+              <Route path="/form/:id" element={<FormPage />} />
               
               {/* Client Portal Routes (no auth required for clients) */}
               <Route path="/demo-client" element={<Navigate to="/client/abc123demo/welcome" replace />} />
