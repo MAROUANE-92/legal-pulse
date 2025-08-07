@@ -45,7 +45,8 @@ export default function FormRedirect() {
           
           if (submission?.id) {
             console.log('Submission created successfully:', submission.id);
-            navigate(`/form/${submission.id}`);
+            // Rediriger vers le wizard client existant
+            navigate('/demo-client');
             return;
           } else {
             console.error('No submission ID returned');
