@@ -28,7 +28,7 @@ export default function AccessPage() {
         email,
         options: { 
           data: { formSlug },
-          shouldCreateUser: false,
+          shouldCreateUser: true, // Permet la création d'utilisateur
           emailRedirectTo: `${window.location.origin}/form/redirect`
         }
       });
