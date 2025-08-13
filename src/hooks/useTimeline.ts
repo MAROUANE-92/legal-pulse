@@ -1,16 +1,25 @@
+import { useState, useEffect } from 'react';
 
-import { useQuery } from "@tanstack/react-query";
-import { mockTimeline } from "@/lib/mockTimeline";
+// Types pour le hook
+interface TimelineEvent {
+  id: string;
+  title: string;
+  description: string;
+  daysFromNow: number;
+  type: string;
+  date: string;
+}
 
 export function useTimeline(dossierId: string) {
-  return useQuery({
-    queryKey: ["timeline", dossierId],
-    queryFn: async () => {
-      console.log('Fetching timeline for dossier:', dossierId);
-      // Simuler un délai d'API
-      await new Promise(resolve => setTimeout(resolve, 100));
-      return mockTimeline;
-    },
-    enabled: !!dossierId
-  });
+  const [data, setData] = useState<TimelineEvent[]>([]);
+  
+  useEffect(() => {
+    const fetchTimeline = async () => {
+      return [];
+    };
+    
+    fetchTimeline().then(setData);
+  }, [dossierId]);
+
+  return { data, isLoading: false };
 }

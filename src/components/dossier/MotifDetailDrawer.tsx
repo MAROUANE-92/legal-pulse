@@ -12,7 +12,7 @@ import {
   DrawerClose,
 } from '@/components/ui/drawer';
 import { Check, AlertTriangle, X, Mail, FileText, HelpCircle } from 'lucide-react';
-import { MotifDetail, MotifPieceDetail } from '@/lib/mockMotifDetails';
+import { MotifDetail, MotifPieceDetail } from '@/types/motif';
 import { cn } from '@/lib/utils';
 
 interface MotifDetailDrawerProps {

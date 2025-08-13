@@ -1,6 +1,6 @@
 
 import { useMemo } from 'react';
-import { overtimeTrim } from '@/lib/mockOvertimeTrim';
+// Mock data supprimé
 
 interface WeeklyData {
   isoWeek: number;
@@ -12,46 +12,13 @@ interface WeeklyData {
 
 export function useOvertimeTrim() {
   return useMemo(() => {
-    const rows = overtimeTrim.rows;
-    const totalDelta = rows.reduce((sum, row) => sum + row.delta, 0);
-    
-    // Group by ISO week
-    const weeklyMap = new Map<number, { delta: number; proofs: number; dates: string[] }>();
-    
-    rows.forEach(row => {
-      const date = new Date(row.date);
-      const isoWeek = getISOWeek(date);
-      
-      if (!weeklyMap.has(isoWeek)) {
-        weeklyMap.set(isoWeek, { delta: 0, proofs: 0, dates: [] });
-      }
-      
-      const week = weeklyMap.get(isoWeek)!;
-      week.delta += row.delta;
-      week.proofs += row.sources.length;
-      week.dates.push(row.date);
-    });
-    
-    // Convert to array and sort
-    const weekly: WeeklyData[] = Array.from(weeklyMap.entries())
-      .map(([isoWeek, data]) => ({
-        isoWeek,
-        weekStart: getWeekStart(isoWeek, 2025),
-        delta: Math.round(data.delta * 100) / 100,
-        proofs: data.proofs,
-        hasProofs: data.proofs >= 3 // Minimum 3 preuves par semaine
-      }))
-      .sort((a, b) => a.isoWeek - b.isoWeek);
-    
-    const avgWeeklyDelta = totalDelta / weekly.length;
-    const estimatedCompensation = totalDelta * 25; // 25€/heure
-    
+    // Données vides - mock supprimé
     return {
-      rows,
-      totalDelta: Math.round(totalDelta * 100) / 100,
-      avgWeeklyDelta: Math.round(avgWeeklyDelta * 100) / 100,
-      estimatedCompensation: Math.round(estimatedCompensation),
-      weekly
+      rows: [],
+      totalDelta: 0,
+      avgWeeklyDelta: 0,
+      estimatedCompensation: 0,
+      weekly: []
     };
   }, []);
 }

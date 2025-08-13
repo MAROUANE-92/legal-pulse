@@ -1,6 +1,6 @@
 
 import { useQuery } from "@tanstack/react-query";
-import { computeOvertime } from "@/lib/overtimeEngine";
+import { calculateOvertime } from "@/lib/overtimeEngine";
 
 export function useOvertime(dossierId: string, hasOvertimeMotif: boolean) {
   return useQuery({
@@ -8,7 +8,7 @@ export function useOvertime(dossierId: string, hasOvertimeMotif: boolean) {
     queryFn: async () => {
       if (!hasOvertimeMotif) return null;
       console.log('Computing overtime for dossier:', dossierId);
-      return computeOvertime();
+      return calculateOvertime();
     },
     enabled: !!dossierId && hasOvertimeMotif
   });

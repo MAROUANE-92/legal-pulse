@@ -14,7 +14,7 @@ import { useTimeline } from '@/hooks/useTimeline';
 import { useOvertime } from '@/hooks/useOvertime';
 import { MotifDetailDrawer } from './MotifDetailDrawer';
 import { RelanceModal } from '@/components/RelanceModal';
-import { motifsDemo } from '@/lib/mockMotifDetails';
+// Mock data supprimé
 import { getEvidenceStats } from '@/lib/evidenceStats';
 import { 
   Users, 
@@ -108,7 +108,7 @@ const SynthesisOverview = () => {
     setIsRelanceModalOpen(true);
   };
 
-  const selectedMotifDetail = selectedMotifKey ? motifsDemo[selectedMotifKey] : null;
+  const selectedMotifDetail = null; // Mock data supprimé
 
   return (
     <>
@@ -321,19 +321,19 @@ const SynthesisOverview = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {overtimeData.rows.map(row => (
-                      <TableRow key={row.isoWeek}>
-                        <TableCell>{row.isoWeek}</TableCell>
-                        <TableCell className="text-right">{row.delta.toFixed(2)} h</TableCell>
+                    {overtimeData.weeks.map((week: any, index: number) => (
+                      <TableRow key={index}>
+                        <TableCell>Semaine {index + 1}</TableCell>
+                        <TableCell className="text-right">0 h</TableCell>
                       </TableRow>
                     ))}
                     <TableRow className="font-semibold border-t-2">
                       <TableCell>Total</TableCell>
-                      <TableCell className="text-right">{overtimeData.totalDelta} h</TableCell>
+                      <TableCell className="text-right">0 h</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell>Indemnités estimées</TableCell>
-                      <TableCell className="text-right font-bold text-primary">{overtimeData.montant} €</TableCell>
+                      <TableCell className="text-right font-bold text-primary">0 €</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>

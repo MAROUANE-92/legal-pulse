@@ -1,19 +1,11 @@
 
 // src/lib/overtimeEngine.ts
-import { mockBadge } from "@/lib/mockBadge";
+// Mock data supprimé
 
-export function computeOvertime() {
-  const res = mockBadge.weeks.map((w) => {
-    const base = 35;
-    const worked =
-      (parseInt(w.out) - parseInt(w.in)) / 100 - mockBadge.contractualHours.pause;
-    const delta = worked - base;
-    return { ...w, worked, delta };
-  });
-  const totalDeltaNumber = res.reduce((a, b) => a + b.delta, 0);
-  const totalDelta = totalDeltaNumber.toFixed(2);
-  const montant =
-    totalDeltaNumber * 0.75 * mockBadge.tauxHorSup25 +
-    totalDeltaNumber * 0.25 * mockBadge.tauxHorSup50; // 25 % nuit + 50 %
-  return { rows: res, totalDelta, montant: montant.toFixed(0) };
+export function calculateOvertime() {
+  // Données vides - mock supprimé
+  return {
+    totalCompensation: 0,
+    weeks: []
+  };
 }
