@@ -20,43 +20,34 @@ const Dashboard = () => {
   const [sortField, setSortField] = useState<SortField>('name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
-  // Mock dossiers data - only Marouane vs Mordor
-  const mockDossiers: Dossier[] = [
-    {
-      id: '1',
-      name: 'Marouane vs Mordor',
-      stage: 'Découverte',
-      nextDeadline: '2024-02-15',
-      progressPct: 35,
-      typeLitige: 'Heures supplémentaires'
-    }
-  ];
+  // Dossiers vides - pas de données mockées
+  const mockDossiers: Dossier[] = [];
 
   const kpiData = [
     {
       title: "Dossiers actifs",
-      value: "1",
+      value: "0",
       icon: FileText,
       color: 'primary' as const,
       tooltip: "Nombre de dossiers en cours de traitement"
     },
     {
       title: "Pièces à valider",
-      value: "8",
+      value: "0",
       icon: Users,
       color: 'blue' as const,
       tooltip: "Documents en attente de validation"
     },
     {
       title: "Échéances",
-      value: "15j",
+      value: "0",
       icon: Calendar,
       color: 'green' as const,
       tooltip: "Prochaine échéance importante"
     },
     {
       title: "Montant réclamé",
-      value: "€847K",
+      value: "€0",
       icon: DollarSign,
       color: 'primary' as const,
       tooltip: "Total des montants en réclamation"

@@ -75,12 +75,8 @@ export const FicheDossier = ({ dossier, motifs, pieces, userRole }: FicheDossier
     });
   };
 
-  // Mock data pour la démo
-  const mockAlerts = [
-    { message: "Audience conciliation dans 12 jours", type: "amber" },
-    { message: "1 pièce manquante", type: "amber" },
-    { message: "Convention honoraires non signée", type: "red" }
-  ];
+  // Alertes vides - pas de données mockées
+  const mockAlerts: any[] = [];
 
   const keyPieces = pieces.filter(p => p.keyEvidence).slice(0, 5);
 
