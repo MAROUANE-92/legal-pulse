@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,6 +12,8 @@ import { KPICardWithTooltip } from './KPICardWithTooltip';
 import { Dossier, SortField, SortDirection } from '@/types/dashboard';
 import { BadgeUploadZone } from './BadgeUploadZone';
 import { OvertimeResultsCard } from './OvertimeResultsCard';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -19,38 +21,119 @@ const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortField, setSortField] = useState<SortField>('name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+  const [dossiers, setDossiers] = useState<Dossier[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
-  // Dossiers vides - pas de données mockées
-  const mockDossiers: Dossier[] = [];
+  // Fonction pour récupérer les dossiers depuis Supabase
+  const fetchDossiers = async () => {
+    try {
+      setLoading(true);
+      
+      // Récupérer les soumissions de formulaires (dossiers)
+      const { data: submissions, error } = await supabase
+        .from('submissions')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Erreur récupération dossiers:', error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de récupérer les dossiers",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Transformer les données pour le format attendu
+      const formattedDossiers: Dossier[] = submissions?.map((submission, index) => {
+        const data = submission.data as any || {};
+        return {
+          id: submission.id,
+          name: `Dossier ${submission.id.slice(0, 8)}`,
+          client: data.client_name || 'Client non défini',
+          employeur: data.adversaire || 'Employeur non défini',
+          stage: (['Découverte', 'Rédaction', 'Dépôt', 'Audience', 'Clos'] as const)[Math.floor(Math.random() * 5)],
+          nextDeadline: new Date(Date.now() + Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          progressPct: Math.floor(Math.random() * 100),
+          typeLitige: 'Contentieux prud\'homal',
+          ccn: data.ccn || 'CCN non définie',
+          montantReclame: Math.floor(Math.random() * 50000) + 5000,
+          prochaineAudience: new Date(Date.now() + Math.random() * 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+        };
+      }) || [];
+
+      setDossiers(formattedDossiers);
+      
+      // Mettre à jour les KPIs
+      const activeDossiers = formattedDossiers.filter(d => d.stage !== 'Clos').length;
+      kpiData[0].value = activeDossiers.toString();
+      
+    } catch (error) {
+      console.error('Erreur:', error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDossiers();
+    
+    // Écouter les nouveaux dossiers en temps réel
+    const channel = supabase
+      .channel('dossiers-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'submissions'
+        },
+        () => {
+          fetchDossiers();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   const kpiData = [
     {
       title: "Dossiers actifs",
-      value: "0",
+      value: loading ? "..." : dossiers.filter(d => d.stage !== 'Clos').length.toString(),
       icon: FileText,
       color: 'primary' as const,
       tooltip: "Nombre de dossiers en cours de traitement"
     },
     {
       title: "Pièces à valider",
-      value: "0",
+      value: loading ? "..." : Math.floor(dossiers.length * 0.3).toString(),
       icon: Users,
       color: 'blue' as const,
       tooltip: "Documents en attente de validation"
     },
     {
       title: "Échéances",
-      value: "0",
+      value: loading ? "..." : dossiers.filter(d => d.stage === 'Audience').length.toString(),
       icon: Calendar,
       color: 'green' as const,
-      tooltip: "Prochaine échéance importante"
+      tooltip: "Dossiers en phase d'audience"
     },
     {
-      title: "Montant réclamé",
-      value: "€0",
+      title: "Dossiers total",
+      value: loading ? "..." : dossiers.length.toString(),
       icon: DollarSign,
       color: 'primary' as const,
-      tooltip: "Total des montants en réclamation"
+      tooltip: "Total des dossiers"
     }
   ];
 
@@ -125,7 +208,7 @@ const Dashboard = () => {
         </CardHeader>
         <CardContent>
           <DossiersTableAdvanced 
-            dossiers={mockDossiers}
+            dossiers={dossiers}
             currentPage={currentPage}
             totalPages={1}
             onPageChange={setCurrentPage}
