@@ -114,14 +114,14 @@ export function UploadStep() {
       
       // Upload vers Supabase Storage
       const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('raw-files')
+        .from('public-uploads')
         .upload(path, file);
       
       if (uploadError) throw uploadError;
       
       // Obtenir l'URL publique
       const { data: { publicUrl } } = supabase.storage
-        .from('raw-files')
+        .from('public-uploads')
         .getPublicUrl(path);
       
       // 2. upsert answers { submission_id, question_slug: filename, uploaded_file_url: url }

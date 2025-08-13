@@ -116,7 +116,7 @@ export function UploadManager({ submissionId, filesExpected }: UploadManagerProp
         const filePath = `${submissionId}/${slug}/${file.name}`;
         
         const { data, error } = await supabase.storage
-          .from('raw-files')
+          .from('public-uploads')
           .upload(filePath, file, {
             metadata: {
               submissionId,

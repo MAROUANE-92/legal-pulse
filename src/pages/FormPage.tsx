@@ -47,8 +47,8 @@ export default function FormPage() {
         .eq('question_slug', 'overtime_calc')
         .maybeSingle();
         
-      if (answer?.value) {
-        setOvertimeResult(answer.value as { hours: number; euros: number });
+      if (answer?.answer) {
+        setOvertimeResult(answer.answer as { hours: number; euros: number });
       }
     };
 

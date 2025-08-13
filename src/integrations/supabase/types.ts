@@ -16,25 +16,31 @@ export type Database = {
     Tables: {
       answers: {
         Row: {
-          created_at: string
+          answer: Json | null
+          created_at: string | null
+          metadata: Json | null
           question_slug: string
           submission_id: string
+          updated_at: string | null
           uploaded_file_url: string | null
-          value: Json | null
         }
         Insert: {
-          created_at?: string
+          answer?: Json | null
+          created_at?: string | null
+          metadata?: Json | null
           question_slug: string
-          submission_id?: string
+          submission_id: string
+          updated_at?: string | null
           uploaded_file_url?: string | null
-          value?: Json | null
         }
         Update: {
-          created_at?: string
+          answer?: Json | null
+          created_at?: string | null
+          metadata?: Json | null
           question_slug?: string
           submission_id?: string
+          updated_at?: string | null
           uploaded_file_url?: string | null
-          value?: Json | null
         }
         Relationships: []
       }
@@ -142,34 +148,79 @@ export type Database = {
       }
       timeline_events: {
         Row: {
-          created_at: string
+          category: string | null
+          created_at: string | null
+          description: string | null
           details: Json | null
-          event_date: string
-          event_type: string
+          event_date: string | null
+          event_type: string | null
           id: string
+          importance: string | null
+          metadata: Json | null
           submission_id: string
-          title: string
-          updated_at: string
+          title: string | null
+          updated_at: string | null
         }
         Insert: {
-          created_at?: string
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
           details?: Json | null
-          event_date: string
-          event_type: string
+          event_date?: string | null
+          event_type?: string | null
           id?: string
+          importance?: string | null
+          metadata?: Json | null
           submission_id: string
-          title: string
-          updated_at?: string
+          title?: string | null
+          updated_at?: string | null
         }
         Update: {
-          created_at?: string
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
           details?: Json | null
-          event_date?: string
-          event_type?: string
+          event_date?: string | null
+          event_type?: string | null
           id?: string
+          importance?: string | null
+          metadata?: Json | null
           submission_id?: string
-          title?: string
-          updated_at?: string
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      timeline_events_backup: {
+        Row: {
+          created_at: string | null
+          details: Json | null
+          event_date: string | null
+          event_type: string | null
+          id: string | null
+          submission_id: string | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          details?: Json | null
+          event_date?: string | null
+          event_type?: string | null
+          id?: string | null
+          submission_id?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          details?: Json | null
+          event_date?: string | null
+          event_type?: string | null
+          id?: string | null
+          submission_id?: string | null
+          title?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -178,8 +229,71 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      bytea_to_text: {
+        Args: { data: string }
+        Returns: string
+      }
       export_timeline_csv: {
         Args: { p_submission_id: string }
+        Returns: string
+      }
+      http: {
+        Args: { request: Database["public"]["CompositeTypes"]["http_request"] }
+        Returns: Database["public"]["CompositeTypes"]["http_response"]
+      }
+      http_delete: {
+        Args:
+          | { uri: string }
+          | { uri: string; content: string; content_type: string }
+        Returns: Database["public"]["CompositeTypes"]["http_response"]
+      }
+      http_get: {
+        Args: { uri: string } | { uri: string; data: Json }
+        Returns: Database["public"]["CompositeTypes"]["http_response"]
+      }
+      http_head: {
+        Args: { uri: string }
+        Returns: Database["public"]["CompositeTypes"]["http_response"]
+      }
+      http_header: {
+        Args: { field: string; value: string }
+        Returns: Database["public"]["CompositeTypes"]["http_header"]
+      }
+      http_list_curlopt: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          curlopt: string
+          value: string
+        }[]
+      }
+      http_patch: {
+        Args: { uri: string; content: string; content_type: string }
+        Returns: Database["public"]["CompositeTypes"]["http_response"]
+      }
+      http_post: {
+        Args:
+          | { uri: string; content: string; content_type: string }
+          | { uri: string; data: Json }
+        Returns: Database["public"]["CompositeTypes"]["http_response"]
+      }
+      http_put: {
+        Args: { uri: string; content: string; content_type: string }
+        Returns: Database["public"]["CompositeTypes"]["http_response"]
+      }
+      http_reset_curlopt: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      http_set_curlopt: {
+        Args: { curlopt: string; value: string }
+        Returns: boolean
+      }
+      text_to_bytea: {
+        Args: { data: string }
+        Returns: string
+      }
+      urlencode: {
+        Args: { data: Json } | { string: string } | { string: string }
         Returns: string
       }
     }
@@ -187,7 +301,23 @@ export type Database = {
       [_ in never]: never
     }
     CompositeTypes: {
-      [_ in never]: never
+      http_header: {
+        field: string | null
+        value: string | null
+      }
+      http_request: {
+        method: unknown | null
+        uri: string | null
+        headers: Database["public"]["CompositeTypes"]["http_header"][] | null
+        content_type: string | null
+        content: string | null
+      }
+      http_response: {
+        status: number | null
+        content_type: string | null
+        headers: Database["public"]["CompositeTypes"]["http_header"][] | null
+        content: string | null
+      }
     }
   }
 }

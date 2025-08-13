@@ -35,7 +35,7 @@ export function WorkingTimeForm({ submissionId }: WorkingTimeFormProps) {
       try {
         const { data, error } = await supabase
           .from('answers')
-          .select('value')
+          .select('answer')
           .eq('submission_id', submissionId)
           .eq('question_slug', 'working_hours')
           .maybeSingle();
@@ -44,8 +44,8 @@ export function WorkingTimeForm({ submissionId }: WorkingTimeFormProps) {
           throw error;
         }
 
-        if (data?.value) {
-          const hours = data.value as unknown as WorkingHoursData;
+        if (data?.answer) {
+          const hours = data.answer as unknown as WorkingHoursData;
           setInitialData(hours);
           form.reset(hours);
         }
@@ -70,7 +70,7 @@ export function WorkingTimeForm({ submissionId }: WorkingTimeFormProps) {
         .upsert({
           submission_id: submissionId,
           question_slug: 'working_hours',
-          value: data as any
+          answer: data as any
         });
 
       if (error) throw error;
