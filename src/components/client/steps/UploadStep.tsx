@@ -10,7 +10,6 @@ import { useQuestionnaireSchema } from '@/hooks/useQuestionnaireSchema';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { Upload, Check, AlertTriangle, FileText, Clock } from 'lucide-react';
-import { TestUpload } from "../../TestUpload";
 
 interface FileExpected {
   sectionId: string;
@@ -172,9 +171,6 @@ export function UploadStep() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      {/* Test de debug */}
-      <TestUpload />
-      
       {/* Progress Bar */}
       <Card>
         <CardContent className="pt-6">
