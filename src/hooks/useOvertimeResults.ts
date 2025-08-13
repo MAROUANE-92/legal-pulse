@@ -24,7 +24,7 @@ interface OvertimeSummary {
 export function useOvertimeResults() {
   const [results, setResults] = useState<OvertimeResult[]>([]);
   const [summary, setSummary] = useState<OvertimeSummary | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchResults = async () => {
