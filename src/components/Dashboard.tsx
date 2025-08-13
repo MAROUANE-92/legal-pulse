@@ -10,6 +10,8 @@ import { SearchBar } from './SearchBar';
 import { BarreauSelect } from './BarreauSelect';
 import { KPICardWithTooltip } from './KPICardWithTooltip';
 import { Dossier, SortField, SortDirection } from '@/types/dashboard';
+import { BadgeUploadZone } from './BadgeUploadZone';
+import { OvertimeResultsCard } from './OvertimeResultsCard';
 
 const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -111,6 +113,12 @@ const Dashboard = () => {
           value={selectedBarreau}
           onValueChange={setSelectedBarreau}
         />
+      </div>
+
+      {/* Upload & Analyse Heures Sup */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <BadgeUploadZone />
+        <OvertimeResultsCard />
       </div>
 
       {/* Dossiers Table */}
