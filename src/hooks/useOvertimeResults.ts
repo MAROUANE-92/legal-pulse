@@ -73,7 +73,7 @@ export function useOvertimeResults() {
         const summary = {
           totalHours: metadata?.total_hours || 0,
           overtimeHours: metadata?.overtime_hours || 0,
-          compensationAmount: metadata?.compensation_amount || 0,
+          compensationAmount: metadata?.compensation || metadata?.compensation_amount || 0,
           weeklyDetails: metadata?.weekly_details || []
         };
         

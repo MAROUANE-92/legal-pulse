@@ -67,42 +67,73 @@ export function BadgeUploadZone() {
         description: "Traitement des heures supplémentaires en cours...",
       });
 
-      // Traitement des heures supplémentaires après upload
+      // Attendre le traitement automatique du backend (5-10 secondes)
       setTimeout(async () => {
-        // Simuler les données de calcul d'heures sup
-        const { error: timelineError } = await supabase
-          .from('timeline_events')
-          .insert({
-            submission_id: crypto.randomUUID(),
-            event_type: 'overtime_calculated',
-            title: 'Analyse heures supplémentaires - ' + file.name,
-            description: 'Calcul automatique basé sur les données de badge',
-            event_date: new Date().toISOString(),
-            importance: 'high',
-            details: {
-              total_hours: 174,
-              overtime_hours: 34,
-              compensation_amount: 1847,
-              source_file: file.name,
-              weekly_details: [
-                { week: 'Semaine 1', overtime_hours: 8, compensation: 432 },
-                { week: 'Semaine 2', overtime_hours: 12, compensation: 648 },
-                { week: 'Semaine 3', overtime_hours: 6, compensation: 324 },
-                { week: 'Semaine 4', overtime_hours: 8, compensation: 443 }
-              ]
-            }
+        try {
+          // Récupérer le dernier calcul d'heures supplémentaires
+          const { data: events, error: fetchError } = await supabase
+            .from('timeline_events')
+            .select('*')
+            .eq('event_type', 'overtime_calculated')
+            .order('created_at', { ascending: false })
+            .limit(1);
+
+          if (fetchError) {
+            console.error('Erreur récupération résultats:', fetchError);
+            throw new Error('Erreur lors de la récupération des résultats');
+          }
+
+          if (events && events.length > 0) {
+            const latestResult = events[0];
+            const metadata = latestResult.metadata as any;
+            console.log('Résultats du calcul reçus:', latestResult);
+            
+            setUploadState(prev => ({ ...prev, processing: false, success: true }));
+            toast({
+              title: "Calcul terminé !",
+              description: `${metadata?.overtime_hours || 0}h supplémentaires détectées (${metadata?.compensation || 0}€)`,
+            });
+          } else {
+            // Pas encore de résultats, attendre encore un peu
+            setTimeout(async () => {
+              const { data: retryEvents } = await supabase
+                .from('timeline_events')
+                .select('*')
+                .eq('event_type', 'overtime_calculated')
+                .order('created_at', { ascending: false })
+                .limit(1);
+
+              if (retryEvents && retryEvents.length > 0) {
+                const result = retryEvents[0];
+                const retryMetadata = result.metadata as any;
+                setUploadState(prev => ({ ...prev, processing: false, success: true }));
+                toast({
+                  title: "Calcul terminé !",
+                  description: `${retryMetadata?.overtime_hours || 0}h supplémentaires détectées (${retryMetadata?.compensation || 0}€)`,
+                });
+              } else {
+                setUploadState(prev => ({ ...prev, processing: false, success: true }));
+                toast({
+                  title: "Upload terminé",
+                  description: "Le fichier a été traité. Consultez l'onglet Analyse pour les résultats.",
+                });
+              }
+            }, 5000);
+          }
+        } catch (error: any) {
+          console.error('Erreur traitement:', error);
+          setUploadState(prev => ({ 
+            ...prev, 
+            processing: false, 
+            error: error.message 
+          }));
+          toast({
+            title: "Erreur de traitement",
+            description: error.message,
+            variant: "destructive"
           });
-
-        if (timelineError) {
-          console.error('Erreur création timeline:', timelineError);
         }
-
-        setUploadState(prev => ({ ...prev, processing: false, success: true }));
-        toast({
-          title: "Traitement terminé",
-          description: "Les heures supplémentaires ont été calculées avec succès",
-        });
-      }, 3000);
+      }, 7000); // 7 secondes pour laisser le temps au backend de traiter
 
     } catch (error: any) {
       setUploadState(prev => ({ 
@@ -185,16 +216,16 @@ export function BadgeUploadZone() {
             <div className="animate-pulse rounded-full h-12 w-12 bg-primary/20 mb-4 flex items-center justify-center">
               <FileSpreadsheet className="w-6 h-6 text-primary" />
             </div>
-            <p className="text-lg font-medium">Calcul des heures sup...</p>
-            <p className="text-sm text-muted-foreground mt-2">Cela peut prendre quelques secondes</p>
+            <p className="text-lg font-medium">Calcul automatique en cours...</p>
+            <p className="text-sm text-muted-foreground mt-2">Analyse des heures travaillées (5-10 sec)</p>
           </div>
         )}
 
         {uploadState.success && (
           <div className="flex flex-col items-center">
             <CheckCircle className="w-12 h-12 text-green-500 mb-4" />
-            <p className="text-lg font-medium text-green-700">Traitement terminé !</p>
-            <p className="text-sm text-muted-foreground mt-2">Consultez l'onglet "Analyse" pour voir les résultats</p>
+            <p className="text-lg font-medium text-green-700">Calcul terminé !</p>
+            <p className="text-sm text-muted-foreground mt-2">Consultez la section "Résultats Heures Supplémentaires" ci-dessous</p>
             <Button 
               variant="outline" 
               className="mt-4"
