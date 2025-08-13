@@ -91,6 +91,9 @@ export function useOvertimeResults() {
   };
 
   useEffect(() => {
+    // Force un rechargement immédiat
+    setResults([]);
+    setSummary(null);
     fetchResults();
 
     // Écouter les nouveaux événements en temps réel
