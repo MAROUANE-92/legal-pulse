@@ -106,10 +106,13 @@ const Dashboard = () => {
         />
       </div>
 
-      {/* Upload & Analyse Heures Sup */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <BadgeUploadZone />
-        <OvertimeResultsCard key={Date.now()} />
+      {/* Section Analyse Heures Supplémentaires */}
+      <div className="space-y-4">
+        <h2 className="text-xl font-semibold text-gray-900">Analyse Heures Supplémentaires</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <BadgeUploadZone />
+          <OvertimeResultsCard key={Date.now()} />
+        </div>
       </div>
 
       {/* Dossiers Table */}
