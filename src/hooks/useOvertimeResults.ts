@@ -51,7 +51,7 @@ export function useOvertimeResults() {
         title: event.title || 'Calcul heures supplémentaires',
         description: event.description || '',
         event_date: event.event_date,
-        metadata: event.details || event.metadata || {},
+        metadata: event.details || {},
         importance: (event.importance || 'medium') as 'high' | 'medium' | 'low'
       })) || [];
 
@@ -67,14 +67,15 @@ export function useOvertimeResults() {
       console.log('Found overtime calculated:', overtimeCalculated);
 
       if (overtimeCalculated) {
-        const metadata = overtimeCalculated.metadata;
-        console.log('Metadata for summary:', metadata);
+        // Utiliser les données de 'details' au lieu de 'metadata'
+        const details = overtimeCalculated.metadata || {};
+        console.log('Details for summary:', details);
         
         const summary = {
-          totalHours: metadata?.total_hours || 0,
-          overtimeHours: metadata?.overtime_hours || 0,
-          compensationAmount: metadata?.compensation || metadata?.compensation_amount || 0,
-          weeklyDetails: metadata?.weekly_details || []
+          totalHours: details?.total_hours || 0,
+          overtimeHours: details?.overtime_hours || 0,
+          compensationAmount: details?.compensation_amount || 0,
+          weeklyDetails: details?.weekly_details || []
         };
         
         console.log('Setting summary:', summary);
