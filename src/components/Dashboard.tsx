@@ -30,9 +30,9 @@ const Dashboard = () => {
     try {
       setLoading(true);
       
-      // Récupérer les soumissions de formulaires (dossiers)
-      const { data: submissions, error } = await supabase
-        .from('submissions')
+      // Récupérer les soumissions depuis la table answers (groupées par submission_id)
+      const { data: answers, error } = await supabase
+        .from('answers')
         .select('*')
         .order('created_at', { ascending: false });
 
@@ -46,20 +46,37 @@ const Dashboard = () => {
         return;
       }
 
+      // Grouper par submission_id pour créer des dossiers uniques
+      const submissionMap = new Map();
+      answers?.forEach(answer => {
+        if (!submissionMap.has(answer.submission_id)) {
+          submissionMap.set(answer.submission_id, {
+            submission_id: answer.submission_id,
+            created_at: answer.created_at,
+            answers: []
+          });
+        }
+        submissionMap.get(answer.submission_id).answers.push(answer);
+      });
+
       // Transformer les données pour le format attendu
+      const submissions = Array.from(submissionMap.values());
       const formattedDossiers: Dossier[] = submissions?.map((submission, index) => {
-        const data = submission.data as any || {};
+        // Chercher des informations dans les réponses
+        const overtimeAnswer = submission.answers.find((a: any) => a.question_slug === 'overtime_calculation');
+        const metadata = overtimeAnswer?.metadata || {};
+        
         return {
-          id: submission.id,
-          name: `Dossier ${submission.id.slice(0, 8)}`,
-          client: data.client_name || 'Client non défini',
-          employeur: data.adversaire || 'Employeur non défini',
+          id: submission.submission_id,
+          name: `Dossier ${submission.submission_id.replace('auto-', '').slice(0, 8)}`,
+          client: 'Client LegalPulse',
+          employeur: 'Employeur',
           stage: (['Découverte', 'Rédaction', 'Dépôt', 'Audience', 'Clos'] as const)[Math.floor(Math.random() * 5)],
           nextDeadline: new Date(Date.now() + Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
           progressPct: Math.floor(Math.random() * 100),
           typeLitige: 'Contentieux prud\'homal',
-          ccn: data.ccn || 'CCN non définie',
-          montantReclame: Math.floor(Math.random() * 50000) + 5000,
+          ccn: 'Convention collective',
+          montantReclame: metadata.total_compensation || Math.floor(Math.random() * 50000) + 5000,
           prochaineAudience: new Date(Date.now() + Math.random() * 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
         };
       }) || [];
@@ -89,7 +106,7 @@ const Dashboard = () => {
         {
           event: '*',
           schema: 'public',
-          table: 'submissions'
+          table: 'answers'
         },
         () => {
           fetchDossiers();
