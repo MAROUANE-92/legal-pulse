@@ -9,6 +9,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { IngestProvider } from "./lib/IngestStore";
 import Index from "./pages/Index";
+import Dashboard from "./components/Dashboard";
 import Login from "./pages/Login";
 import Calendrier from "./pages/Calendrier";
 import Parametres from "./pages/Parametres";
@@ -66,7 +67,7 @@ const App = () => (
                 <ProtectedRoute>
                   <Layout>
                     <Routes>
-                      <Route path="/" element={<Index />} />
+                      <Route path="/" element={<Dashboard />} />
                       <Route path="/calendrier" element={<Calendrier />} />
                       <Route path="/parametres" element={<Parametres />} />
                       <Route path="/dossier/:id" element={<Dossier />} />
