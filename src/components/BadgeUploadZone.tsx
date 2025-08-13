@@ -85,15 +85,17 @@ export function BadgeUploadZone() {
 
           if (events && events.length > 0) {
             const latestResult = events[0];
-            const metadata = latestResult.metadata as any;
+            const metadata = latestResult.details || latestResult.metadata || {};
             console.log('Résultats du calcul reçus:', latestResult);
+            console.log('Métadonnées extraites:', metadata);
             
             setUploadState(prev => ({ ...prev, processing: false, success: true }));
             toast({
               title: "Calcul terminé !",
-              description: `${metadata?.overtime_hours || 0}h supplémentaires détectées (${metadata?.compensation || 0}€)`,
+              description: `${(metadata as any)?.overtime_hours || 0}h supplémentaires détectées (${(metadata as any)?.compensation_amount || (metadata as any)?.compensation || 0}€)`,
             });
           } else {
+            console.log('Aucun résultat trouvé, attente de 5 secondes...');
             // Pas encore de résultats, attendre encore un peu
             setTimeout(async () => {
               const { data: retryEvents } = await supabase
@@ -103,19 +105,24 @@ export function BadgeUploadZone() {
                 .order('created_at', { ascending: false })
                 .limit(1);
 
+              console.log('Deuxième tentative de récupération:', retryEvents);
+
               if (retryEvents && retryEvents.length > 0) {
                 const result = retryEvents[0];
-                const retryMetadata = result.metadata as any;
+                const retryMetadata = result.details || result.metadata || {};
+                console.log('Métadonnées de la deuxième tentative:', retryMetadata);
                 setUploadState(prev => ({ ...prev, processing: false, success: true }));
                 toast({
                   title: "Calcul terminé !",
-                  description: `${retryMetadata?.overtime_hours || 0}h supplémentaires détectées (${retryMetadata?.compensation || 0}€)`,
+                  description: `${(retryMetadata as any)?.overtime_hours || 0}h supplémentaires détectées (${(retryMetadata as any)?.compensation_amount || (retryMetadata as any)?.compensation || 0}€)`,
                 });
               } else {
+                console.log('Aucun résultat après 12 secondes, système backend défaillant');
                 setUploadState(prev => ({ ...prev, processing: false, success: true }));
                 toast({
                   title: "Upload terminé",
-                  description: "Le fichier a été traité. Consultez l'onglet Analyse pour les résultats.",
+                  description: "Fichier uploadé mais le système de calcul automatique ne répond pas.",
+                  variant: "destructive"
                 });
               }
             }, 5000);
