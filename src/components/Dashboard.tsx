@@ -66,10 +66,6 @@ const Dashboard = () => {
 
       setDossiers(formattedDossiers);
       
-      // Mettre à jour les KPIs
-      const activeDossiers = formattedDossiers.filter(d => d.stage !== 'Clos').length;
-      kpiData[0].value = activeDossiers.toString();
-      
     } catch (error) {
       console.error('Erreur:', error);
       toast({
@@ -106,6 +102,16 @@ const Dashboard = () => {
     };
   }, []);
 
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  // KPI Data basé sur les vrais dossiers
   const kpiData = [
     {
       title: "Dossiers actifs",
@@ -136,15 +142,6 @@ const Dashboard = () => {
       tooltip: "Total des dossiers"
     }
   ];
-
-  const handleSort = (field: SortField) => {
-    if (sortField === field) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortField(field);
-      setSortDirection('asc');
-    }
-  };
 
   return (
     <div className="space-y-6">
