@@ -55,6 +55,8 @@ export function useOvertimeResults() {
         importance: (event.importance || 'medium') as 'high' | 'medium' | 'low'
       })) || [];
 
+      console.log('Processed results:', overtimeResults);
+
       setResults(overtimeResults);
 
       // Calculer le résumé en prenant le dernier événement de type overtime_calculated
@@ -62,15 +64,21 @@ export function useOvertimeResults() {
         events?.find(e => e.id === r.id)?.event_type === 'overtime_calculated'
       );
 
+      console.log('Found overtime calculated:', overtimeCalculated);
+
       if (overtimeCalculated) {
         const metadata = overtimeCalculated.metadata;
+        console.log('Metadata for summary:', metadata);
         
-        setSummary({
+        const summary = {
           totalHours: metadata?.total_hours || 0,
           overtimeHours: metadata?.overtime_hours || 0,
           compensationAmount: metadata?.compensation_amount || 0,
           weeklyDetails: metadata?.weekly_details || []
-        });
+        };
+        
+        console.log('Setting summary:', summary);
+        setSummary(summary);
       }
 
     } catch (err: any) {
