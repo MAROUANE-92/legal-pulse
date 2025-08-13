@@ -44,18 +44,21 @@ export function useOvertimeResults() {
       const overtimeResults: OvertimeResult[] = events?.map(event => ({
         id: event.id,
         title: event.title || 'Calcul heures supplémentaires',
-        description: (event.details as any)?.description || '',
+        description: event.description || '',
         event_date: event.event_date,
-        metadata: (event.details as any) || {},
-        importance: ((event.details as any)?.importance || 'medium') as 'high' | 'medium' | 'low'
+        metadata: event.details || event.metadata || {},
+        importance: (event.importance || 'medium') as 'high' | 'medium' | 'low'
       })) || [];
 
       setResults(overtimeResults);
 
-      // Calculer le résumé
-      if (overtimeResults.length > 0) {
-        const latestResult = overtimeResults[0];
-        const metadata = latestResult.metadata;
+      // Calculer le résumé en prenant le dernier événement de type overtime_calculated
+      const overtimeCalculated = overtimeResults.find(r => 
+        events?.find(e => e.id === r.id)?.event_type === 'overtime_calculated'
+      );
+
+      if (overtimeCalculated) {
+        const metadata = overtimeCalculated.metadata;
         
         setSummary({
           totalHours: metadata?.total_hours || 0,
