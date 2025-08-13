@@ -32,12 +32,17 @@ export function useOvertimeResults() {
       setLoading(true);
       setError(null);
 
+      console.log('Fetching overtime results...');
+
       // Récupérer les événements de calcul d'heures sup
       const { data: events, error: eventsError } = await supabase
         .from('timeline_events')
         .select('*')
         .in('event_type', ['overtime_calculated', 'weekly_overtime'])
         .order('created_at', { ascending: false });
+
+      console.log('Events fetched:', events);
+      console.log('Events error:', eventsError);
 
       if (eventsError) throw eventsError;
 
