@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Progress } from '@/components/ui/progress';
+import { AlertTriangle } from 'lucide-react';
 import { useStepper } from '../StepperProvider';
-import { StepNavigation } from '../StepNavigation';
 
 export function SummaryStep() {
   const { formData, goTo } = useStepper();

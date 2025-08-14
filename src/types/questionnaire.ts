@@ -69,6 +69,15 @@ export interface ChecklistItem {
 export interface StepperContextData {
   currentStep: string;
   formData: {
+    // Nouvelles étapes optimisées
+    urgency?: any;
+    story?: any;
+    qualification?: any;
+    proof_inventory?: any;
+    documents?: any;
+    timeline?: any;
+    
+    // Étapes existantes (conservées pour compatibilité)
     identity?: any;
     company?: any;
     contract?: any;
