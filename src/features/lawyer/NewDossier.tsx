@@ -51,11 +51,28 @@ function NewDossier() {
           status: 'pending'
         });
         
+        // Envoyer automatiquement l'email
+        const emailSubject = encodeURIComponent('⚖️ Votre dossier prud\'hommes - LegalPulse');
+        const emailBody = encodeURIComponent(`Bonjour,
+
+Maître ${formData.clientName || 'votre avocat'} vous invite à compléter votre dossier prud'hommes.
+
+🔗 Lien sécurisé : ${url}
+
+⏱️ Durée estimée : 15-20 minutes
+🔒 Données 100% sécurisées
+
+Cordialement,
+L'équipe LegalPulse`);
+        
+        // Ouvrir automatiquement le client email
+        window.open(`mailto:${formData.clientEmail}?subject=${emailSubject}&body=${emailBody}`);
+        
         setCreated(true);
         
         toast({
           title: "Dossier créé !",
-          description: "Invitation enregistrée pour " + formData.clientEmail,
+          description: `Email envoyé à ${formData.clientEmail}`,
         });
       }
     } catch (error) {
@@ -101,44 +118,31 @@ function NewDossier() {
           </div>
         </div>
 
-        {/* Lien Client */}
+        {/* Confirmation */}
         <Card className="border-green-200 bg-green-50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <ExternalLink className="h-5 w-5" />
-              Lien pour le client
+              <Check className="h-5 w-5 text-green-600" />
+              Email envoyé !
             </CardTitle>
             <CardDescription>
-              Envoyez ce lien à {formData.clientEmail} pour qu'il remplisse son questionnaire
+              {formData.clientEmail} a reçu le lien pour remplir son questionnaire
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {/* URL */}
-            <div className="flex gap-2">
-              <Input 
-                value={clientUrl} 
-                readOnly 
-                className="flex-1 font-mono text-sm"
-              />
-              <Button onClick={copyToClipboard} variant="outline" size="icon">
-                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-              </Button>
-            </div>
-
-            {/* Actions */}
-            <div className="flex gap-2">
-              <Button asChild className="flex-1">
-                <a href={`mailto:${formData.clientEmail}?subject=%E2%9A%96%EF%B8%8F%20Votre%20dossier%20prud%27hommes%20-%20LegalPulse&body=Bonjour%2C%0D%0A%0D%0AMa%C3%AEtre%20${encodeURIComponent(formData.clientName || 'votre avocat')}%20vous%20invite%20%C3%A0%20compl%C3%A9ter%20votre%20dossier%20prud%27hommes.%0D%0A%0D%0A%F0%9F%94%97%20Lien%20s%C3%A9curis%C3%A9%20%3A%20${encodeURIComponent(clientUrl)}%0D%0A%0D%0A%E2%8F%B1%EF%B8%8F%20Dur%C3%A9e%20estim%C3%A9e%20%3A%2015-20%20minutes%0D%0A%F0%9F%94%92%20Donn%C3%A9es%20100%25%20s%C3%A9curis%C3%A9es%0D%0A%0D%0ACordialement%2C%0D%0AL%27%C3%A9quipe%20LegalPulse`}>
-                  <Mail className="h-4 w-4 mr-2" />
-                  Envoyer par email
-                </a>
-              </Button>
-              <Button variant="outline" asChild>
-                <a href={clientUrl} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Tester
-                </a>
-              </Button>
+            {/* URL de secours */}
+            <div>
+              <p className="text-sm text-muted-foreground mb-2">Lien de secours :</p>
+              <div className="flex gap-2">
+                <Input 
+                  value={clientUrl} 
+                  readOnly 
+                  className="flex-1 font-mono text-xs"
+                />
+                <Button onClick={copyToClipboard} variant="outline" size="icon">
+                  {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
