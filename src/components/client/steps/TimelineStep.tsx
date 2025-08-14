@@ -7,7 +7,7 @@ import { Plus, Calendar } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { useStepper } from '../StepperProvider';
+import { useStepper } from '../NewStepperProvider';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 

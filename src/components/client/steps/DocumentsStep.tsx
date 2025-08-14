@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Upload } from 'lucide-react';
-import { useStepper } from '../StepperProvider';
+import { useStepper } from '../NewStepperProvider';
 
 interface BordereauEntry {
   category: string;

@@ -7,7 +7,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useStepper } from '../StepperProvider';
+import { useStepper } from '../NewStepperProvider';
 import { differenceInDays } from 'date-fns';
 
 export function UrgencyStep() {

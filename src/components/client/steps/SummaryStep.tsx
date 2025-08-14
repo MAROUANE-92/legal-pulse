@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { AlertTriangle } from 'lucide-react';
-import { useStepper } from '../StepperProvider';
+import { useStepper } from '../NewStepperProvider';
 
 export function SummaryStep() {
   const { formData, submitQuestionnaire } = useStepper();
