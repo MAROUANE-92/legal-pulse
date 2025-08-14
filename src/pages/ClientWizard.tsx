@@ -1,61 +1,74 @@
 import React from 'react';
 import { useParams, Navigate } from 'react-router-dom';
-import { StepperProvider } from '@/components/client/StepperProvider';
-import { StepProgress } from '@/components/client/StepProgress';
-import { WelcomeStep } from '@/components/client/steps/WelcomeStep';
-import { IdentityStep } from '@/components/client/steps/IdentityStep';
+import { NewStepperProvider } from '@/components/client/NewStepperProvider';
+
+// Import des nouvelles étapes optimisées
+import { UrgencyStep } from '@/components/client/steps/UrgencyStep';
+import { StoryStep } from '@/components/client/steps/StoryStep';
+import { QualificationStep } from '@/components/client/steps/QualificationStep';
+import { ProofInventoryStep } from '@/components/client/steps/ProofInventoryStep';
+import { DocumentsStep } from '@/components/client/steps/DocumentsStep';
+import { TimelineStep } from '@/components/client/steps/TimelineStep';
+import { SummaryStep } from '@/components/client/steps/SummaryStep';
 import { CompanyStep } from '@/components/client/steps/CompanyStep';
 import { ContractStep } from '@/components/client/steps/ContractStep';
-import { RemunerationStep } from '@/components/client/steps/RemunerationStep';
-import { WorkingTimeStep } from '@/components/client/steps/WorkingTimeStep';
-import { MotifsStep } from '@/components/client/steps/MotifsStep';
-import { QuestionsStep } from '@/components/client/steps/QuestionsStep';
 import { DamagesStep } from '@/components/client/steps/DamagesStep';
-import { UploadStep } from '@/components/client/steps/UploadStep';
-import { ChronologieStep } from '@/components/client/steps/ChronologieStep';
-import { SummaryStep } from '@/components/client/steps/SummaryStep';
-import { SignatureStep } from '@/components/client/steps/SignatureStep';
-import { ConfirmStep } from '@/components/client/steps/ConfirmStep';
 
+// Mapping des nouvelles étapes optimisées (10 étapes)
 const stepComponents = {
-  welcome: WelcomeStep,
-  identity: IdentityStep,
-  company: CompanyStep,
-  contract: ContractStep,
-  remuneration: RemunerationStep,
-  working_time: WorkingTimeStep,
-  motifs: MotifsStep,
-  questions: QuestionsStep,
-  damages: DamagesStep,
-  upload: UploadStep,
-  chronologie: ChronologieStep,
-  summary: SummaryStep,
-  signature: SignatureStep,
-  confirm: ConfirmStep,
+  'urgency': UrgencyStep,
+  'story': StoryStep,
+  'company': CompanyStep,
+  'qualification': QualificationStep,
+  'contract': ContractStep,
+  'proof_inventory': ProofInventoryStep,
+  'documents': DocumentsStep,
+  'timeline': TimelineStep,
+  'damages': DamagesStep,
+  'summary': SummaryStep,
 };
 
 export default function ClientWizard() {
-  const { token, step = 'welcome' } = useParams();
-  
-  
+  const { token, '*': path } = useParams();
+  const step = path?.split('/').pop() || 'urgency';
+
+  // Validation du token
   if (!token) {
-    return <Navigate to="/not-found" replace />;
+    return <Navigate to="/access" replace />;
   }
 
+  // Validation de l'étape
   const StepComponent = stepComponents[step as keyof typeof stepComponents];
-  
   if (!StepComponent) {
-    return <Navigate to={`/client/${token}/welcome`} replace />;
+    return <Navigate to={`/client/${token}/urgency`} replace />;
   }
 
   return (
-    <StepperProvider token={token}>
-      <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
-        <StepProgress />
-        <div className="container mx-auto px-4 py-8">
+    <NewStepperProvider token={token}>
+      <div className="min-h-screen bg-muted/30 py-8">
+        <div className="container max-w-4xl mx-auto px-4">
+          
+          {/* Progress indicator */}
+          <div className="mb-8">
+            <div className="flex items-center justify-center space-x-2 text-sm text-muted-foreground">
+              <span>Étape {Object.keys(stepComponents).indexOf(step) + 1}</span>
+              <span>/</span>
+              <span>{Object.keys(stepComponents).length}</span>
+            </div>
+            <div className="mt-2 bg-muted rounded-full h-2 max-w-md mx-auto">
+              <div 
+                className="bg-primary h-2 rounded-full transition-all duration-300"
+                style={{ 
+                  width: `${((Object.keys(stepComponents).indexOf(step) + 1) / Object.keys(stepComponents).length) * 100}%` 
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Rendu de l'étape courante */}
           <StepComponent />
         </div>
       </div>
-    </StepperProvider>
+    </NewStepperProvider>
   );
 }
