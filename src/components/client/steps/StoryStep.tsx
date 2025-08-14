@@ -1,7 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,8 +14,15 @@ export function StoryStep() {
   });
 
   const onSubmit = (data: any) => {
+    console.log('StoryStep onSubmit called with data:', data);
     savePartial('story', data);
     goTo('company');
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Story form submitted, calling handleSubmit...');
+    form.handleSubmit(onSubmit)(e);
   };
 
   const narrative = form.watch('narrative') || '';
@@ -30,7 +36,7 @@ export function StoryStep() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={handleFormSubmit} className="space-y-6">
           
           {/* Récit libre */}
           <div>
@@ -56,55 +62,47 @@ export function StoryStep() {
           {/* Problème principal */}
           <div>
             <Label>Quel est votre problème principal ?</Label>
-            <RadioGroup {...form.register('main_problem', { required: true })} className="mt-2">
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="unpaid" id="unpaid" />
-                <Label htmlFor="unpaid">On ne me paie pas tout (heures, primes, congés...)</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="harassment" id="harassment" />
-                <Label htmlFor="harassment">On me maltraite (harcèlement, discrimination...)</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="dismissal" id="dismissal" />
-                <Label htmlFor="dismissal">On m'a viré abusivement</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="conditions" id="conditions" />
-                <Label htmlFor="conditions">Conditions de travail dangereuses/illégales</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="other" id="other" />
-                <Label htmlFor="other">Autre situation</Label>
-              </div>
-            </RadioGroup>
+            <div className="mt-2 space-y-2">
+              {[
+                { value: 'unpaid', label: 'On ne me paie pas tout (heures, primes, congés...)' },
+                { value: 'harassment', label: 'On me maltraite (harcèlement, discrimination...)' },
+                { value: 'dismissal', label: 'On m\'a viré abusivement' },
+                { value: 'conditions', label: 'Conditions de travail dangereuses/illégales' },
+                { value: 'other', label: 'Autre situation' }
+              ].map((option) => (
+                <label key={option.value} className="flex items-center space-x-2">
+                  <input 
+                    type="radio" 
+                    {...form.register('main_problem', { required: true })} 
+                    value={option.value} 
+                  />
+                  <span className="text-sm">{option.label}</span>
+                </label>
+              ))}
+            </div>
           </div>
 
           {/* Attentes */}
           <div>
             <Label>Qu'attendez-vous de cette procédure ?</Label>
-            <RadioGroup {...form.register('expected_outcome')} className="mt-2">
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="money" id="money" />
-                <Label htmlFor="money">Récupérer mon argent</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="compensation" id="compensation" />
-                <Label htmlFor="compensation">Être indemnisé pour le préjudice</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="job_back" id="job_back" />
-                <Label htmlFor="job_back">Retrouver mon poste</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="justice" id="justice" />
-                <Label htmlFor="justice">Faire condamner l'entreprise</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="negotiation" id="negotiation" />
-                <Label htmlFor="negotiation">Négocier un départ amiable</Label>
-              </div>
-            </RadioGroup>
+            <div className="mt-2 space-y-2">
+              {[
+                { value: 'money', label: 'Récupérer mon argent' },
+                { value: 'compensation', label: 'Être indemnisé pour le préjudice' },
+                { value: 'job_back', label: 'Retrouver mon poste' },
+                { value: 'justice', label: 'Faire condamner l\'entreprise' },
+                { value: 'negotiation', label: 'Négocier un départ amiable' }
+              ].map((option) => (
+                <label key={option.value} className="flex items-center space-x-2">
+                  <input 
+                    type="radio" 
+                    {...form.register('expected_outcome')} 
+                    value={option.value} 
+                  />
+                  <span className="text-sm">{option.label}</span>
+                </label>
+              ))}
+            </div>
           </div>
 
           {/* Début des problèmes */}
