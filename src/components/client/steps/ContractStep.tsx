@@ -145,6 +145,7 @@ export function ContractStep() {
                             disabled={(date) =>
                               date > new Date() || date < new Date("1970-01-01")
                             }
+                            locale={fr}
                             initialFocus
                             captionLayout="dropdown-buttons"
                             fromYear={1970}
@@ -202,6 +203,7 @@ export function ContractStep() {
                             disabled={(date) =>
                               date < new Date("1970-01-01")
                             }
+                            locale={fr}
                             initialFocus
                             captionLayout="dropdown-buttons"
                             fromYear={1970}
