@@ -11,12 +11,13 @@ import { StepNavigation } from '../StepNavigation';
 interface IdentityFormData {
   full_name: string;
   birth_date: string;
-  postal_address: string;
+  address: string;
+  postal_code: string;
+  city: string;
   phone_personal: string;
   phone_professional?: string;
   email_personal: string;
   email_work?: string;
-  marital_status: string;
 }
 
 export function IdentityStep() {
@@ -26,12 +27,13 @@ export function IdentityStep() {
     defaultValues: formData.identity || {
       full_name: '',
       birth_date: '',
-      postal_address: '',
+      address: '',
+      postal_code: '',
+      city: '',
       phone_personal: '',
       phone_professional: '',
       email_personal: '',
-      email_work: '',
-      marital_status: ''
+      email_work: ''
     }
   });
 
@@ -84,18 +86,56 @@ export function IdentityStep() {
 
               <FormField
                 control={form.control}
-                name="postal_address"
+                name="address"
                 rules={{ required: "Adresse requise" }}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Adresse complète *</FormLabel>
+                    <FormLabel>Adresse *</FormLabel>
                     <FormControl>
-                      <Input placeholder="123 rue de la Paix, 75001 Paris" {...field} />
+                      <Input placeholder="123 rue de la Paix" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="postal_code"
+                  rules={{ 
+                    required: "Code postal requis",
+                    pattern: {
+                      value: /^\d{5}$/,
+                      message: "Code postal invalide (5 chiffres)"
+                    }
+                  }}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Code postal *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="75001" maxLength={5} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="city"
+                  rules={{ required: "Ville requise" }}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Ville *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Paris" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               <div className="grid md:grid-cols-2 gap-4">
                 <FormField
@@ -165,30 +205,6 @@ export function IdentityStep() {
                 />
               </div>
 
-              <FormField
-                control={form.control}
-                name="marital_status"
-                rules={{ required: "Situation familiale requise" }}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Situation familiale *</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Sélectionnez votre situation" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Célibataire">Célibataire</SelectItem>
-                        <SelectItem value="Marié(e)">Marié(e)</SelectItem>
-                        <SelectItem value="Pacsé(e)">Pacsé(e)</SelectItem>
-                        <SelectItem value="Divorcé(e)">Divorcé(e)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
 
               <StepNavigation 
                 onNext={form.handleSubmit(onSubmit)}
