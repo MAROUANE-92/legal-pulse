@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Users, Clock, Plus, Mail, Upload, CalendarDays } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useDossierProgress } from '@/hooks/useDossierProgress';
 
 function Dashboard() {
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
@@ -138,30 +139,7 @@ function Dashboard() {
         </CardHeader>
         <CardContent className="space-y-4">
           {urgentDossiers.map((dossier) => (
-            <div key={dossier.id} className="border rounded-lg p-4 space-y-2">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Badge variant={dossier.stage === 'Audience' ? 'destructive' : 'secondary'}>
-                    {dossier.stage === 'Audience' ? '🔴' : '🟡'}
-                  </Badge>
-                  <h3 className="font-semibold">{dossier.name}</h3>
-                </div>
-                <div className="flex gap-2">
-                  <Button size="sm" variant="outline" asChild>
-                    <Link to={`/dossier/${dossier.id}`}>Voir</Link>
-                  </Button>
-                  <Button size="sm">
-                    {dossier.stage === 'Audience' ? 'RPVA' : 'Relancer'}
-                  </Button>
-                </div>
-              </div>
-              <div className="text-sm text-muted-foreground">
-                {dossier.stage === 'Audience' 
-                  ? `Audience: ${dossier.prochaineAudience} | Manque: conclusions`
-                  : `Client: 8/11 étapes | €${dossier.montantReclame?.toLocaleString()} calculés`
-                }
-              </div>
-            </div>
+            <DossierUrgentCard key={dossier.id} dossier={dossier} />
           ))}
           
           {urgentDossiers.length === 0 && (
@@ -171,6 +149,40 @@ function Dashboard() {
           )}
         </CardContent>
       </Card>
+    </div>
+  );
+}
+
+// Composant séparé pour gérer la progression de chaque dossier
+function DossierUrgentCard({ dossier }: { dossier: Dossier }) {
+  const { data: progress } = useDossierProgress(dossier.id);
+
+  return (
+    <div className="border rounded-lg p-4 space-y-2">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Badge variant={dossier.stage === 'Audience' ? 'destructive' : 'secondary'}>
+            {dossier.stage === 'Audience' ? '🔴' : '🟡'}
+          </Badge>
+          <h3 className="font-semibold">{dossier.name}</h3>
+        </div>
+        <div className="flex gap-2">
+          <Button size="sm" variant="outline" asChild>
+            <Link to={`/dossier/${dossier.id}`}>Voir</Link>
+          </Button>
+          <Button size="sm">
+            {dossier.stage === 'Audience' ? 'RPVA' : 'Relancer'}
+          </Button>
+        </div>
+      </div>
+      <div className="text-sm text-muted-foreground">
+        {dossier.stage === 'Audience' 
+          ? `Audience: ${dossier.prochaineAudience} | Manque: conclusions`
+          : progress?.hasClientData 
+            ? `Client: ${progress.completedSteps}/${progress.totalSteps} étapes | €${progress.calculatedAmount.toLocaleString()} calculés`
+            : `En attente des données client | Statut: ${dossier.stage}`
+        }
+      </div>
     </div>
   );
 }
