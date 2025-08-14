@@ -182,7 +182,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const emailResponse = await resend.emails.send({
-      from: "LegalPulse <noreply@legalpulse.app>",
+      from: "LegalPulse <onboarding@resend.dev>",
       to: [email],
       subject: subject,
       html: htmlContent,
