@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useStepper } from '../StepperProviderV2';
+import { useStepper } from '../NewStepperProvider';
 
 interface Step0FormData {
   fullName: string;
@@ -19,23 +19,23 @@ interface Step0FormData {
 }
 
 export function Step0Identity() {
-  const { formData, savePartial, goNext } = useStepper();
+  const { formData, savePartial, goTo } = useStepper();
   
   const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<Step0FormData>({
     defaultValues: {
-      fullName: formData.fullName || '',
-      birthDate: formData.birthDate || '',
-      address: formData.address || '',
-      phone: formData.phone || '',
-      email: formData.email || '',
-      familyStatus: formData.familyStatus || '',
-      children: formData.children || 0
+      fullName: formData.identity?.fullName || '',
+      birthDate: formData.identity?.birthDate || '',
+      address: formData.identity?.address || '',
+      phone: formData.identity?.phone || '',
+      email: formData.identity?.email || '',
+      familyStatus: formData.identity?.familyStatus || '',
+      children: formData.identity?.children || 0
     }
   });
 
   const onSubmit = (data: Step0FormData) => {
-    savePartial('step0-identity', data);
-    goNext();
+    savePartial('identity', data);
+    goTo('urgency');
   };
 
   return (
