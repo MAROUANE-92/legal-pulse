@@ -128,7 +128,7 @@ function NewDossier() {
             {/* Actions */}
             <div className="flex gap-2">
               <Button asChild className="flex-1">
-                <a href={`mailto:${formData.clientEmail}?subject=Votre questionnaire LegalPulse&body=Bonjour,%0D%0A%0D%0ACliquez sur ce lien pour remplir votre questionnaire : ${clientUrl}`}>
+                <a href={`mailto:${formData.clientEmail}?subject=%E2%9A%96%EF%B8%8F%20Votre%20dossier%20prud%27hommes%20-%20LegalPulse&body=Bonjour%2C%0D%0A%0D%0AMa%C3%AEtre%20${encodeURIComponent(formData.clientName || 'votre avocat')}%20vous%20invite%20%C3%A0%20compl%C3%A9ter%20votre%20dossier%20prud%27hommes.%0D%0A%0D%0A%F0%9F%94%97%20Lien%20s%C3%A9curis%C3%A9%20%3A%20${encodeURIComponent(clientUrl)}%0D%0A%0D%0A%E2%8F%B1%EF%B8%8F%20Dur%C3%A9e%20estim%C3%A9e%20%3A%2015-20%20minutes%0D%0A%F0%9F%94%92%20Donn%C3%A9es%20100%25%20s%C3%A9curis%C3%A9es%0D%0A%0D%0ACordialement%2C%0D%0AL%27%C3%A9quipe%20LegalPulse`}>
                   <Mail className="h-4 w-4 mr-2" />
                   Envoyer par email
                 </a>
