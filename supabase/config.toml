@@ -1,5 +1,15 @@
 project_id = "iuirndoarleaufakdzsa"
 
+[auth]
+# Désactiver les emails automatiques de Supabase
+enable_signup = true
+enable_confirmations = false
+
+[auth.email]
+# Désactiver complètement les emails Supabase
+enable_signup = false
+enable_confirmations = false
+
 [functions.on-file-upload]
 verify_jwt = false
 

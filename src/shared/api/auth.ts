@@ -86,11 +86,16 @@ export class AuthAPI {
 
   static async signUpLawyer(email: string, password: string): Promise<ApiResponse<{ success: boolean }>> {
     try {
+      // D'abord créer le compte sans envoyer d'email automatique
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/`
+          emailRedirectTo: `${window.location.origin}/`,
+          // Données métadonnées pour éviter l'email automatique
+          data: {
+            skip_email_confirmation: true
+          }
         }
       });
       
@@ -98,20 +103,26 @@ export class AuthAPI {
         throw error;
       }
       
-      // Si l'inscription réussit, envoyer un email de confirmation personnalisé
-      if (data.user && !data.user.email_confirmed_at) {
-        try {
-          await supabase.functions.invoke('send-email', {
-            body: {
-              email: email,
-              type: 'signup',
-              confirmationUrl: `${window.location.origin}/`
-            }
-          });
-        } catch (emailError) {
-          console.warn('Erreur envoi email personnalisé:', emailError);
-          // Ne pas faire échouer l'inscription si l'email custom échoue
+      // Toujours envoyer notre email personnalisé, même si le compte existe déjà
+      try {
+        const confirmationUrl = `${window.location.origin}/auth/confirm?token=manual&email=${encodeURIComponent(email)}`;
+        
+        const { error: emailError } = await supabase.functions.invoke('send-email', {
+          body: {
+            email: email,
+            type: 'signup',
+            confirmationUrl: confirmationUrl
+          }
+        });
+        
+        if (emailError) {
+          throw new Error(`Erreur envoi email: ${emailError.message}`);
         }
+        
+        console.log('✅ Email personnalisé envoyé avec succès');
+      } catch (emailError) {
+        console.error('❌ Erreur email personnalisé:', emailError);
+        throw new Error(`Impossible d'envoyer l'email de confirmation: ${(emailError as Error).message}`);
       }
       
       return { data: { success: true }, error: null };

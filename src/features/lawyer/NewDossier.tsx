@@ -46,31 +46,34 @@ function NewDossier() {
         const url = `${window.location.origin}/client/${data.token}/welcome`;
         setClientUrl(url);
         
-        // Envoyer un email d'invitation personnalisé via notre edge function
+        // Envoyer uniquement notre email d'invitation personnalisé (pas de magic link Supabase)
         try {
-          await supabase.functions.invoke('send-email', {
+          const { error: emailError } = await supabase.functions.invoke('send-email', {
             body: {
               email: formData.clientEmail,
               type: 'invite',
               inviteUrl: url,
               userData: {
-                clientName: formData.clientName,
-                description: formData.description
+                clientName: formData.clientName || 'Client',
+                lawyerName: 'Votre avocat',
+                description: formData.description || 'Dossier prud\'homal'
               }
             }
           });
-        } catch (emailError) {
-          console.warn('Erreur envoi email invitation:', emailError);
-          // Utiliser le fallback Supabase
-          const { error: magicLinkError } = await AuthAPI.sendMagicLink(formData.clientEmail);
-          if (magicLinkError) {
-            toast({
-              title: "Erreur",
-              description: magicLinkError,
-              variant: "destructive"
-            });
-            return;
+          
+          if (emailError) {
+            throw new Error(`Erreur envoi email: ${emailError.message}`);
           }
+          
+          console.log('✅ Email d\'invitation personnalisé envoyé avec succès');
+        } catch (emailError) {
+          console.error('❌ Erreur email invitation:', emailError);
+          toast({
+            title: "Erreur",
+            description: `Impossible d'envoyer l'email d'invitation: ${(emailError as Error).message}`,
+            variant: "destructive"
+          });
+          return;
         }
 
         // Enregistrer l'invitation dans la table invites avec le lien vers le dossier

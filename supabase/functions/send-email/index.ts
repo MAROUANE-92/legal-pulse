@@ -117,6 +117,10 @@ const handler = async (req: Request): Promise<Response> => {
 
       case 'invite':
         subject = "📨 Invitation - Complétez votre dossier prud'homal";
+        const clientName = userData?.clientName || 'Client';
+        const lawyerName = userData?.lawyerName || 'Votre avocat';
+        const description = userData?.description || 'votre dossier prud\'homal';
+        
         htmlContent = `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <div style="background: linear-gradient(135deg, #059669, #10b981); padding: 30px; text-align: center;">
@@ -125,11 +129,10 @@ const handler = async (req: Request): Promise<Response> => {
             </div>
             
             <div style="padding: 30px; background: #f9fafb;">
-              <h2 style="color: #1f2937; margin-bottom: 20px;">Votre avocat vous invite à compléter votre dossier</h2>
+              <h2 style="color: #1f2937; margin-bottom: 20px;">Bonjour ${clientName},</h2>
               
               <p style="color: #4b5563; line-height: 1.6; margin-bottom: 20px;">
-                Bonjour,<br><br>
-                Votre avocat vous invite à remplir le questionnaire pour préparer votre dossier prud'homal.
+                ${lawyerName} vous invite à compléter le questionnaire pour préparer ${description}.
                 Cette étape nous permettra d'analyser votre situation et de calculer automatiquement vos dommages.
               </p>
               
@@ -139,7 +142,7 @@ const handler = async (req: Request): Promise<Response> => {
                   <li>Calcul automatique des heures supplémentaires</li>
                   <li>Barème Macron et indemnités</li>
                   <li>Chronologie automatique des événements</li>
-                  <li>Génération des conclusions</li>
+                  <li>Génération des conclusions AI</li>
                 </ul>
               </div>
               
@@ -167,7 +170,7 @@ const handler = async (req: Request): Promise<Response> => {
               
               <p style="color: #9ca3af; font-size: 12px; text-align: center;">
                 LegalPulse - Simplifiez vos procédures prud'homales<br>
-                Cet email a été envoyé par votre avocat.
+                Cet email a été envoyé par ${lawyerName}.
               </p>
             </div>
           </div>
