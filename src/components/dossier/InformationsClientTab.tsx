@@ -55,14 +55,81 @@ export function InformationsClientTab({ dossierId }: InformationsClientTabProps)
 
   const answers = organizeAnswersByCategory;
 
-  // Fonction pour formater les valeurs avec traitement spécial de la timeline
+  // Fonction pour formater les valeurs avec traduction française
   const formatValue = (value: any, key: string): string => {
     if (value === null || value === undefined) return 'Non renseigné';
     if (typeof value === 'boolean') return value ? 'Oui' : 'Non';
     
+    // Traduction des valeurs en anglais vers le français
+    const translations: Record<string, string> = {
+      // Situations critiques
+      'harassment': 'Harcèlement',
+      'discrimination': 'Discrimination',
+      'wrongful_termination': 'Licenciement abusif',
+      'unpaid_wages': 'Salaires impayés',
+      'overtime_disputes': 'Conflit heures supplémentaires',
+      
+      // Statuts d'emploi
+      'employed': 'Employé(e)',
+      'unemployed': 'Sans emploi',
+      'on_leave': 'En arrêt',
+      'terminated': 'Licencié(e)',
+      
+      // Types de contrat
+      'CDI': 'CDI',
+      'CDD': 'CDD',
+      'freelance': 'Freelance',
+      'intern': 'Stagiaire',
+      
+      // Statuts familiaux
+      'single': 'Célibataire',
+      'married': 'Marié(e)',
+      'divorced': 'Divorcé(e)',
+      'widowed': 'Veuf/Veuve',
+      
+      // Secteurs d'activité
+      'Technology': 'Technologie',
+      'Healthcare': 'Santé',
+      'Finance': 'Finance',
+      'Education': 'Éducation',
+      'Retail': 'Commerce',
+      
+      // Niveaux hiérarchiques
+      'junior': 'Junior',
+      'senior': 'Senior',
+      'manager': 'Manager',
+      'director': 'Directeur',
+      'executive': 'Cadre dirigeant',
+      'middle_management': 'Encadrement intermédiaire',
+      
+      // Résultats attendus
+      'compensation': 'Indemnisation',
+      'reinstatement': 'Réintégration',
+      'recognition': 'Reconnaissance',
+      
+      // Réponses oui/non
+      'yes': 'Oui',
+      'no': 'Non'
+    };
+    
     // Traitement spécial pour la timeline (événements)
     if (key === 'events' && Array.isArray(value)) {
       return `${value.length} événement(s) dans la chronologie`;
+    }
+    
+    // Traduction des valeurs si c'est une chaîne
+    if (typeof value === 'string' && translations[value]) {
+      return translations[value];
+    }
+    
+    // Traitement des tableaux (comme resolution_attempts)
+    if (Array.isArray(value)) {
+      return value.map(item => {
+        if (typeof item === 'string' && translations[item]) {
+          return translations[item];
+        }
+        return item;
+      }).join(', ');
     }
     
     if (typeof value === 'object') return JSON.stringify(value);
