@@ -29,8 +29,8 @@ const stepComponents = {
 };
 
 export default function ClientWizard() {
-  const { token } = useParams();
-  const step = window.location.pathname.split('/').pop() || 'welcome';
+  const { token, step = 'welcome' } = useParams();
+  
   
   if (!token) {
     return <Navigate to="/not-found" replace />;
