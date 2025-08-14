@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowLeft, AlertTriangle, Euro, Clock, Users, FileText } from 'lucide-react';
+import { QuestionnaireSection } from '@/components/dossier/QuestionnaireSection';
 
 function DossierView() {
   const { id } = useParams<{ id: string }>();
@@ -110,6 +111,9 @@ function DossierView() {
         </TabsList>
 
         <TabsContent value="synthese" className="space-y-6">
+          {/* Section Questionnaire Client */}
+          <QuestionnaireSection dossierId={dossier.id} />
+          
           {/* Synthèse en préparation */}
           <Card className="border-primary/20">
             <CardHeader>
