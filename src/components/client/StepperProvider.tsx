@@ -33,13 +33,16 @@ export function StepperProvider({ children, token }: StepperProviderProps) {
   const stepOrder = [
     'welcome',
     'identity',
-    'contract', 
+    'company',        // NOUVEAU
+    'contract',
     'remuneration',
-    'working_time',
+    'working_time',   // REFONDÉ
     'motifs',
     'questions',
+    'damages',        // NOUVEAU
     'upload',
     'chronologie',
+    'summary',        // NOUVEAU
     'signature',
     'confirm'
   ];

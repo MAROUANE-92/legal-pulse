@@ -37,7 +37,7 @@ export function IdentityStep() {
 
   const onSubmit = (data: IdentityFormData) => {
     savePartial('identity', data);
-    goTo('contract');
+    goTo('company');
   };
 
   return (
@@ -192,7 +192,7 @@ export function IdentityStep() {
 
               <StepNavigation 
                 onNext={form.handleSubmit(onSubmit)}
-                nextLabel="Continuer vers le contrat"
+                nextLabel="Continuer vers l'entreprise"
                 showBack={false}
               />
             </form>

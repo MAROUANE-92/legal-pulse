@@ -293,7 +293,7 @@ export function ContractStep() {
 
               <StepNavigation 
                 onNext={form.handleSubmit(onSubmit)}
-                onBack={() => goTo('identity')}
+                onBack={() => goTo('company')}
                 nextLabel="Continuer vers rémunération"
               />
             </form>

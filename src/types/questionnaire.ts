@@ -67,11 +67,13 @@ export interface StepperContextData {
   currentStep: string;
   formData: {
     identity?: any;
+    company?: any;
     contract?: any;
     remuneration?: any;
     working_time?: any;
     motifs?: MotifsFormData;
     questions?: QuestionsFormData;
+    damages?: any;
     upload?: UploadFormData;
     signature?: SignatureFormData;
   };
