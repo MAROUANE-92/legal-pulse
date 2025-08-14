@@ -110,125 +110,21 @@ function DossierView() {
         </TabsList>
 
         <TabsContent value="synthese" className="space-y-6">
-          {/* Synthèse Intelligente */}
+          {/* Synthèse en préparation */}
           <Card className="border-primary/20">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 🤖 Synthèse Intelligente
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Progression */}
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium">Progression</span>
-                  <span className="text-sm text-muted-foreground">{dossier.progressPct}%</span>
-                </div>
-                <div className="w-full bg-muted rounded-full h-3">
-                  <div 
-                    className="bg-primary h-3 rounded-full transition-all duration-300" 
-                    style={{ width: `${dossier.progressPct}%` }}
-                  />
-                </div>
-              </div>
-
-              {/* Analyse IA */}
-              <div className="space-y-3">
-                <h4 className="font-medium">🤖 Analyse IA:</h4>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center gap-2">
-                    <span className="text-green-600">✅</span>
-                    <span>147 heures sup détectées (emails)</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-green-600">✅</span>
-                    <span>Harcèlement caractérisé (8 témoignages)</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-orange-500">⚠️</span>
-                    <span>Manque: certificat médical burn-out</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Calculs */}
-              <div className="border rounded-lg p-4 bg-muted/30">
-                <h4 className="font-medium mb-3 flex items-center gap-2">
-                  <Euro className="h-4 w-4" />
-                  Préjudices Calculés
-                </h4>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span>Heures sup (147h)</span>
-                    <span className="font-medium">4,287€</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Congés payés</span>
-                    <span className="font-medium">1,456€</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Barème Macron</span>
-                    <span className="font-medium">8,500€</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Harcèlement moral</span>
-                    <span className="font-medium">15,000€</span>
-                  </div>
-                  <hr className="my-2" />
-                  <div className="flex justify-between font-bold">
-                    <span>TOTAL</span>
-                    <span>29,243€</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div className="flex gap-2">
-                <Button>
-                  🤖 Générer Conclusions
-                </Button>
-                <Button variant="outline">
-                  📄 Export RPVA
-                </Button>
+            <CardContent className="py-12 text-center">
+              <div className="text-muted-foreground">
+                <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                <h3 className="text-lg font-medium">Synthèse en cours de préparation</h3>
+                <p className="text-sm">Les données de synthèse seront bientôt disponibles.</p>
               </div>
             </CardContent>
           </Card>
-
-          {/* Stats rapides */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Client</CardTitle>
-                <Users className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-lg font-bold">{dossier.client}</div>
-                <p className="text-xs text-muted-foreground">{dossier.employeur}</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Montant</CardTitle>
-                <Euro className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-lg font-bold">€{dossier.montantReclame?.toLocaleString()}</div>
-                <p className="text-xs text-muted-foreground">Réclamé</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Échéance</CardTitle>
-                <Clock className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-lg font-bold">{dossier.nextDeadline}</div>
-                <p className="text-xs text-muted-foreground">Prochaine action</p>
-              </CardContent>
-            </Card>
-          </div>
         </TabsContent>
 
         <TabsContent value="pieces">
