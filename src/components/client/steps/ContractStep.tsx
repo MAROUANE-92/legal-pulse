@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { format } from 'date-fns';
+import { format, differenceInMonths, differenceInYears } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { CalendarIcon } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { useStepper } from '../StepperProvider';
 import { StepNavigation } from '../StepNavigation';
@@ -49,6 +50,22 @@ export function ContractStep() {
 
   const contractType = form.watch('contract_type');
   const trialPeriod = form.watch('trial_period');
+  const contractStart = form.watch('contract_start');
+  const contractEnd = form.watch('contract_end');
+
+  // Calcul d'ancienneté
+  const calculateSeniority = () => {
+    if (!contractStart) return null;
+    
+    const endDate = contractEnd || new Date();
+    const years = differenceInYears(endDate, contractStart);
+    const months = differenceInMonths(endDate, contractStart) % 12;
+    
+    if (years === 0 && months === 0) return "Moins d'1 mois";
+    if (years === 0) return `${months} mois`;
+    if (months === 0) return `${years} an${years > 1 ? 's' : ''}`;
+    return `${years} an${years > 1 ? 's' : ''} et ${months} mois`;
+  };
 
   const onSubmit = (data: ContractFormData) => {
     savePartial('contract', data);
@@ -126,9 +143,12 @@ export function ContractStep() {
                             selected={field.value}
                             onSelect={field.onChange}
                             disabled={(date) =>
-                              date > new Date() || date < new Date("1900-01-01")
+                              date > new Date() || date < new Date("1970-01-01")
                             }
                             initialFocus
+                            captionLayout="dropdown-buttons"
+                            fromYear={1970}
+                            toYear={new Date().getFullYear()}
                             className="p-3 pointer-events-auto"
                           />
                         </PopoverContent>
@@ -137,6 +157,15 @@ export function ContractStep() {
                     </FormItem>
                   )}
                 />
+
+                {/* Affichage de l'ancienneté */}
+                {contractStart && (
+                  <div className="md:col-span-1 flex items-center">
+                    <Badge variant="secondary" className="text-sm">
+                      Ancienneté : {calculateSeniority()}
+                    </Badge>
+                  </div>
+                )}
 
                 {contractType && contractType !== 'CDI' && (
                   <FormField
@@ -166,16 +195,19 @@ export function ContractStep() {
                             </FormControl>
                           </PopoverTrigger>
                           <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              disabled={(date) =>
-                                date < new Date("1900-01-01")
-                              }
-                              initialFocus
-                              className="p-3 pointer-events-auto"
-                            />
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            disabled={(date) =>
+                              date < new Date("1970-01-01")
+                            }
+                            initialFocus
+                            captionLayout="dropdown-buttons"
+                            fromYear={1970}
+                            toYear={new Date().getFullYear() + 10}
+                            className="p-3 pointer-events-auto"
+                          />
                           </PopoverContent>
                         </Popover>
                         <FormMessage />
