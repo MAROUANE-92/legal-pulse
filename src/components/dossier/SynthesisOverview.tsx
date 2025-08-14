@@ -146,8 +146,8 @@ const SynthesisOverview = () => {
               
               <div className="pt-2 border-t">
                 <p className="text-muted-foreground">Juridiction</p>
-                <p className="font-medium">CPH Paris</p>
-                <p className="text-xs text-muted-foreground">RG: 24/12345</p>
+                <p className="font-medium">À déterminer</p>
+                <p className="text-xs text-muted-foreground">RG: À attribuer</p>
               </div>
 
               <div className="flex items-center justify-between pt-2">
@@ -174,7 +174,7 @@ const SynthesisOverview = () => {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Forfait horaire:</span>
-                <span className="font-medium">Non</span>
+                <span className="font-medium">{synthesis.workingTime.scheduleType === 'forfait' ? 'Oui' : 'Non'}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Durée Horaire:</span>
@@ -182,7 +182,7 @@ const SynthesisOverview = () => {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">CCN:</span>
-                <span className="font-medium">Métallurgie</span>
+                <span className="font-medium">{synthesis.contract.ccn || 'À renseigner'}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Période:</span>
@@ -359,38 +359,29 @@ const SynthesisOverview = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg border-l-4 border-orange-500">
+                <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg border-l-4 border-blue-500">
                   <div className="flex items-center gap-3">
-                    <Calendar className="h-4 w-4 text-orange-600" />
+                    <Calendar className="h-4 w-4 text-blue-600" />
                     <div>
-                      <p className="font-medium text-sm">Audience conciliation</p>
-                      <p className="text-xs text-muted-foreground">Dans 88 jours</p>
+                      <p className="font-medium text-sm">Dossier en cours</p>
+                      <p className="text-xs text-muted-foreground">Étape: {dossier.stage}</p>
                     </div>
                   </div>
-                  <Button variant="ghost" size="sm">Ajouter agenda</Button>
+                  <Button variant="ghost" size="sm">Mettre à jour</Button>
                 </div>
 
-                <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg border-l-4 border-red-500">
-                  <div className="flex items-center gap-3">
-                    <FileText className="h-4 w-4 text-red-600" />
-                    <div>
-                      <p className="font-medium text-sm">Convention d'honoraires</p>
-                      <p className="text-xs text-muted-foreground">Non signée</p>
+                {!synthesis.hasClientData && (
+                  <div className="flex items-center justify-between p-3 bg-amber-50 rounded-lg border-l-4 border-amber-500">
+                    <div className="flex items-center gap-3">
+                      <AlertTriangle className="h-4 w-4 text-amber-600" />
+                      <div>
+                        <p className="font-medium text-sm">Données client manquantes</p>
+                        <p className="text-xs text-muted-foreground">Le questionnaire n'a pas été complété</p>
+                      </div>
                     </div>
+                    <Button variant="ghost" size="sm">Relancer client</Button>
                   </div>
-                  <Button variant="ghost" size="sm">Générer PDF</Button>
-                </div>
-
-                <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg border-l-4 border-red-500">
-                  <div className="flex items-center gap-3">
-                    <AlertTriangle className="h-4 w-4 text-red-600" />
-                    <div>
-                      <p className="font-medium text-sm">Badge logs CSV</p>
-                      <p className="text-xs text-muted-foreground">Pièce manquante</p>
-                    </div>
-                  </div>
-                  <Button variant="ghost" size="sm">Voir pièce</Button>
-                </div>
+                )}
               </div>
             </CardContent>
           </Card>

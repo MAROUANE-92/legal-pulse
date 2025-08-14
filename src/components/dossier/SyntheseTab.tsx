@@ -104,10 +104,11 @@ export const SyntheseTab = ({ dossier }: SyntheseTabProps) => {
     statut: 'En cours' as const
   }));
 
-  const mockAlerts = [
-    { message: "Audience conciliation dans 12 jours", type: "amber" as const },
-    { message: "1 pièce manquante", type: "amber" as const },
-    { message: "Convention honoraires non signée", type: "red" as const }
+  // Alertes dynamiques basées sur l'état du dossier
+  const alerts = synthesis.hasClientData ? [
+    { message: `Dossier en cours d'analyse`, type: "blue" as const },
+  ] : [
+    { message: "En attente des données client", type: "amber" as const },
   ];
 
   return (
@@ -232,7 +233,7 @@ export const SyntheseTab = ({ dossier }: SyntheseTabProps) => {
                 
                 <div className="flex justify-between items-center">
                   <dt className="text-gray-600 text-sm">Convention collective</dt>
-                  <dd className="text-main font-medium">Métallurgie (IDCC 0016)</dd>
+                  <dd className="text-main font-medium">{synthesis.contract.ccn || 'À renseigner'}</dd>
                 </div>
                 
                 <div className="flex justify-between items-center">
@@ -356,17 +357,21 @@ export const SyntheseTab = ({ dossier }: SyntheseTabProps) => {
             </CardHeader>
             <CardContent className="pt-0">
               <div className="space-y-3">
-                {mockAlerts.map((alert, index) => (
+                {alerts.map((alert, index) => (
                   <Alert 
                     key={index}
                     className={`border-l-4 ${
                       alert.type === 'red' 
-                        ? 'border-l-red-500 bg-red-50' 
-                        : 'border-l-amber-500 bg-amber-50'
+                        ? 'border-l-red-500 bg-red-50'
+                        : alert.type === 'amber'
+                        ? 'border-l-amber-500 bg-amber-50'
+                        : 'border-l-blue-500 bg-blue-50'
                     }`}
                   >
                     <AlertTriangle className={`h-4 w-4 ${
-                      alert.type === 'red' ? 'text-red-500' : 'text-amber-500'
+                      alert.type === 'red' ? 'text-red-500' 
+                        : alert.type === 'amber' ? 'text-amber-500'
+                        : 'text-blue-500'
                     }`} />
                     <AlertDescription className="text-sm">
                       {alert.message}

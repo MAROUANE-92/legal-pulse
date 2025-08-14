@@ -57,6 +57,7 @@ export function useDossierSynthesis(dossierId: string) {
           positionTitle: clientData.contract?.position_title,
           employerName: clientData.contract?.employer_name,
           employerSiren: clientData.contract?.employer_siren,
+          ccn: clientData.contract?.ccn,
         },
         remuneration: {
           baseSalary: clientData.remuneration?.base_salary,
