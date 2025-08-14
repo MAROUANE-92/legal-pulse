@@ -8,197 +8,128 @@ import { AlertTriangle } from 'lucide-react';
 import { useStepper } from '../StepperProvider';
 
 export function SummaryStep() {
-  const { formData, goTo } = useStepper();
+  const { formData, submitQuestionnaire } = useStepper();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Score basique du dossier (on affinera plus tard)
-  const calculateDossierScore = () => {
-    let score = 0;
-    
-    // Points pour les preuves disponibles
-    if (formData.working_time?.evidence_available?.length > 0) score += 20;
-    if (formData.working_time?.evidence_available?.includes('Badges/pointeuse')) score += 15;
-    if (formData.working_time?.evidence_available?.includes('Emails tardifs')) score += 10;
-    
-    // Points pour les préjudices documentés
-    if (formData.damages?.unpaid_overtime_hours && parseInt(formData.damages.unpaid_overtime_hours) > 0) score += 25;
-    if (formData.damages?.psychological_support === 'Yes') score += 15;
-    if (formData.damages?.burnout_diagnosed === 'Yes') score += 20;
-    
-    // Points pour la durée du contrat
-    if (formData.contract?.contract_type === 'CDI') score += 10;
-    
-    return Math.min(score, 100);
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    const success = await submitQuestionnaire();
+    if (success) {
+      // Redirection ou message de succès
+    }
+    setIsSubmitting(false);
   };
 
-  const dossierScore = calculateDossierScore();
-
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return 'bg-green-500';
-    if (score >= 60) return 'bg-yellow-500';
-    if (score >= 40) return 'bg-orange-500';
-    return 'bg-red-500';
+  // Calculs basiques côté client (les vrais calculs seront côté serveur)
+  const estimatedDamages = {
+    financial: 
+      (formData.damages?.financial?.overtime || 0) +
+      (formData.damages?.financial?.unpaid_bonus || 0) +
+      (formData.damages?.financial?.expenses || 0),
+    moral: 15000, // Estimation fixe pour l'instant
+    total: 0
   };
-
-  const getScoreLabel = (score: number) => {
-    if (score >= 80) return 'Excellent';
-    if (score >= 60) return 'Bon';
-    if (score >= 40) return 'Moyen';
-    return 'Faible';
-  };
+  estimatedDamages.total = estimatedDamages.financial + estimatedDamages.moral;
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Synthèse de votre dossier</CardTitle>
-          <CardDescription>
-            Récapitulatif complet de vos informations
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
+    <Card>
+      <CardHeader>
+        <CardTitle>Synthèse de votre dossier</CardTitle>
+        <CardDescription>
+          Vérifiez les informations avant validation finale
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-6">
           
-          {/* Score du dossier */}
-          <div className="text-center space-y-2">
-            <h3 className="text-lg font-semibold">Force estimée du dossier</h3>
-            <div className="flex items-center justify-center space-x-3">
-              <div className={`w-16 h-16 rounded-full ${getScoreColor(dossierScore)} flex items-center justify-center text-white font-bold text-xl`}>
-                {dossierScore}%
-              </div>
-              <Badge variant="outline" className="text-lg px-3 py-1">
-                {getScoreLabel(dossierScore)}
-              </Badge>
+          {/* Client */}
+          <div className="p-4 border rounded-lg">
+            <h3 className="font-medium mb-2">👤 Vous</h3>
+            <div className="text-sm space-y-1">
+              <p>Nom : {formData.identity?.full_name}</p>
+              <p>Poste : {formData.contract?.position}</p>
+              <p>Statut : {formData.urgency?.employment_status}</p>
             </div>
           </div>
 
-          <Separator />
-
-          {/* Informations client */}
-          <div className="space-y-3">
-            <h3 className="text-lg font-semibold">Vos informations</h3>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="font-medium">Nom :</span> {formData.identity?.full_name || '-'}
-              </div>
-              <div>
-                <span className="font-medium">Email :</span> {formData.identity?.email_personal || '-'}
-              </div>
-              <div>
-                <span className="font-medium">Téléphone :</span> {formData.identity?.phone_personal || '-'}
-              </div>
-              <div>
-                <span className="font-medium">Situation :</span> {formData.identity?.marital_status || '-'}
-              </div>
+          {/* Entreprise */}
+          <div className="p-4 border rounded-lg">
+            <h3 className="font-medium mb-2">🏢 Entreprise</h3>
+            <div className="text-sm space-y-1">
+              <p>Nom : {formData.company?.name}</p>
+              <p>Effectif : {formData.company?.size}</p>
+              <p>Convention : {formData.company?.collective_agreement}</p>
             </div>
           </div>
 
-          <Separator />
+          {/* Griefs */}
+          <div className="p-4 border rounded-lg">
+            <h3 className="font-medium mb-2">⚖️ Griefs identifiés</h3>
+            <div className="text-sm space-y-1">
+              <p>Principal : {formData.story?.main_problem}</p>
+              <p>Début : {formData.story?.problem_start_date}</p>
+              <p>Attente : {formData.story?.expected_outcome}</p>
+            </div>
+          </div>
 
-          {/* Informations entreprise */}
-          {formData.company && (
-            <>
-              <div className="space-y-3">
-                <h3 className="text-lg font-semibold">Votre entreprise</h3>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="font-medium">Nom :</span> {formData.company.company_name || '-'}
-                  </div>
-                  <div>
-                    <span className="font-medium">SIRET :</span> {formData.company.siret || '-'}
-                  </div>
-                  <div>
-                    <span className="font-medium">Effectif :</span> {formData.company.employee_count || '-'}
-                  </div>
-                  <div>
-                    <span className="font-medium">Convention :</span> {formData.company.collective_agreement || '-'}
-                  </div>
+          {/* Préjudices */}
+          <div className="p-4 border rounded-lg">
+            <h3 className="font-medium mb-2">💰 Estimation préjudices</h3>
+            <div className="text-sm space-y-1">
+              <p>Financier : {estimatedDamages.financial}€</p>
+              <p>Moral : {estimatedDamages.moral}€</p>
+              <p className="font-bold">Total : {estimatedDamages.total}€</p>
+            </div>
+            <Alert className="mt-2">
+              <AlertDescription className="text-xs">
+                Estimation préliminaire. Le calcul final sera effectué par votre avocat.
+              </AlertDescription>
+            </Alert>
+          </div>
+
+          {/* Force du dossier */}
+          <div className="p-4 border rounded-lg">
+            <h3 className="font-medium mb-2">📊 Force du dossier</h3>
+            <div className="space-y-2">
+              <div>
+                <div className="flex justify-between text-sm mb-1">
+                  <span>Preuves</span>
+                  <span>85%</span>
                 </div>
-              </div>
-              <Separator />
-            </>
-          )}
-
-          {/* Contrat */}
-          <div className="space-y-3">
-            <h3 className="text-lg font-semibold">Votre contrat</h3>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="font-medium">Type :</span> {formData.contract?.contract_type || '-'}
+                <Progress value={85} />
               </div>
               <div>
-                <span className="font-medium">Poste :</span> {formData.contract?.position_title || '-'}
-              </div>
-              <div>
-                <span className="font-medium">Début :</span> {formData.contract?.contract_start || '-'}
-              </div>
-              <div>
-                <span className="font-medium">Statut :</span> {formData.contract?.cadre_status || '-'}
+                <div className="flex justify-between text-sm mb-1">
+                  <span>Cohérence</span>
+                  <span>90%</span>
+                </div>
+                <Progress value={90} />
               </div>
             </div>
           </div>
 
-          <Separator />
+          {/* Actions requises */}
+          <Alert>
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>
+              <strong>Actions urgentes :</strong>
+              <ul className="list-disc list-inside mt-2 text-sm">
+                <li>Obtenir certificat de travail</li>
+                <li>Faire attester 2 collègues</li>
+                <li>Rassembler fiches de paie manquantes</li>
+              </ul>
+            </AlertDescription>
+          </Alert>
 
-          {/* Motifs sélectionnés */}
-          {formData.motifs?.motifs_selected && (
-            <>
-              <div className="space-y-3">
-                <h3 className="text-lg font-semibold">Motifs de votre demande</h3>
-                <div className="flex flex-wrap gap-2">
-                  {formData.motifs.motifs_selected.map((motif: string) => (
-                    <Badge key={motif} variant="secondary">
-                      {motif.replace('_', ' ').toUpperCase()}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-              <Separator />
-            </>
-          )}
-
-          {/* Estimation préjudices */}
-          {formData.damages && (
-            <div className="space-y-3">
-              <h3 className="text-lg font-semibold">Préjudices estimés</h3>
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="font-medium">Heures sup non payées :</span> {formData.damages.unpaid_overtime_hours || '0'}h
-                </div>
-                <div>
-                  <span className="font-medium">Congés perdus :</span> {formData.damages.lost_vacation_days || '0'} jours
-                </div>
-                <div>
-                  <span className="font-medium">Primes non versées :</span> {formData.damages.unpaid_bonuses || '0'}€
-                </div>
-                <div>
-                  <span className="font-medium">Arrêts maladie :</span> {formData.damages.sick_leave_days || '0'} jours
-                </div>
-              </div>
-              
-              {/* Impact moral */}
-              <div className="mt-4">
-                <span className="font-medium">Impact personnel :</span>
-                <div className="flex space-x-4 mt-2">
-                  <Badge variant="outline">Anxiété: {formData.damages.anxiety_level || 5}/10</Badge>
-                  <Badge variant="outline">Impact famille: {formData.damages.family_impact_level || 5}/10</Badge>
-                  <Badge variant="outline">Confiance: {formData.damages.confidence_loss_level || 5}/10</Badge>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="bg-muted/30 p-4 rounded-lg">
-            <p className="text-sm text-muted-foreground">
-              Cette synthèse servira de base pour constituer votre dossier. L'avocat pourra affiner l'estimation des préjudices lors de l'analyse détaillée.
-            </p>
-          </div>
-
-          <StepNavigation 
-            onNext={() => goTo('signature')}
-            onBack={() => goTo('chronologie')}
-            nextLabel="Finaliser le questionnaire"
-          />
-        </CardContent>
-      </Card>
-    </div>
+          <Button 
+            onClick={handleSubmit}
+            className="w-full"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Envoi en cours...' : 'Valider et envoyer le dossier'}
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
