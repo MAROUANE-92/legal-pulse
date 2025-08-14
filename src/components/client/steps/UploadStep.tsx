@@ -9,8 +9,7 @@ import { useStepper } from '../StepperProvider';
 import { useQuestionnaireSchema } from '@/hooks/useQuestionnaireSchema';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
-import { Upload, Check, AlertTriangle, FileText, Clock, Info } from 'lucide-react';
-import { QuestionnaireFlowChart } from '@/components/QuestionnaireFlowChart';
+import { Upload, Check, AlertTriangle, FileText, Clock } from 'lucide-react';
 
 interface FileExpected {
   sectionId: string;
@@ -170,22 +169,6 @@ export function UploadStep() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      {/* Diagramme du questionnaire */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Info className="h-5 w-5" />
-            Diagramme du questionnaire
-          </CardTitle>
-          <CardDescription>
-            Visualisez le parcours complet du questionnaire et téléchargez le diagramme
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <QuestionnaireFlowChart />
-        </CardContent>
-      </Card>
-
       {/* Progress Bar */}
       <Card>
         <CardContent className="pt-6">
