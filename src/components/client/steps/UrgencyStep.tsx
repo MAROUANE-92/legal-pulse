@@ -39,6 +39,22 @@ export function UrgencyStep() {
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Form submitted, calling handleSubmit...');
+    console.log('Current form values:', form.getValues());
+    console.log('Form errors:', form.formState.errors);
+    
+    // Vérifier manuellement les valeurs requises
+    const values = form.getValues();
+    if (!values.facts_end_date) {
+      console.log('ERROR: facts_end_date is required');
+      form.setError('facts_end_date', { message: 'Date requise' });
+      return;
+    }
+    if (!values.employment_status) {
+      console.log('ERROR: employment_status is required');
+      form.setError('employment_status', { message: 'Statut requis' });
+      return;
+    }
+    
     form.handleSubmit(onSubmit)(e);
   };
 
@@ -61,20 +77,25 @@ export function UrgencyStep() {
           
           {/* Date de fin des faits */}
           <div>
-            <Label>Quand les faits se sont-ils terminés ?</Label>
+            <Label>Quand les faits se sont-ils terminés ? *</Label>
             <Input
               type="date"
-              {...form.register('facts_end_date', { required: true })}
+              {...form.register('facts_end_date', { required: 'Cette date est requise' })}
               className="mt-2"
             />
             <p className="text-sm text-muted-foreground mt-1">
               Date du dernier incident ou de votre départ
             </p>
+            {form.formState.errors.facts_end_date && (
+              <p className="text-sm text-red-600 mt-1">
+                {String(form.formState.errors.facts_end_date.message)}
+              </p>
+            )}
           </div>
 
           {/* Statut actuel */}
           <div>
-            <Label>Êtes-vous toujours en poste ?</Label>
+            <Label>Êtes-vous toujours en poste ? *</Label>
             <div className="mt-2 space-y-2">
               {[
                 { value: 'employed', label: 'Oui, toujours salarié' },
@@ -92,6 +113,11 @@ export function UrgencyStep() {
                 </label>
               ))}
             </div>
+            {form.formState.errors.employment_status && (
+              <p className="text-sm text-red-600 mt-1">
+                {String(form.formState.errors.employment_status.message)}
+              </p>
+            )}
           </div>
 
           {/* Situation critique */}

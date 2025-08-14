@@ -31,6 +31,8 @@ const stepComponents = {
 export default function ClientWizard() {
   const { token, '*': path } = useParams();
   const step = path?.split('/').pop() || 'urgency';
+  
+  console.log(`ClientWizard - token: ${token}, path: ${path}, step: ${step}`);
 
   // Validation du token
   if (!token) {
