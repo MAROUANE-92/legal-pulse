@@ -11,23 +11,8 @@ export function useLawyerDocuments(dossierId: string) {
     queryFn: async () => {
       console.log('Fetching lawyer documents for dossier:', dossierId);
       
-      // Pour l'instant, on retourne des données mockées car la table documents n'existe pas encore
-      const mockDocuments = [
-        {
-          id: '1',
-          dossier_id: dossierId,
-          file_name: 'Conclusions_demandeur.pdf',
-          file_path: `${dossierId}/conclusions/Conclusions_demandeur.pdf`,
-          file_size: 2048576,
-          file_type: 'application/pdf',
-          category: 'conclusions',
-          description: 'Conclusions du demandeur',
-          uploaded_at: new Date().toISOString(),
-          uploaded_by: 'lawyer-1'
-        }
-      ];
-
-      return mockDocuments;
+      // Retourner un tableau vide pour l'instant
+      return [];
     },
     enabled: !!dossierId
   });
