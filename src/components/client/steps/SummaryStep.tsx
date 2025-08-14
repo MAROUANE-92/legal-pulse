@@ -13,11 +13,18 @@ export function SummaryStep() {
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
-    const success = await submitQuestionnaire();
-    if (success) {
-      // Redirection ou message de succès
+    try {
+      const success = await submitQuestionnaire();
+      if (success) {
+        // Ne pas rediriger, rester sur la page de résumé
+        console.log('Questionnaire soumis avec succès');
+        // Peut-être afficher un message de succès ou permettre un téléchargement
+      }
+    } catch (error) {
+      console.error('Erreur lors de la soumission:', error);
+    } finally {
+      setIsSubmitting(false);
     }
-    setIsSubmitting(false);
   };
 
   // Calculs basiques côté client (les vrais calculs seront côté serveur)

@@ -74,6 +74,93 @@ const getNextStep = (current: string, answers: any): string => {
   }
 };
 
+// Données de démo pour éviter de remplir le formulaire à chaque fois
+const DEMO_DATA = {
+  urgency: {
+    facts_end_date: '2025-08-06',
+    employment_status: 'fired',
+    critical_situation: ['harassment'],
+    resolution_attempts: ['manager_discussion', 'hr_letter']
+  },
+  story: {
+    narrative: 'J\'ai été victime de harcèlement moral de la part de mon manager. Il me donnait des objectifs impossibles à atteindre et me faisait des remarques déplacées devant mes collègues.',
+    main_problem: 'harassment',
+    problem_start_date: '2025-06-01',
+    witnesses: true,
+    evidence: true
+  },
+  company: {
+    name: 'ACME Corp',
+    size: '50-249',
+    sector: 'Technology',
+    siret: '12345678901234'
+  },
+  qualification: {
+    position: 'Développeur Senior',
+    hierarchy_level: 'employee',
+    team_size: 5,
+    responsibilities: 'Développement d\'applications web'
+  },
+  contract: {
+    type: 'CDI',
+    start_date: '2024-01-15',
+    position: 'Développeur Senior',
+    classification: 'Cadre',
+    salary: '4500',
+    benefits: {
+      variable: true,
+      car: false,
+      meal: true,
+      housing: false
+    }
+  },
+  proof_inventory: {
+    'contract.Contrat de travail': true,
+    'contract.Fiches de paie (12 derniers mois)': true,
+    'evidence.Emails professionnels': true,
+    'evidence.Attestations collègues': true
+  },
+  documents: {
+    files: {},
+    bordereau: []
+  },
+  timeline: [
+    {
+      date: '2025-06-01',
+      title: 'Début du harcèlement',
+      description: 'Première remarque déplacée du manager'
+    },
+    {
+      date: '2025-06-15',
+      title: 'Objectifs impossibles',
+      description: 'Attribution d\'objectifs irréalisables'
+    },
+    {
+      date: '2025-07-01',
+      title: 'Humiliation publique',
+      description: 'Critique en réunion devant toute l\'équipe'
+    },
+    {
+      date: '2025-07-15',
+      title: 'Discussion avec RH',
+      description: 'Premier signalement aux ressources humaines'
+    },
+    {
+      date: '2025-08-06',
+      title: 'Licenciement',
+      description: 'Notification de licenciement'
+    }
+  ],
+  damages: {
+    unpaid_overtime_hours: '50',
+    lost_vacation_days: '10',
+    psychological_support: 'yes',
+    anxiety_level: 8,
+    family_impact_level: 7,
+    confidence_loss_level: 9
+  }
+};
+
 export function NewStepperProvider({ children, token }: NewStepperProviderProps) {
   const navigate = useNavigate();
   const { step } = useParams();
@@ -81,7 +168,7 @@ export function NewStepperProvider({ children, token }: NewStepperProviderProps)
   
   console.log(`NewStepperProvider - currentStep: ${currentStep}`);
   
-  const [formData, setFormData] = useState<StepperContextData['formData']>({});
+  const [formData, setFormData] = useState<StepperContextData['formData']>(DEMO_DATA);
 
   const goTo = (step: string) => {
     console.log(`Navigating from ${currentStep} to ${step}`);
