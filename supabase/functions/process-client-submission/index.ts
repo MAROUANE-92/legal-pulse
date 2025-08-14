@@ -33,13 +33,14 @@ const handler = async (req: Request): Promise<Response> => {
 
     const { dossier_id, submission_id, answers, client_name, status = 'completed' }: ClientSubmissionRequest = await req.json();
 
+    console.log('Token reçu:', dossier_id);
     console.log('Processing client submission:', { dossier_id, submission_id, answerCount: answers?.length });
 
-    // 1. Vérifier que le dossier existe
+    // 1. Vérifier que le dossier existe via le token
     const { data: dossier, error: dossierError } = await supabaseClient
       .from('dossiers')
       .select('*')
-      .eq('id', dossier_id)
+      .eq('token', dossier_id)
       .single();
 
     if (dossierError || !dossier) {
