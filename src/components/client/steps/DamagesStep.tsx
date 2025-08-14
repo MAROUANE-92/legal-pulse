@@ -5,7 +5,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
-import { useStepper } from '../StepperProvider';
+import { useStepper } from '../NewStepperProvider';
 import { StepNavigation } from '../StepNavigation';
 
 interface DamagesFormData {
