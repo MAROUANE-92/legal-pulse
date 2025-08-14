@@ -21,13 +21,13 @@ function Dashboard() {
       const { data: metricsData } = await DossiersAPI.getDashboardMetrics();
       if (metricsData) setMetrics(metricsData);
 
-      // Récupérer les dossiers urgents
+      // Récupérer les dossiers récents (pas urgents, juste récents)
       const { data: dossiersData } = await DossiersAPI.getDossiers();
       if (dossiersData) {
-        const urgent = dossiersData
+        const recent = dossiersData
           .filter(d => d.stage !== 'Clos')
           .slice(0, 3); // Les 3 premiers
-        setUrgentDossiers(urgent);
+        setUrgentDossiers(recent);
       }
 
       setLoading(false);
@@ -130,11 +130,11 @@ function Dashboard() {
         </CardContent>
       </Card>
 
-      {/* Dossiers Urgents */}
+      {/* Dossiers Récents */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            📁 Dossiers Urgents
+            📁 Dossiers Récents
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
