@@ -10,41 +10,34 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { FileText, Calendar, AlertTriangle, Star, Plus, Edit2, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
-import { Dossier, Motif, Piece, UserRole } from '@/types/dossier';
+import { Dossier, UserRole } from '@/types/dossier';
 import { toast } from '@/hooks/use-toast';
 import { HoursSuppTable } from '@/components/HoursSuppTable';
+import { useDossierSynthesis } from '@/hooks/useDossierSynthesis';
 
 interface SyntheseTabProps {
   dossier: Dossier;
 }
 
-// Mock data
-const mockMotifs: Motif[] = [
-  { id: '1', motif: 'Heures supplémentaires', montant: 25000, statut: 'Validé' },
-  { id: '2', motif: 'Congés payés', montant: 8000, statut: 'En cours' },
-  { id: '3', motif: 'Prime de précarité', montant: 12000, statut: 'Validé' },
-  { id: '4', motif: 'Rappel salaire', montant: 5000, statut: 'En cours' },
-  { id: '5', motif: 'Indemnité licenciement', montant: 15000, statut: 'Validé' }
-];
-
-const mockPieces: Piece[] = [
-  { id: '1', nom: 'Contrat de travail', typeIA: 'contrat', pages: 3, status: 'Validated', keyEvidence: true, dossierId: '1' },
-  { id: '2', nom: 'Bulletins de paie', typeIA: 'bulletin', pages: 24, status: 'Validated', keyEvidence: true, dossierId: '1' },
-  { id: '3', nom: 'Planning équipes', typeIA: 'planning', pages: 8, status: 'Validated', keyEvidence: false, dossierId: '1' },
-  { id: '4', nom: 'Emails manager', typeIA: 'email', pages: 12, status: 'Validated', keyEvidence: true, dossierId: '1' },
-  { id: '5', nom: 'Attestation RH', typeIA: 'attestation', pages: 2, status: 'Validated', keyEvidence: true, dossierId: '1' }
-];
-
 // Mock user role - in real app would come from auth context
 const currentUserRole = 'lawyer' as UserRole;
 
 export const SyntheseTab = ({ dossier }: SyntheseTabProps) => {
+  const { data: synthesis, isLoading } = useDossierSynthesis(dossier.id);
   const [editingSalaire, setEditingSalaire] = useState(false);
-  const [salaireValue, setSalaireValue] = useState(dossier.salaire || 3500);
+  const [salaireValue, setSalaireValue] = useState(synthesis?.remuneration?.baseSalary || 3500);
   const [isPiecesCollapsed, setIsPiecesCollapsed] = useState(false);
 
   const canEdit = currentUserRole === 'lawyer' || currentUserRole === 'paralegal';
   const hideAmounts = currentUserRole === 'client';
+
+  if (isLoading) {
+    return <div className="p-6 text-center">Chargement de la synthèse...</div>;
+  }
+
+  if (!synthesis) {
+    return <div className="p-6 text-center text-muted-foreground">Aucune donnée disponible</div>;
+  }
 
   const handleSalaireEdit = async () => {
     if (!canEdit) return;
@@ -86,7 +79,14 @@ export const SyntheseTab = ({ dossier }: SyntheseTabProps) => {
     });
   };
 
-  const keyPieces = mockPieces.filter(p => p.keyEvidence);
+  // Transformation des motifs client en format tableau
+  const clientMotifs = synthesis.motifs.map((motif: string, index: number) => ({
+    id: `motif-${index}`,
+    motif: getMotifLabel(motif),
+    montant: calculateMotifAmount(motif, synthesis),
+    statut: 'En cours' as const
+  }));
+
   const mockAlerts = [
     { message: "Audience conciliation dans 12 jours", type: "amber" as const },
     { message: "1 pièce manquante", type: "amber" as const },
@@ -169,7 +169,7 @@ export const SyntheseTab = ({ dossier }: SyntheseTabProps) => {
                   <dt className="text-gray-600 text-sm">Client</dt>
                   <dd className="text-main font-medium">
                     <div className="space-y-1">
-                      <div>{dossier.clientName || 'Jean Dupont'} / {dossier.clientRole || 'Salarié'}</div>
+                      <div>{synthesis.identity.fullName || 'Nom non renseigné'} / {synthesis.contract.positionTitle || 'Poste non renseigné'}</div>
                       <div className="flex items-center gap-2 text-sm">
                         <span>Salaire:</span>
                         {editingSalaire && canEdit ? (
@@ -201,14 +201,15 @@ export const SyntheseTab = ({ dossier }: SyntheseTabProps) => {
                 <div className="flex justify-between items-center">
                   <dt className="text-gray-600 text-sm">Employeur</dt>
                   <dd className="text-main font-medium">
-                    {dossier.employerName || 'SociétéXYZ'} (SIREN {dossier.siren || '123456789'})
+                    {synthesis.contract.employerName || 'Employeur non renseigné'} 
+                    {synthesis.contract.employerSiren && ` (SIREN ${synthesis.contract.employerSiren})`}
                   </dd>
                 </div>
                 
                 <div className="flex justify-between items-center">
                   <dt className="text-gray-600 text-sm">Contrat</dt>
                   <dd className="text-main font-medium">
-                    {dossier.typeContrat || 'CDI'} du {dossier.dateDebut || '01/01/2020'} au {dossier.dateFin || '31/12/2023'}
+                    {synthesis.contract.type || 'CDI'} du {synthesis.contract.startDate || 'Date non renseignée'} au {synthesis.contract.endDate || 'En cours'}
                   </dd>
                 </div>
                 
@@ -219,7 +220,7 @@ export const SyntheseTab = ({ dossier }: SyntheseTabProps) => {
                 
                 <div className="flex justify-between items-center">
                   <dt className="text-gray-600 text-sm">Clause horaires</dt>
-                  <dd className="text-main font-medium">{dossier.clauseHoraire || '35h/semaine'}</dd>
+                  <dd className="text-main font-medium">{synthesis.workingTime.weeklyHours || '35'}h/semaine</dd>
                 </div>
               </dl>
             </CardContent>
@@ -248,7 +249,7 @@ export const SyntheseTab = ({ dossier }: SyntheseTabProps) => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {mockMotifs.map((motif, index) => (
+                    {clientMotifs.map((motif, index) => (
                       <TableRow 
                         key={motif.id} 
                         className={`${index % 2 === 1 ? 'bg-lavender-mist/10' : 'bg-white'} ${motif.statut !== 'Validé' ? 'bg-lavender-mist/25' : ''} hover:bg-lavender-mist/25`}
@@ -272,7 +273,7 @@ export const SyntheseTab = ({ dossier }: SyntheseTabProps) => {
 
               {/* Mobile List */}
               <div className="sm:hidden space-y-3">
-                {mockMotifs.map((motif) => (
+                {clientMotifs.map((motif) => (
                   <div key={motif.id} className="flex flex-col space-y-2 p-3 rounded-lg bg-gray-50">
                     <div className="flex justify-between items-start">
                       <span className="font-medium text-main">{motif.motif}</span>
@@ -322,25 +323,9 @@ export const SyntheseTab = ({ dossier }: SyntheseTabProps) => {
               <CollapsibleContent>
                 <CardContent className="pt-0">
                   <div className="space-y-2">
-                    {keyPieces.length > 0 ? (
-                      keyPieces.map((piece) => (
-                        <div key={piece.id} className="flex items-center justify-between p-2 rounded hover:bg-lavender-mist/25">
-                          <span className="text-sm text-main">{piece.nom}</span>
-                          {canEdit && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => toggleKeyEvidence(piece.id, piece.keyEvidence || false)}
-                              className="p-1 h-auto"
-                            >
-                              <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                            </Button>
-                          )}
-                        </div>
-                      ))
-                    ) : (
-                      <p className="text-sm text-gray-500">Aucune pièce clé définie</p>
-                    )}
+                    <p className="text-sm text-gray-500">
+                      Les pièces clés seront définies après analyse du dossier
+                    </p>
                   </div>
                 </CardContent>
               </CollapsibleContent>
@@ -392,3 +377,36 @@ export const SyntheseTab = ({ dossier }: SyntheseTabProps) => {
     </div>
   );
 };
+
+// Helper functions
+function getMotifLabel(motif: string): string {
+  const motifLabels: Record<string, string> = {
+    'heures_supplementaires': 'Heures supplémentaires',
+    'licenciement_abusif': 'Licenciement sans cause réelle et sérieuse',
+    'conges_payes': 'Congés payés non pris',
+    'indemnite_preavis': 'Indemnité de préavis',
+    'prime_precarite': 'Prime de précarité',
+    'rappel_salaire': 'Rappel de salaire',
+    'discrimination': 'Discrimination',
+    'harcelement': 'Harcèlement moral',
+  };
+  return motifLabels[motif] || motif;
+}
+
+function calculateMotifAmount(motif: string, synthesis: any): number {
+  // Calculs simplifiés pour l'exemple
+  const baseSalary = synthesis.remuneration?.baseSalary || 3500;
+  
+  switch (motif) {
+    case 'heures_supplementaires':
+      return Math.round(baseSalary * 0.3); // 30% du salaire
+    case 'licenciement_abusif':
+      return Math.round(baseSalary * 4); // 4 mois de salaire
+    case 'conges_payes':
+      return Math.round(baseSalary * 0.15); // 15% du salaire
+    case 'indemnite_preavis':
+      return Math.round(baseSalary * 2); // 2 mois de salaire
+    default:
+      return Math.round(baseSalary * 0.2); // 20% du salaire par défaut
+  }
+}

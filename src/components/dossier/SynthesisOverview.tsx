@@ -29,11 +29,14 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+import { useDossierSynthesis } from '@/hooks/useDossierSynthesis';
+
 const SynthesisOverview = () => {
   const { dossier } = useDossier();
+  const { data: synthesis, isLoading } = useDossierSynthesis(dossier?.id || '');
   const { data: pieces = [] } = usePieces(dossier?.id || '');
   const { data: timeline = [] } = useTimeline(dossier?.id || '');
-  const hasOvertimeMotif = true; // Mock - would check dossier motifs
+  const hasOvertimeMotif = synthesis?.motifs?.includes('heures_supplementaires') || false;
   const { data: overtimeData } = useOvertime(dossier?.id || '', hasOvertimeMotif);
 
   // Drawer state
@@ -44,7 +47,7 @@ const SynthesisOverview = () => {
   const [isRelanceModalOpen, setIsRelanceModalOpen] = useState(false);
   const [missingPiecesToRemind, setMissingPiecesToRemind] = useState<string[]>([]);
 
-  if (!dossier) return null;
+  if (!dossier || !synthesis) return null;
 
   // Evidence statistics
   const evidenceStats = getEvidenceStats(dossier.id);
@@ -55,33 +58,15 @@ const SynthesisOverview = () => {
   const validationPercentage = totalPieces > 0 ? Math.round((validatedPieces / totalPieces) * 100) : 0;
   const missingPieces = pieces.filter(p => !p.validated && p.required);
 
-  // Mock motifs data with scoring
-  const motifs = [
-    {
-      motif: 'Heures supplémentaires',
-      baseLegale: 'Art. L3121-28 C.trav',
-      montant: 8500,
-      pieces: 75,
-      statut: 'progress' as const,
-      motifKey: 'heures_supp'
-    },
-    {
-      motif: 'Licenciement sans cause réelle',
-      baseLegale: 'Art. L1235-1 C.trav',
-      montant: 15000,
-      pieces: 100,
-      statut: 'good' as const,
-      motifKey: 'licenciement'
-    },
-    {
-      motif: 'Indemnité préavis',
-      baseLegale: 'Art. L1234-1 C.trav',
-      montant: 3200,
-      pieces: 100,
-      statut: 'good' as const,
-      motifKey: 'indemnite_preavis'
-    }
-  ];
+  // Transformation des motifs du client en format d'affichage
+  const motifs = synthesis.motifs.map((motif: string, index: number) => ({
+    motif: getMotifLabel(motif),
+    baseLegale: getMotifBaseLegale(motif),
+    montant: calculateMotifAmount(motif, synthesis),
+    pieces: 75, // TODO: calculer le vrai pourcentage basé sur les pièces
+    statut: 'progress' as const,
+    motifKey: motif
+  }));
 
   const getStatusColor = (statut: string) => {
     switch (statut) {
@@ -119,18 +104,18 @@ const SynthesisOverview = () => {
           <InfoCard title="Parties & Procédure" icon={Users}>
             <div className="space-y-3 text-sm">
               <div>
-                <p className="font-medium">{dossier.client || 'Jean Dupont'}</p>
+                <p className="font-medium">{synthesis.identity.fullName || 'Nom non renseigné'}</p>
                 <p className="text-muted-foreground">vs</p>
                 <div className="flex items-center gap-2">
-                  <p className="font-medium">{dossier.employeur || 'SociétéXYZ'}</p>
+                  <p className="font-medium">{synthesis.contract.employerName || 'Employeur non renseigné'}</p>
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger>
                         <ExternalLink className="h-3 w-3 text-muted-foreground hover:text-primary cursor-pointer" />
                       </TooltipTrigger>
-                      <TooltipContent>
-                        <p>SIREN: 123456789</p>
-                      </TooltipContent>
+                        <TooltipContent>
+                          <p>SIREN: {synthesis.contract.employerSiren || 'Non renseigné'}</p>
+                        </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 </div>
@@ -158,11 +143,11 @@ const SynthesisOverview = () => {
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Contrat:</span>
-                <span className="font-medium">CDI</span>
+                <span className="font-medium">{synthesis.contract.type || 'CDI'}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Statut:</span>
-                <span className="font-medium">Cadre</span>
+                <span className="font-medium">{synthesis.contract.positionTitle || 'Non renseigné'}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Forfait horaire:</span>
@@ -170,7 +155,7 @@ const SynthesisOverview = () => {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Durée Horaire:</span>
-                <span className="font-medium">35h</span>
+                <span className="font-medium">{synthesis.workingTime.weeklyHours || '35'}h</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">CCN:</span>
@@ -178,7 +163,7 @@ const SynthesisOverview = () => {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Période:</span>
-                <span className="font-medium">2019-2024</span>
+                <span className="font-medium">{synthesis.contract.startDate || 'Date non renseignée'} - {synthesis.contract.endDate || 'En cours'}</span>
               </div>
             </div>
           </InfoCard>
@@ -405,6 +390,52 @@ const SynthesisOverview = () => {
     </>
   );
 };
+
+// Helper functions
+function getMotifLabel(motif: string): string {
+  const motifLabels: Record<string, string> = {
+    'heures_supplementaires': 'Heures supplémentaires',
+    'licenciement_abusif': 'Licenciement sans cause réelle et sérieuse',
+    'conges_payes': 'Congés payés non pris',
+    'indemnite_preavis': 'Indemnité de préavis',
+    'prime_precarite': 'Prime de précarité',
+    'rappel_salaire': 'Rappel de salaire',
+    'discrimination': 'Discrimination',
+    'harcelement': 'Harcèlement moral',
+  };
+  return motifLabels[motif] || motif;
+}
+
+function getMotifBaseLegale(motif: string): string {
+  const basesLegales: Record<string, string> = {
+    'heures_supplementaires': 'Art. L3121-28 C.trav',
+    'licenciement_abusif': 'Art. L1235-1 C.trav',
+    'conges_payes': 'Art. L3141-1 C.trav',
+    'indemnite_preavis': 'Art. L1234-1 C.trav',
+    'prime_precarite': 'Art. L1243-8 C.trav',
+    'rappel_salaire': 'Art. L3221-3 C.trav',
+    'discrimination': 'Art. L1132-1 C.trav',
+    'harcelement': 'Art. L1152-1 C.trav',
+  };
+  return basesLegales[motif] || 'Base légale à déterminer';
+}
+
+function calculateMotifAmount(motif: string, synthesis: any): number {
+  const baseSalary = synthesis.remuneration?.baseSalary || 3500;
+  
+  switch (motif) {
+    case 'heures_supplementaires':
+      return Math.round(baseSalary * 0.3);
+    case 'licenciement_abusif':
+      return Math.round(baseSalary * 4);
+    case 'conges_payes':
+      return Math.round(baseSalary * 0.15);
+    case 'indemnite_preavis':
+      return Math.round(baseSalary * 2);
+    default:
+      return Math.round(baseSalary * 0.2);
+  }
+}
 
 export default SynthesisOverview;
 
