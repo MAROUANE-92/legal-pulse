@@ -12,6 +12,8 @@ interface Step0FormData {
   fullName: string;
   birthDate: string;
   address: string;
+  postalCode: string;
+  city: string;
   phone: string;
   email: string;
   familyStatus: string;
@@ -26,6 +28,8 @@ export function Step0Identity() {
       fullName: formData.identity?.fullName || '',
       birthDate: formData.identity?.birthDate || '',
       address: formData.identity?.address || '',
+      postalCode: formData.identity?.postalCode || '',
+      city: formData.identity?.city || '',
       phone: formData.identity?.phone || '',
       email: formData.identity?.email || '',
       familyStatus: formData.identity?.familyStatus || '',
@@ -65,24 +69,61 @@ export function Step0Identity() {
             <Input
               id="birthDate"
               type="date"
+              min="1940-01-01"
+              max="2006-12-31"
               {...register('birthDate', { required: 'Ce champ est obligatoire' })}
+              className="text-base"
             />
             {errors.birthDate && (
               <p className="text-sm text-destructive">{errors.birthDate.message}</p>
             )}
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="address">Adresse complète *</Label>
-            <Textarea
-              id="address"
-              {...register('address', { required: 'Ce champ est obligatoire' })}
-              placeholder="Numéro, rue, code postal, ville"
-              rows={3}
-            />
-            {errors.address && (
-              <p className="text-sm text-destructive">{errors.address.message}</p>
-            )}
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="address">Adresse *</Label>
+              <Input
+                id="address"
+                {...register('address', { required: 'Ce champ est obligatoire' })}
+                placeholder="Numéro et nom de rue"
+              />
+              {errors.address && (
+                <p className="text-sm text-destructive">{errors.address.message}</p>
+              )}
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="postalCode">Code postal *</Label>
+                <Input
+                  id="postalCode"
+                  {...register('postalCode', { 
+                    required: 'Ce champ est obligatoire',
+                    pattern: {
+                      value: /^[0-9]{5}$/,
+                      message: 'Code postal invalide (5 chiffres)'
+                    }
+                  })}
+                  placeholder="75001"
+                  maxLength={5}
+                />
+                {errors.postalCode && (
+                  <p className="text-sm text-destructive">{errors.postalCode.message}</p>
+                )}
+              </div>
+              
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="city">Ville *</Label>
+                <Input
+                  id="city"
+                  {...register('city', { required: 'Ce champ est obligatoire' })}
+                  placeholder="Paris"
+                />
+                {errors.city && (
+                  <p className="text-sm text-destructive">{errors.city.message}</p>
+                )}
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
