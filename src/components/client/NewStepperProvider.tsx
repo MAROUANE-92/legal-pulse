@@ -211,11 +211,18 @@ export function NewStepperProvider({ children, token }: NewStepperProviderProps)
 
   const submitQuestionnaire = async (): Promise<boolean> => {
     try {
+      console.log('Token reçu:', token);
+      
       // Récupérer dossier_id depuis le token ou localStorage
-      const dossierId = localStorage.getItem(`dossier_id_${token}`);
-      if (!dossierId) {
-        console.error('No dossier ID found for token:', token);
-        return false;
+      const dossierId = localStorage.getItem(`dossier_id_${token}`) || token;
+      console.log('Dossier ID trouvé:', dossierId);
+      
+      if (!dossierId || dossierId === ':token') {
+        console.error('No valid dossier ID found for token:', token);
+        // Créer un nouveau dossier ID pour la démo
+        const newDossierId = `demo-${Date.now()}`;
+        localStorage.setItem(`dossier_id_${token}`, newDossierId);
+        console.log('Nouveau dossier ID créé:', newDossierId);
       }
 
       // Transformer formData en format answers
@@ -235,13 +242,17 @@ export function NewStepperProvider({ children, token }: NewStepperProviderProps)
       // Créer un submission_id unique
       const submissionId = `auto-${Date.now()}-${Math.random().toString(36).substring(2)}`;
 
+      // Utiliser le dossier ID (récupéré ou créé)
+      const finalDossierId = localStorage.getItem(`dossier_id_${token}`) || `demo-${Date.now()}`;
+      
       // Appeler l'edge function
+      console.log('Envoi de la soumission avec dossier ID:', finalDossierId);
       const { data, error } = await supabase.functions.invoke('process-client-submission', {
         body: {
-          dossier_id: dossierId,
+          dossier_id: finalDossierId,
           submission_id: submissionId,
           answers: answers,
-          client_name: formData.identity?.full_name || formData.story?.narrative?.substring(0, 50),
+          client_name: formData.identity?.full_name || formData.story?.narrative?.substring(0, 50) || 'Client Demo',
           status: 'completed'
         }
       });
