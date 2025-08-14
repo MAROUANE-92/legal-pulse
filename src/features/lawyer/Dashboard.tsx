@@ -106,24 +106,24 @@ function Dashboard() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Button className="h-16 flex flex-col gap-2" asChild>
               <Link to="/nouveau">
                 <Plus className="h-5 w-5" />
                 Nouveau Dossier
               </Link>
             </Button>
-            <Button variant="outline" className="h-16 flex flex-col gap-2">
-              <Mail className="h-5 w-5" />
-              Inviter Client
+            <Button variant="outline" className="h-16 flex flex-col gap-2" asChild>
+              <Link to="/nouveau">
+                <Mail className="h-5 w-5" />
+                Inviter Client
+              </Link>
             </Button>
-            <Button variant="outline" className="h-16 flex flex-col gap-2">
-              <Upload className="h-5 w-5" />
-              Import Bulk
-            </Button>
-            <Button variant="outline" className="h-16 flex flex-col gap-2">
-              <CalendarDays className="h-5 w-5" />
-              Audiences
+            <Button variant="outline" className="h-16 flex flex-col gap-2" asChild>
+              <Link to="/calendrier">
+                <CalendarDays className="h-5 w-5" />
+                Audiences
+              </Link>
             </Button>
           </div>
         </CardContent>
