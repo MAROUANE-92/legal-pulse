@@ -15,6 +15,19 @@ export function StoryStep() {
 
   const onSubmit = (data: any) => {
     console.log('StoryStep onSubmit called with data:', data);
+    
+    // Validation basique
+    if (!data.narrative || data.narrative.length < 200) {
+      console.log('Validation failed: narrative too short or missing');
+      return;
+    }
+    
+    if (!data.main_problem) {
+      console.log('Validation failed: main_problem missing');
+      return;
+    }
+    
+    console.log('Validation passed, saving data and navigating to company...');
     savePartial('story', data);
     goTo('company');
   };
@@ -22,6 +35,7 @@ export function StoryStep() {
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Story form submitted, calling handleSubmit...');
+    console.log('Current form values:', form.getValues());
     form.handleSubmit(onSubmit)(e);
   };
 
