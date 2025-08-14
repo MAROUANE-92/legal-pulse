@@ -258,9 +258,9 @@ function NewDossier() {
             <h3 className="font-semibold">📧 Étapes suivantes</h3>
             <div className="text-sm text-muted-foreground space-y-1">
               <p>1. Le client recevra un lien sécurisé par email</p>
-              <p>2. Il remplira le questionnaire (11 étapes)</p>
-              <p>3. Vous recevrez une notification à la fin</p>
-              <p>4. L'IA calculera automatiquement les dommages</p>
+              <p>2. Il remplira le questionnaire optimisé (12 étapes)</p>
+              <p>3. L'IA analysera les réponses et générera la synthèse</p>
+              <p>4. Vous recevrez une notification à la fin</p>
             </div>
           </div>
         </CardContent>
