@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowLeft, AlertTriangle, Euro, Clock, Users, FileText } from 'lucide-react';
 import { InformationsClientTab } from '@/components/dossier/InformationsClientTab';
+import { PiecesTab } from '@/components/dossier/PiecesTab';
 
 function DossierView() {
   const { id } = useParams<{ id: string }>();
@@ -134,19 +135,7 @@ function DossierView() {
         </TabsContent>
 
         <TabsContent value="pieces">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                Pièces du Dossier
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-12 text-muted-foreground">
-                Fonctionnalité en cours de développement
-              </div>
-            </CardContent>
-          </Card>
+          <PiecesTab dossierId={dossier.id} />
         </TabsContent>
 
         <TabsContent value="timeline">
