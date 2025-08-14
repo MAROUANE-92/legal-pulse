@@ -17,10 +17,10 @@ const queryClient = new QueryClient({
   },
 });
 
-// Composant pour rediriger vers welcome
+// Composant pour rediriger vers urgency (nouveau questionnaire)
 function ClientRedirect() {
   const { token } = useParams();
-  return <Navigate to={`/client/${token}/welcome`} replace />;
+  return <Navigate to={`/client/${token}/urgency`} replace />;
 }
 
 const App = () => (
