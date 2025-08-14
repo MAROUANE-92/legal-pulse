@@ -29,10 +29,10 @@ const stepComponents = {
 };
 
 export default function ClientWizard() {
-  const { token, '*': path } = useParams();
-  const step = path?.split('/').pop() || 'urgency';
+  const { token, step } = useParams();
+  const currentStep = step || 'urgency';
   
-  console.log(`ClientWizard - token: ${token}, path: ${path}, step: ${step}`);
+  console.log(`ClientWizard - token: ${token}, step param: ${step}, currentStep: ${currentStep}`);
 
   // Validation du token
   if (!token) {
@@ -40,12 +40,12 @@ export default function ClientWizard() {
   }
 
   // Validation de l'étape
-  const StepComponent = stepComponents[step as keyof typeof stepComponents];
+  const StepComponent = stepComponents[currentStep as keyof typeof stepComponents];
   
-  console.log(`Current step: ${step}, Component found: ${!!StepComponent}`);
+  console.log(`Current step: ${currentStep}, Component found: ${!!StepComponent}`);
   
   if (!StepComponent) {
-    console.log(`Step ${step} not found, redirecting to urgency`);
+    console.log(`Step ${currentStep} not found, redirecting to urgency`);
     return <Navigate to={`/client/${token}/urgency`} replace />;
   }
 
@@ -57,7 +57,7 @@ export default function ClientWizard() {
           {/* Progress indicator */}
           <div className="mb-8">
             <div className="flex items-center justify-center space-x-2 text-sm text-muted-foreground">
-              <span>Étape {Object.keys(stepComponents).indexOf(step) + 1}</span>
+              <span>Étape {Object.keys(stepComponents).indexOf(currentStep) + 1}</span>
               <span>/</span>
               <span>{Object.keys(stepComponents).length}</span>
             </div>
@@ -65,7 +65,7 @@ export default function ClientWizard() {
               <div 
                 className="bg-primary h-2 rounded-full transition-all duration-300"
                 style={{ 
-                  width: `${((Object.keys(stepComponents).indexOf(step) + 1) / Object.keys(stepComponents).length) * 100}%` 
+                  width: `${((Object.keys(stepComponents).indexOf(currentStep) + 1) / Object.keys(stepComponents).length) * 100}%` 
                 }}
               />
             </div>

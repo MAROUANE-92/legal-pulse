@@ -76,8 +76,10 @@ const getNextStep = (current: string, answers: any): string => {
 
 export function NewStepperProvider({ children, token }: NewStepperProviderProps) {
   const navigate = useNavigate();
-  const { '*': path } = useParams();
-  const currentStep = path?.split('/').pop() || 'urgency';
+  const { step } = useParams();
+  const currentStep = step || 'urgency';
+  
+  console.log(`NewStepperProvider - currentStep: ${currentStep}`);
   
   const [formData, setFormData] = useState<StepperContextData['formData']>({});
 
