@@ -105,10 +105,9 @@ export function ContractStep() {
               <FormField
                 control={form.control}
                 name="contract_type"
-                rules={{ required: "Type de contrat requis" }}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Type de contrat *</FormLabel>
+                    <FormLabel>Type de contrat</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
@@ -132,10 +131,9 @@ export function ContractStep() {
                 <FormField
                   control={form.control}
                   name="contract_start"
-                  rules={{ required: "Date de début requise" }}
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>Date de début *</FormLabel>
+                      <FormLabel>Date de début</FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
@@ -190,11 +188,10 @@ export function ContractStep() {
                   <FormField
                     control={form.control}
                     name="contract_end"
-                    rules={{ required: "Date de fin requise pour ce type de contrat" }}
                     render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel>Date de fin / préavis *</FormLabel>
-                        <Popover>
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Date de fin / préavis</FormLabel>
+                      <Popover>
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
@@ -240,11 +237,10 @@ export function ContractStep() {
               <FormField
                 control={form.control}
                 name="position_title"
-                rules={{ required: "Poste requis" }}
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Poste occupé *</FormLabel>
-                    <FormControl>
+                <FormItem>
+                  <FormLabel>Poste occupé</FormLabel>
+                  <FormControl>
                       <Input placeholder="Ex: Développeur, Commercial, Assistant..." {...field} />
                     </FormControl>
                     <FormMessage />
@@ -255,11 +251,10 @@ export function ContractStep() {
               <FormField
                 control={form.control}
                 name="idcc_code"
-                rules={{ required: "IDCC requis" }}
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>IDCC / Convention collective *</FormLabel>
-                    <FormControl>
+                <FormItem>
+                  <FormLabel>IDCC / Convention collective</FormLabel>
+                  <FormControl>
                       <Input placeholder="Ex: IDCC 1486 - Bureaux d'études" {...field} />
                     </FormControl>
                     <FormMessage />
@@ -271,11 +266,10 @@ export function ContractStep() {
                 <FormField
                   control={form.control}
                   name="trial_period"
-                  rules={{ required: "Information requise" }}
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Période d'essai ? *</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormItem>
+                    <FormLabel>Période d'essai ?</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Oui/Non" />
@@ -319,11 +313,10 @@ export function ContractStep() {
               <FormField
                 control={form.control}
                 name="cadre_status"
-                rules={{ required: "Statut requis" }}
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Statut *</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormItem>
+                  <FormLabel>Statut</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Sélectionnez votre statut" />
@@ -415,11 +408,10 @@ export function ContractStep() {
                 <FormField
                   control={form.control}
                   name="employment_status"
-                  rules={{ required: "Situation actuelle requise" }}
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Êtes-vous toujours en poste ? *</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormItem>
+                    <FormLabel>Êtes-vous toujours en poste ?</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Sélectionnez votre situation" />
@@ -443,11 +435,10 @@ export function ContractStep() {
                     <FormField
                       control={form.control}
                       name="termination_date"
-                      rules={{ required: "Date de fin/rupture requise" }}
                       render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                          <FormLabel>Date de fin/rupture *</FormLabel>
-                          <Popover>
+                      <FormItem className="flex flex-col">
+                        <FormLabel>Date de fin/rupture</FormLabel>
+                        <Popover>
                             <PopoverTrigger asChild>
                               <FormControl>
                                 <Button
@@ -491,11 +482,10 @@ export function ContractStep() {
                     <FormField
                       control={form.control}
                       name="termination_reason"
-                      rules={{ required: "Motif de rupture requis" }}
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Motif de rupture *</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormItem>
+                        <FormLabel>Motif de rupture</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="Sélectionnez le motif" />
