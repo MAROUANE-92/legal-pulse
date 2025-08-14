@@ -28,6 +28,7 @@ function NewDossier() {
     setLoading(true);
 
     try {
+      console.log('🔥 Création dossier pour:', formData.clientEmail);
       const { data, error } = await DossiersAPI.createDossier(formData.clientEmail);
       
       if (error) {
