@@ -24,40 +24,30 @@ export function useQuestionnaireSubmission(dossierId: string) {
     queryFn: async () => {
       console.log('Fetching questionnaire submission for dossier:', dossierId);
       
-      // Récupérer le token du dossier
-      const { data: dossier } = await supabase
-        .from('dossiers')
-        .select('token')
-        .eq('id', dossierId)
+      // Récupérer les données directement depuis questionnaire_submissions
+      const { data: submission, error } = await supabase
+        .from('questionnaire_submissions')
+        .select('*')
+        .eq('dossier_id', dossierId)
         .single();
       
-      if (!dossier?.token) {
-        return null;
-      }
-      
-      // Récupérer les réponses via la table answers en utilisant le token du dossier
-      const { data: answers, error } = await supabase
-        .from('answers')
-        .select('*')
-        .eq('submission_id', dossier.token);
-      
       if (error) {
-        console.error('Error fetching questionnaire answers:', error);
-        throw error;
-      }
-      
-      // S'il n'y a pas de réponses, le questionnaire n'est pas complété
-      if (!answers || answers.length === 0) {
+        console.error('Error fetching questionnaire submission:', error);
         return null;
       }
       
-      console.log('Questionnaire answers data:', answers);
+      // S'il n'y a pas de soumission, le questionnaire n'est pas complété
+      if (!submission) {
+        return null;
+      }
+      
+      console.log('Questionnaire submission data:', submission);
       return {
-        id: dossier.token,
+        id: submission.submission_id,
         dossier_id: dossierId,
-        answers: answers || [],
-        status: 'completed',
-        submitted_at: answers?.[0]?.created_at || new Date().toISOString()
+        answers: submission.answers || [],
+        status: submission.status || 'completed',
+        submitted_at: submission.submitted_at || new Date().toISOString()
       } as QuestionnaireSubmission;
     },
     enabled: !!dossierId
