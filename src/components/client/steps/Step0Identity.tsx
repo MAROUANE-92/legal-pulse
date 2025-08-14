@@ -110,6 +110,9 @@ export function Step0Identity() {
                   initialFocus
                   className="p-3 pointer-events-auto"
                   defaultMonth={new Date(1990, 0)}
+                  captionLayout="dropdown-buttons"
+                  fromYear={1940}
+                  toYear={new Date().getFullYear()}
                 />
               </PopoverContent>
             </Popover>
