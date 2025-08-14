@@ -269,7 +269,9 @@ export function NewStepperProvider({ children, token }: NewStepperProviderProps)
     const saved = localStorage.getItem(`questionnaire_${token}`);
     if (saved) {
       try {
-        setFormData(JSON.parse(saved));
+        const savedData = JSON.parse(saved);
+        // Merge saved data with demo data (saved data takes priority)
+        setFormData(prev => ({ ...prev, ...savedData }));
       } catch (error) {
         console.error('Error loading saved questionnaire data:', error);
       }
