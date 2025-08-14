@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
-import { FileText, Briefcase, FolderOpen } from 'lucide-react';
+import { Scale, Briefcase, FolderOpen } from 'lucide-react';
 import { useClientDocuments } from '@/hooks/useClientDocuments';
 import { useLawyerDocuments } from '@/hooks/useLawyerDocuments';
 import { DocumentUploadZone } from './DocumentUploadZone';
@@ -77,7 +77,7 @@ export const PiecesTab = ({ dossierId }: PiecesTabProps) => {
             Vue d'ensemble
           </TabsTrigger>
           <TabsTrigger value="client" className="flex items-center gap-2">
-            <FileText className="h-4 w-4" />
+            <Scale className="h-4 w-4" />
             Documents client
           </TabsTrigger>
           <TabsTrigger value="lawyer" className="flex items-center gap-2">
@@ -91,7 +91,7 @@ export const PiecesTab = ({ dossierId }: PiecesTabProps) => {
           <ClientDocumentList
             documents={clientDocuments}
             title="Documents fournis par le client"
-            icon={<FileText className="h-5 w-5" />}
+            icon={<Scale className="h-5 w-5" />}
           />
 
           {/* Section Documents Avocat */}
@@ -108,7 +108,7 @@ export const PiecesTab = ({ dossierId }: PiecesTabProps) => {
           <ClientDocumentList
             documents={clientDocuments}
             title="Documents du client"
-            icon={<FileText className="h-5 w-5" />}
+            icon={<Scale className="h-5 w-5" />}
           />
           
           {clientDocs?.bordereau && Array.isArray(clientDocs.bordereau) && clientDocs.bordereau.length > 0 && (
