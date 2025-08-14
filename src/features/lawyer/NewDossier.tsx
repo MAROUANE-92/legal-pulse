@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, Mail, Send, Copy, Check, ExternalLink } from 'lucide-react';
 import { DossiersAPI } from '@/shared/api/dossiers';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 function NewDossier() {
   const navigate = useNavigate();
@@ -42,11 +43,19 @@ function NewDossier() {
         // Construire l'URL pour le client
         const url = `${window.location.origin}/client/${data.token}/welcome`;
         setClientUrl(url);
+        
+        // Enregistrer l'invitation dans la table invites existante
+        await supabase.from('invites').insert({
+          email: formData.clientEmail,
+          expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+          status: 'pending'
+        });
+        
         setCreated(true);
         
         toast({
           title: "Dossier créé !",
-          description: "Le lien client est prêt",
+          description: "Invitation enregistrée pour " + formData.clientEmail,
         });
       }
     } catch (error) {
