@@ -6,6 +6,7 @@ import { AuthAPI } from '@/shared/api/auth';
 import Dashboard from './Dashboard';
 import DossierView from './DossierView';
 import DossierList from './DossierList';
+import NewDossier from './NewDossier';
 import Login from './Login';
 
 // Layout avocat
@@ -22,6 +23,7 @@ function LawyerApp() {
     <LawyerLayout>
       <Routes>
         <Route index element={<Dashboard />} />
+        <Route path="/nouveau" element={<NewDossier />} />
         <Route path="/dossiers" element={<DossierList />} />
         <Route path="/dossier/:id" element={<DossierView />} />
         <Route path="/calendrier" element={<div>Calendrier - Coming Soon</div>} />

@@ -107,9 +107,11 @@ function Dashboard() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Button className="h-16 flex flex-col gap-2">
-              <Plus className="h-5 w-5" />
-              Nouveau Dossier
+            <Button className="h-16 flex flex-col gap-2" asChild>
+              <Link to="/nouveau">
+                <Plus className="h-5 w-5" />
+                Nouveau Dossier
+              </Link>
             </Button>
             <Button variant="outline" className="h-16 flex flex-col gap-2">
               <Mail className="h-5 w-5" />
