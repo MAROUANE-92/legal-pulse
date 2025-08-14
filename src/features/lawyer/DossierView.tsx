@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowLeft, AlertTriangle, Euro, Clock, Users, FileText } from 'lucide-react';
-import { QuestionnaireSection } from '@/components/dossier/QuestionnaireSection';
+import { InformationsClientTab } from '@/components/dossier/InformationsClientTab';
 
 function DossierView() {
   const { id } = useParams<{ id: string }>();
@@ -103,6 +103,7 @@ function DossierView() {
       <Tabs defaultValue="synthese" className="space-y-6">
         <TabsList>
           <TabsTrigger value="synthese">Synthèse</TabsTrigger>
+          <TabsTrigger value="informations">Informations Client</TabsTrigger>
           <TabsTrigger value="pieces">Pièces</TabsTrigger>
           <TabsTrigger value="timeline">Timeline</TabsTrigger>
           <TabsTrigger value="calculs">Calculs</TabsTrigger>
@@ -111,10 +112,7 @@ function DossierView() {
         </TabsList>
 
         <TabsContent value="synthese" className="space-y-6">
-          {/* Section Questionnaire Client */}
-          <QuestionnaireSection dossierId={dossier.id} />
-          
-          {/* Synthèse en préparation */}
+          {/* Synthèse IA en préparation */}
           <Card className="border-primary/20">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -125,10 +123,14 @@ function DossierView() {
               <div className="text-muted-foreground">
                 <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" />
                 <h3 className="text-lg font-medium">Synthèse en cours de préparation</h3>
-                <p className="text-sm">Les données de synthèse seront bientôt disponibles.</p>
+                <p className="text-sm">L'analyse IA des données sera bientôt disponible.</p>
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="informations" className="space-y-6">
+          <InformationsClientTab dossierId={dossier.id} />
         </TabsContent>
 
         <TabsContent value="pieces">
