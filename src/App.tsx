@@ -1,86 +1,42 @@
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { Layout } from "./components/Layout";
-import { AuthProvider } from "./contexts/AuthContext";
-import { ProtectedRoute } from "./components/ProtectedRoute";
-import { IngestProvider } from "./lib/IngestStore";
-import Index from "./pages/Index";
-import Dashboard from "./components/Dashboard";
-import Login from "./pages/Login";
-import Calendrier from "./pages/Calendrier";
-import Parametres from "./pages/Parametres";
-import Dossier from "./pages/Dossier";
-import DossierDemo from "./pages/DossierDemo";
-import ClientWizard from "./pages/ClientWizard";
-import InboxDemo from "./pages/InboxDemo";
-import NotFound from "./pages/NotFound";
-import AccessPage from "./pages/AccessPage";
-import FormRedirect from "./pages/FormRedirect";
-import FormPage from "./pages/FormPage";
+import React from 'react';
+import { BrowserRouter, useLocation } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from '@/components/ui/toaster';
 
-const queryClient = new QueryClient();
+// Import des apps séparées
+import LawyerApp from './features/lawyer/LawyerApp';
+import ClientWizard from './pages/ClientWizard'; // Keep existing client for now
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: 1,
+    },
+  },
+});
+
+// Composant qui détermine quelle app afficher
+function AppRouter() {
+  const location = useLocation();
+  
+  // Routes client : /client/*, /access, /form/*
+  const isClientRoute = location.pathname.startsWith('/client') || 
+                       location.pathname === '/access' ||
+                       location.pathname.startsWith('/form');
+
+  return isClientRoute ? <ClientWizard /> : <LawyerApp />;
+}
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <IngestProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              {/* Page de connexion */}
-              <Route path="/login" element={<Login />} />
-              
-              {/* Demo route (no auth required) */}
-              <Route path="/demo-inbox" element={<InboxDemo />} />
-              
-              {/* Nouvelles routes pour le flow magic-link */}
-              <Route path="/access" element={<AccessPage />} />
-              <Route path="/form/redirect" element={<FormRedirect />} />
-              <Route path="/form/:id" element={<FormPage />} />
-              
-              {/* Client Portal Routes (no auth required for clients) */}
-              <Route path="/demo-client" element={<Navigate to="/client/abc123demo/welcome" replace />} />
-              <Route path="/client/:token" element={<Navigate to="/client/:token/welcome" replace />} />
-              <Route path="/client/:token/welcome" element={<ClientWizard />} />
-              <Route path="/client/:token/identity" element={<ClientWizard />} />
-              <Route path="/client/:token/contract" element={<ClientWizard />} />
-              <Route path="/client/:token/remuneration" element={<ClientWizard />} />
-              <Route path="/client/:token/working_time" element={<ClientWizard />} />
-              <Route path="/client/:token/motifs" element={<ClientWizard />} />
-              <Route path="/client/:token/questions" element={<ClientWizard />} />
-              <Route path="/client/:token/upload" element={<ClientWizard />} />
-              <Route path="/client/:token/chronologie" element={<ClientWizard />} />
-              <Route path="/client/:token/signature" element={<ClientWizard />} />
-              <Route path="/client/:token/confirm" element={<ClientWizard />} />
-              
-              {/* Dossier Demo (no auth required) */}
-              <Route path="/dossier-demo/:id" element={<DossierDemo />} />
-              
-              {/* Protected Main App Routes */}
-              <Route path="/*" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <Routes>
-                      <Route path="/" element={<Dashboard />} />
-                      <Route path="/calendrier" element={<Calendrier />} />
-                      <Route path="/parametres" element={<Parametres />} />
-                      <Route path="/dossier/:id" element={<Dossier />} />
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </Layout>
-                </ProtectedRoute>
-              } />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </IngestProvider>
-    </AuthProvider>
+    <BrowserRouter>
+      <div className="min-h-screen bg-background">
+        <AppRouter />
+        <Toaster />
+      </div>
+    </BrowserRouter>
   </QueryClientProvider>
 );
 
