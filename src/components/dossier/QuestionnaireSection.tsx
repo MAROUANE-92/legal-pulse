@@ -55,12 +55,55 @@ export function QuestionnaireSection({ dossierId }: QuestionnaireSectionProps) {
 
   const answers = organizeAnswersByCategory;
 
-  // Fonction pour formater les valeurs
-  const formatValue = (value: any): string => {
+  // Fonction pour formater les valeurs avec traitement spécial de la timeline
+  const formatValue = (value: any, key: string): string => {
     if (value === null || value === undefined) return 'Non renseigné';
     if (typeof value === 'boolean') return value ? 'Oui' : 'Non';
+    
+    // Traitement spécial pour la timeline (événements)
+    if (key === 'events' && Array.isArray(value)) {
+      return `${value.length} événement(s) dans la chronologie`;
+    }
+    
     if (typeof value === 'object') return JSON.stringify(value);
     return String(value);
+  };
+
+  // Fonction pour rendre la timeline de manière visuelle
+  const renderTimeline = (events: any[]) => {
+    if (!Array.isArray(events)) return null;
+    
+    return (
+      <div className="space-y-4 mt-4">
+        <h4 className="font-medium text-sm text-muted-foreground mb-3">Chronologie des événements</h4>
+        <div className="relative">
+          {events.map((event, index) => (
+            <div key={index} className="relative flex items-start space-x-3 pb-4">
+              {/* Ligne verticale */}
+              {index < events.length - 1 && (
+                <div className="absolute left-2 top-6 h-full w-0.5 bg-border"></div>
+              )}
+              
+              {/* Point sur la timeline */}
+              <div className="relative flex h-4 w-4 flex-none items-center justify-center bg-background">
+                <div className="h-2 w-2 rounded-full bg-primary"></div>
+              </div>
+              
+              {/* Contenu de l'événement */}
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <p className="text-sm font-medium text-foreground">{event.title}</p>
+                  <Badge variant="outline" className="text-xs">
+                    {new Date(event.date).toLocaleDateString('fr-FR')}
+                  </Badge>
+                </div>
+                <p className="text-sm text-muted-foreground">{event.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   };
 
   // Fonction pour obtenir les labels lisibles
@@ -169,13 +212,20 @@ export function QuestionnaireSection({ dossierId }: QuestionnaireSectionProps) {
                 <AccordionContent>
                   <div className="space-y-3 pt-2">
                     {Object.entries(sectionData).map(([key, value]) => (
-                      <div key={key} className="flex justify-between items-start border-b pb-2">
-                        <span className="text-sm font-medium text-muted-foreground min-w-0 flex-1">
-                          {getFieldLabel(key)}
-                        </span>
-                        <span className="text-sm text-right ml-4 max-w-md">
-                          {formatValue(value)}
-                        </span>
+                      <div key={key}>
+                        {/* Traitement spécial pour la timeline */}
+                        {key === 'events' && Array.isArray(value) ? (
+                          renderTimeline(value)
+                        ) : (
+                          <div className="flex justify-between items-start border-b pb-2">
+                            <span className="text-sm font-medium text-muted-foreground min-w-0 flex-1">
+                              {getFieldLabel(key)}
+                            </span>
+                            <span className="text-sm text-right ml-4 max-w-md">
+                              {formatValue(value, key)}
+                            </span>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
