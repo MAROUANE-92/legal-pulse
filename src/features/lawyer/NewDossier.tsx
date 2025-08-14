@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, Mail, Send, Copy, Check, ExternalLink } from 'lucide-react';
 import { DossiersAPI } from '@/shared/api/dossiers';
+import { AuthAPI } from '@/shared/api/auth';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -45,6 +46,18 @@ function NewDossier() {
         const url = `${window.location.origin}/client/${data.token}/welcome`;
         setClientUrl(url);
         
+        // Envoyer le magic link automatiquement via Supabase
+        const { data: magicLinkData, error: magicLinkError } = await AuthAPI.sendMagicLink(formData.clientEmail);
+        
+        if (magicLinkError) {
+          toast({
+            title: "Erreur",
+            description: magicLinkError,
+            variant: "destructive"
+          });
+          return;
+        }
+
         // Enregistrer l'invitation dans la table invites existante
         await supabase.from('invites').insert({
           email: formData.clientEmail,
@@ -52,28 +65,11 @@ function NewDossier() {
           status: 'pending'
         });
         
-        // Envoyer automatiquement l'email
-        const emailSubject = encodeURIComponent('⚖️ Votre dossier prud\'hommes - LegalPulse');
-        const emailBody = encodeURIComponent(`Bonjour,
-
-Maître ${formData.clientName || 'votre avocat'} vous invite à compléter votre dossier prud'hommes.
-
-🔗 Lien sécurisé : ${url}
-
-⏱️ Durée estimée : 15-20 minutes
-🔒 Données 100% sécurisées
-
-Cordialement,
-L'équipe LegalPulse`);
-        
-        // Ouvrir automatiquement le client email
-        window.open(`mailto:${formData.clientEmail}?subject=${emailSubject}&body=${emailBody}`);
-        
         setCreated(true);
         
         toast({
           title: "Dossier créé !",
-          description: `Email envoyé à ${formData.clientEmail}`,
+          description: `Magic link envoyé automatiquement à ${formData.clientEmail}`,
         });
       }
     } catch (error) {
@@ -124,10 +120,10 @@ L'équipe LegalPulse`);
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Check className="h-5 w-5 text-green-600" />
-              Email envoyé !
+              Magic link envoyé !
             </CardTitle>
             <CardDescription>
-              {formData.clientEmail} a reçu le lien pour remplir son questionnaire
+              {formData.clientEmail} a reçu le magic link Supabase pour accéder au questionnaire
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">

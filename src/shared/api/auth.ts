@@ -4,15 +4,30 @@ import { ApiResponse } from "../types";
 export class AuthAPI {
   static async sendMagicLink(email: string): Promise<ApiResponse<{ message: string }>> {
     try {
-      // Générer un token unique
-      const token = `token_${Date.now()}_${Math.random().toString(36).substring(2)}`;
+      // Générer un token unique pour le client
+      const token = `client_${Date.now()}_${Math.random().toString(36).substring(2)}`;
       
-      // TODO: Implémenter l'envoi d'email avec le token
-      // Pour l'instant, on simule l'envoi
-      console.log(`Magic link sent to ${email} with token: ${token}`);
+      // URL de redirection après clic sur le magic link
+      const redirectTo = `${window.location.origin}/client/${token}/welcome`;
+      
+      // Envoyer le magic link via Supabase
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: redirectTo,
+          data: {
+            token,
+            client_email: email
+          }
+        }
+      });
+      
+      if (error) {
+        throw error;
+      }
       
       return { 
-        data: { message: `Lien d'accès envoyé à ${email}` }, 
+        data: { message: `Magic link envoyé à ${email}` }, 
         error: null 
       };
     } catch (error) {
