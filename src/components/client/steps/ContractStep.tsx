@@ -1,5 +1,5 @@
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
@@ -14,6 +14,7 @@ export function ContractStep() {
   });
 
   const onSubmit = (data: any) => {
+    console.log('ContractStep - submitting data:', data);
     savePartial('contract', data);
     goTo('proof_inventory');
   };
@@ -32,18 +33,25 @@ export function ContractStep() {
           <div className="grid md:grid-cols-2 gap-4">
             <div>
               <Label>Type de contrat *</Label>
-              <Select {...form.register('type', { required: true })}>
-                <SelectTrigger className="mt-2">
-                  <SelectValue placeholder="Sélectionnez" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="CDI">CDI</SelectItem>
-                  <SelectItem value="CDD">CDD</SelectItem>
-                  <SelectItem value="Interim">Intérim</SelectItem>
-                  <SelectItem value="Stage">Stage</SelectItem>
-                  <SelectItem value="Alternance">Alternance</SelectItem>
-                </SelectContent>
-              </Select>
+              <Controller
+                name="type"
+                control={form.control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger className="mt-2">
+                      <SelectValue placeholder="Sélectionnez" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="CDI">CDI</SelectItem>
+                      <SelectItem value="CDD">CDD</SelectItem>
+                      <SelectItem value="Interim">Intérim</SelectItem>
+                      <SelectItem value="Stage">Stage</SelectItem>
+                      <SelectItem value="Alternance">Alternance</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
             </div>
 
             <div>
