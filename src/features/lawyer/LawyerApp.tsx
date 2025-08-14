@@ -1,21 +1,25 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { AuthAPI } from '@/shared/api/auth';
-
-// Pages avocat
 import Dashboard from './Dashboard';
-import DossierView from './DossierView';
 import DossierList from './DossierList';
+import DossierView from './DossierView';
 import NewDossier from './NewDossier';
 import Login from './Login';
-
-// Layout avocat
 import LawyerLayout from './LawyerLayout';
+import { LawyerAuthProvider, useLawyerAuth } from '@/contexts/LawyerAuthContext';
 
-function LawyerApp() {
-  const isAuthenticated = AuthAPI.isLawyerAuthenticated();
+function LawyerAppContent() {
+  const { user, loading } = useLawyerAuth();
 
-  if (!isAuthenticated) {
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
     return <Login />;
   }
 
@@ -31,6 +35,14 @@ function LawyerApp() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </LawyerLayout>
+  );
+}
+
+function LawyerApp() {
+  return (
+    <LawyerAuthProvider>
+      <LawyerAppContent />
+    </LawyerAuthProvider>
   );
 }
 

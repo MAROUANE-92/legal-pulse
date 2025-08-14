@@ -80,15 +80,30 @@ export class DossiersAPI {
     }
   }
 
-  static async createDossier(clientEmail: string): Promise<ApiResponse<{ token: string }>> {
+  static async createDossier(clientEmail: string, clientName?: string, description?: string): Promise<ApiResponse<{ token: string; dossierId: string }>> {
     try {
       // Générer un token unique pour le client
       const token = `client_${Date.now()}_${Math.random().toString(36).substring(2)}`;
       
-      // TODO: Créer entrée dans DB avec le token
-      // Pour l'instant on retourne juste le token
+      // Créer le dossier en base
+      const { data: dossier, error: dossierError } = await supabase
+        .from('dossiers')
+        .insert({
+          lawyer_id: (await supabase.auth.getUser()).data.user?.id,
+          client_email: clientEmail,
+          client_name: clientName,
+          description,
+          token,
+          status: 'pending'
+        })
+        .select()
+        .single();
       
-      return { data: { token }, error: null };
+      if (dossierError || !dossier) {
+        throw new Error(dossierError?.message || 'Erreur lors de la création du dossier');
+      }
+      
+      return { data: { token, dossierId: dossier.id }, error: null };
     } catch (error) {
       return { data: null, error: (error as Error).message };
     }

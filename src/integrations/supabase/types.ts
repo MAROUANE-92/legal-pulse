@@ -44,6 +44,42 @@ export type Database = {
         }
         Relationships: []
       }
+      dossiers: {
+        Row: {
+          client_email: string
+          client_name: string | null
+          created_at: string
+          description: string | null
+          id: string
+          lawyer_id: string
+          status: string | null
+          token: string
+          updated_at: string
+        }
+        Insert: {
+          client_email: string
+          client_name?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          lawyer_id: string
+          status?: string | null
+          token: string
+          updated_at?: string
+        }
+        Update: {
+          client_email?: string
+          client_name?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          lawyer_id?: string
+          status?: string | null
+          token?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       forms: {
         Row: {
           created_at: string
@@ -71,6 +107,7 @@ export type Database = {
       invites: {
         Row: {
           created_at: string | null
+          dossier_id: string | null
           email: string
           expires_at: string | null
           id: string
@@ -79,6 +116,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          dossier_id?: string | null
           email: string
           expires_at?: string | null
           id?: string
@@ -87,13 +125,22 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          dossier_id?: string | null
           email?: string
           expires_at?: string | null
           id?: string
           invited_by?: string | null
           status?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "invites_dossier_id_fkey"
+            columns: ["dossier_id"]
+            isOneToOne: false
+            referencedRelation: "dossiers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       Soumissions_formulaires_form_clients: {
         Row: {

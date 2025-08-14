@@ -30,7 +30,7 @@ function NewDossier() {
 
     try {
       console.log('🔥 Création dossier pour:', formData.clientEmail);
-      const { data, error } = await DossiersAPI.createDossier(formData.clientEmail);
+      const { data, error } = await DossiersAPI.createDossier(formData.clientEmail, formData.clientName, formData.description);
       
       if (error) {
         toast({
@@ -58,11 +58,12 @@ function NewDossier() {
           return;
         }
 
-        // Enregistrer l'invitation dans la table invites existante
+        // Enregistrer l'invitation dans la table invites avec le lien vers le dossier
         await supabase.from('invites').insert({
           email: formData.clientEmail,
           expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-          status: 'pending'
+          status: 'pending',
+          dossier_id: data.dossierId
         });
         
         setCreated(true);

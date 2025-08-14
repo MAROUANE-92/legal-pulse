@@ -62,26 +62,60 @@ export class AuthAPI {
     }
   }
 
-  // Mock login pour les avocats (à remplacer par vrai auth plus tard)
+  // Vrai login Supabase pour les avocats
   static async loginLawyer(email: string, password: string): Promise<ApiResponse<{ success: boolean }>> {
     try {
-      // Mock credentials
-      if (email === 'MeG' && password === 'MeG_2025') {
-        localStorage.setItem('lawyer_authenticated', 'true');
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+      
+      if (error) {
+        throw error;
+      }
+      
+      if (data.user) {
         return { data: { success: true }, error: null };
       } else {
-        return { data: { success: false }, error: 'Identifiants invalides' };
+        return { data: { success: false }, error: 'Échec de la connexion' };
       }
     } catch (error) {
       return { data: { success: false }, error: (error as Error).message };
     }
   }
 
+  static async signUpLawyer(email: string, password: string): Promise<ApiResponse<{ success: boolean }>> {
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`
+        }
+      });
+      
+      if (error) {
+        throw error;
+      }
+      
+      return { data: { success: true }, error: null };
+    } catch (error) {
+      return { data: { success: false }, error: (error as Error).message };
+    }
+  }
+
+  static async getCurrentUser() {
+    const { data: { user } } = await supabase.auth.getUser();
+    return user;
+  }
+
   static isLawyerAuthenticated(): boolean {
+    // Cette méthode sera mise à jour par le contexte d'auth
     return localStorage.getItem('lawyer_authenticated') === 'true';
   }
 
-  static logoutLawyer(): void {
+  static async logoutLawyer(): Promise<void> {
+    await supabase.auth.signOut();
     localStorage.removeItem('lawyer_authenticated');
   }
 }
