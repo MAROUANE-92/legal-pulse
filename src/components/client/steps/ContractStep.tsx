@@ -27,6 +27,15 @@ interface ContractFormData {
   forfait_clause: string;
   mobility_clause: string;
   non_compete_clause: string;
+  // Nouvelle section - Situation actuelle
+  employment_status: string;
+  termination_date?: Date | undefined;
+  termination_reason?: string;
+  termination_contested?: string;
+  notice_end_date?: Date | undefined;
+  notice_exempted?: string;
+  sick_leave_start?: Date | undefined;
+  sick_leave_work_related?: string;
 }
 
 export function ContractStep() {
@@ -44,7 +53,15 @@ export function ContractStep() {
       cadre_status: '',
       forfait_clause: '',
       mobility_clause: '',
-      non_compete_clause: ''
+      non_compete_clause: '',
+      employment_status: '',
+      termination_date: undefined,
+      termination_reason: '',
+      termination_contested: '',
+      notice_end_date: undefined,
+      notice_exempted: '',
+      sick_leave_start: undefined,
+      sick_leave_work_related: ''
     }
   });
 
@@ -52,6 +69,7 @@ export function ContractStep() {
   const trialPeriod = form.watch('trial_period');
   const contractStart = form.watch('contract_start');
   const contractEnd = form.watch('contract_end');
+  const employmentStatus = form.watch('employment_status');
 
   // Calcul d'ancienneté
   const calculateSeniority = () => {
@@ -388,6 +406,293 @@ export function ContractStep() {
                     </FormItem>
                   )}
                 />
+              </div>
+
+              {/* Section Situation actuelle */}
+              <div className="space-y-4 mt-8 pt-6 border-t">
+                <h3 className="text-lg font-semibold">Situation actuelle</h3>
+                
+                <FormField
+                  control={form.control}
+                  name="employment_status"
+                  rules={{ required: "Situation actuelle requise" }}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Êtes-vous toujours en poste ? *</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionnez votre situation" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="En poste">En poste</SelectItem>
+                          <SelectItem value="Rupture terminée">Rupture terminée</SelectItem>
+                          <SelectItem value="En préavis">En préavis</SelectItem>
+                          <SelectItem value="Arrêt maladie">Arrêt maladie</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Champs conditionnels si pas en poste */}
+                {employmentStatus && employmentStatus !== "En poste" && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="termination_date"
+                      rules={{ required: "Date de fin/rupture requise" }}
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel>Date de fin/rupture *</FormLabel>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant="outline"
+                                  className={cn(
+                                    "w-full pl-3 text-left font-normal",
+                                    !field.value && "text-muted-foreground"
+                                  )}
+                                >
+                                  {field.value ? (
+                                    format(field.value, "PPP", { locale: fr })
+                                  ) : (
+                                    <span>Sélectionner une date</span>
+                                  )}
+                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={field.value}
+                                onSelect={field.onChange}
+                                disabled={(date) =>
+                                  date > new Date() || date < new Date("1970-01-01")
+                                }
+                                locale={fr}
+                                initialFocus
+                                captionLayout="dropdown-buttons"
+                                fromYear={1970}
+                                toYear={new Date().getFullYear()}
+                                className="p-3 pointer-events-auto"
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="termination_reason"
+                      rules={{ required: "Motif de rupture requis" }}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Motif de rupture *</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Sélectionnez le motif" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Licenciement économique">Licenciement économique</SelectItem>
+                              <SelectItem value="Licenciement pour faute">Licenciement pour faute</SelectItem>
+                              <SelectItem value="Licenciement pour inaptitude">Licenciement pour inaptitude</SelectItem>
+                              <SelectItem value="Rupture conventionnelle">Rupture conventionnelle</SelectItem>
+                              <SelectItem value="Démission">Démission</SelectItem>
+                              <SelectItem value="Fin de CDD">Fin de CDD</SelectItem>
+                              <SelectItem value="Rupture période d'essai">Rupture période d'essai</SelectItem>
+                              <SelectItem value="Prise d'acte">Prise d'acte</SelectItem>
+                              <SelectItem value="Résiliation judiciaire">Résiliation judiciaire</SelectItem>
+                              <SelectItem value="Abandon de poste">Abandon de poste</SelectItem>
+                              <SelectItem value="Autre">Autre</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="termination_contested"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Contestez-vous cette rupture ?</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Oui/Non" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Oui">Oui</SelectItem>
+                              <SelectItem value="Non">Non</SelectItem>
+                              <SelectItem value="Je ne sais pas">Je ne sais pas</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
+
+                {/* Champs spécifiques pour "En préavis" */}
+                {employmentStatus === "En préavis" && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="notice_end_date"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel>Date de fin de préavis</FormLabel>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant="outline"
+                                  className={cn(
+                                    "w-full pl-3 text-left font-normal",
+                                    !field.value && "text-muted-foreground"
+                                  )}
+                                >
+                                  {field.value ? (
+                                    format(field.value, "PPP", { locale: fr })
+                                  ) : (
+                                    <span>Sélectionner une date</span>
+                                  )}
+                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={field.value}
+                                onSelect={field.onChange}
+                                disabled={(date) =>
+                                  date < new Date()
+                                }
+                                locale={fr}
+                                initialFocus
+                                captionLayout="dropdown-buttons"
+                                fromYear={new Date().getFullYear()}
+                                toYear={new Date().getFullYear() + 2}
+                                className="p-3 pointer-events-auto"
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="notice_exempted"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Dispensé de préavis ?</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Oui/Non" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Oui">Oui</SelectItem>
+                              <SelectItem value="Non">Non</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
+
+                {/* Champs spécifiques pour "Arrêt maladie" */}
+                {employmentStatus === "Arrêt maladie" && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="sick_leave_start"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel>Depuis quand ?</FormLabel>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant="outline"
+                                  className={cn(
+                                    "w-full pl-3 text-left font-normal",
+                                    !field.value && "text-muted-foreground"
+                                  )}
+                                >
+                                  {field.value ? (
+                                    format(field.value, "PPP", { locale: fr })
+                                  ) : (
+                                    <span>Sélectionner une date</span>
+                                  )}
+                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={field.value}
+                                onSelect={field.onChange}
+                                disabled={(date) =>
+                                  date > new Date() || date < new Date("1970-01-01")
+                                }
+                                locale={fr}
+                                initialFocus
+                                captionLayout="dropdown-buttons"
+                                fromYear={1970}
+                                toYear={new Date().getFullYear()}
+                                className="p-3 pointer-events-auto"
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="sick_leave_work_related"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Lié au travail ?</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Oui/Non/Peut-être" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Oui">Oui</SelectItem>
+                              <SelectItem value="Non">Non</SelectItem>
+                              <SelectItem value="Peut-être">Peut-être</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
               </div>
 
               <StepNavigation 
