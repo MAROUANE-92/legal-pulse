@@ -46,16 +46,31 @@ function NewDossier() {
         const url = `${window.location.origin}/client/${data.token}/welcome`;
         setClientUrl(url);
         
-        // Envoyer le magic link automatiquement via Supabase
-        const { data: magicLinkData, error: magicLinkError } = await AuthAPI.sendMagicLink(formData.clientEmail);
-        
-        if (magicLinkError) {
-          toast({
-            title: "Erreur",
-            description: magicLinkError,
-            variant: "destructive"
+        // Envoyer un email d'invitation personnalisé via notre edge function
+        try {
+          await supabase.functions.invoke('send-email', {
+            body: {
+              email: formData.clientEmail,
+              type: 'invite',
+              inviteUrl: url,
+              userData: {
+                clientName: formData.clientName,
+                description: formData.description
+              }
+            }
           });
-          return;
+        } catch (emailError) {
+          console.warn('Erreur envoi email invitation:', emailError);
+          // Utiliser le fallback Supabase
+          const { error: magicLinkError } = await AuthAPI.sendMagicLink(formData.clientEmail);
+          if (magicLinkError) {
+            toast({
+              title: "Erreur",
+              description: magicLinkError,
+              variant: "destructive"
+            });
+            return;
+          }
         }
 
         // Enregistrer l'invitation dans la table invites avec le lien vers le dossier
@@ -70,7 +85,7 @@ function NewDossier() {
         
         toast({
           title: "Dossier créé !",
-          description: `Magic link envoyé automatiquement à ${formData.clientEmail}`,
+          description: `Email d'invitation envoyé à ${formData.clientEmail}`,
         });
       }
     } catch (error) {
@@ -121,10 +136,10 @@ function NewDossier() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Check className="h-5 w-5 text-green-600" />
-              Magic link envoyé !
+              Email d'invitation envoyé !
             </CardTitle>
             <CardDescription>
-              {formData.clientEmail} a reçu le magic link Supabase pour accéder au questionnaire
+              {formData.clientEmail} a reçu l'email d'invitation pour compléter son dossier
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">

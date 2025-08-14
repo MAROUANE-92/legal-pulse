@@ -98,6 +98,22 @@ export class AuthAPI {
         throw error;
       }
       
+      // Si l'inscription réussit, envoyer un email de confirmation personnalisé
+      if (data.user && !data.user.email_confirmed_at) {
+        try {
+          await supabase.functions.invoke('send-email', {
+            body: {
+              email: email,
+              type: 'signup',
+              confirmationUrl: `${window.location.origin}/`
+            }
+          });
+        } catch (emailError) {
+          console.warn('Erreur envoi email personnalisé:', emailError);
+          // Ne pas faire échouer l'inscription si l'email custom échoue
+        }
+      }
+      
       return { data: { success: true }, error: null };
     } catch (error) {
       return { data: { success: false }, error: (error as Error).message };
