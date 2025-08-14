@@ -14,6 +14,7 @@ import { useTimeline } from '@/hooks/useTimeline';
 import { useOvertime } from '@/hooks/useOvertime';
 import { MotifDetailDrawer } from './MotifDetailDrawer';
 import { RelanceModal } from '@/components/RelanceModal';
+import { QuestionnaireSection } from './QuestionnaireSection';
 // Mock data supprimé
 import { getEvidenceStats } from '@/lib/evidenceStats';
 import { 
@@ -32,13 +33,36 @@ import { cn } from '@/lib/utils';
 import { useDossierSynthesis } from '@/hooks/useDossierSynthesis';
 
 const SynthesisOverview = () => {
-  return (
-    <div className="p-6 text-center space-y-4">
-      <div className="text-muted-foreground">
-        <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-        <h3 className="text-lg font-medium">Synthèse en cours de préparation</h3>
-        <p className="text-sm">Les données de synthèse seront bientôt disponibles.</p>
+  const { dossier } = useDossier();
+  
+  if (!dossier) {
+    return (
+      <div className="p-6 text-center space-y-4">
+        <div className="text-muted-foreground">
+          <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+          <h3 className="text-lg font-medium">Chargement du dossier...</h3>
+        </div>
       </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6 p-6">
+      {/* Section Questionnaire Client */}
+      <QuestionnaireSection 
+        dossierId={dossier.id}
+      />
+      
+      {/* Section Synthèse en préparation (à conserver pour l'instant) */}
+      <Card>
+        <CardContent className="p-6 text-center space-y-4">
+          <div className="text-muted-foreground">
+            <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+            <h3 className="text-lg font-medium">Synthèse en cours de préparation</h3>
+            <p className="text-sm">Les données de synthèse seront bientôt disponibles.</p>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
