@@ -17,6 +17,8 @@ export function UrgencyStep() {
   });
 
   const onSubmit = (data: any) => {
+    console.log('UrgencyStep onSubmit called with data:', data);
+    
     // Calcul urgence
     if (data.facts_end_date) {
       const endDate = new Date(data.facts_end_date);
@@ -29,8 +31,15 @@ export function UrgencyStep() {
       }
     }
     
+    console.log('Saving data and navigating to story...');
     savePartial('urgency', data);
     goTo('story');
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Form submitted, calling handleSubmit...');
+    form.handleSubmit(onSubmit)(e);
   };
 
   const factsEndDate = form.watch('facts_end_date');
@@ -48,7 +57,7 @@ export function UrgencyStep() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={handleFormSubmit} className="space-y-6">
           
           {/* Date de fin des faits */}
           <div>
@@ -66,47 +75,45 @@ export function UrgencyStep() {
           {/* Statut actuel */}
           <div>
             <Label>Êtes-vous toujours en poste ?</Label>
-            <RadioGroup {...form.register('employment_status')} className="mt-2">
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="employed" id="employed" />
-                <Label htmlFor="employed">Oui, toujours salarié</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="terminated" id="terminated" />
-                <Label htmlFor="terminated">Non, licencié/fin de contrat</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="resigned" id="resigned" />
-                <Label htmlFor="resigned">Non, démission</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="sick_leave" id="sick_leave" />
-                <Label htmlFor="sick_leave">En arrêt maladie</Label>
-              </div>
-            </RadioGroup>
+            <div className="mt-2 space-y-2">
+              {[
+                { value: 'employed', label: 'Oui, toujours salarié' },
+                { value: 'terminated', label: 'Non, licencié/fin de contrat' },
+                { value: 'resigned', label: 'Non, démission' },
+                { value: 'sick_leave', label: 'En arrêt maladie' }
+              ].map((option) => (
+                <label key={option.value} className="flex items-center space-x-2">
+                  <input 
+                    type="radio" 
+                    {...form.register('employment_status', { required: true })} 
+                    value={option.value} 
+                  />
+                  <span className="text-sm">{option.label}</span>
+                </label>
+              ))}
+            </div>
           </div>
 
           {/* Situation critique */}
           <div>
             <Label>Vivez-vous une situation critique ?</Label>
-            <RadioGroup {...form.register('critical_situation')} className="mt-2">
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="harassment_ongoing" id="harassment_ongoing" />
-                <Label htmlFor="harassment_ongoing">Harcèlement en cours</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="dismissal_threat" id="dismissal_threat" />
-                <Label htmlFor="dismissal_threat">Menace de licenciement imminent</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="burnout" id="burnout" />
-                <Label htmlFor="burnout">Burn-out / Détresse psychologique</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="none" id="none" />
-                <Label htmlFor="none">Aucune situation critique</Label>
-              </div>
-            </RadioGroup>
+            <div className="mt-2 space-y-2">
+              {[
+                { value: 'harassment_ongoing', label: 'Harcèlement en cours' },
+                { value: 'dismissal_threat', label: 'Menace de licenciement imminent' },
+                { value: 'burnout', label: 'Burn-out / Détresse psychologique' },
+                { value: 'none', label: 'Aucune situation critique' }
+              ].map((option) => (
+                <label key={option.value} className="flex items-center space-x-2">
+                  <input 
+                    type="radio" 
+                    {...form.register('critical_situation')} 
+                    value={option.value} 
+                  />
+                  <span className="text-sm">{option.label}</span>
+                </label>
+              ))}
+            </div>
           </div>
 
           {/* Alerte prescription */}
