@@ -47,7 +47,30 @@ const SynthesisOverview = () => {
   const [isRelanceModalOpen, setIsRelanceModalOpen] = useState(false);
   const [missingPiecesToRemind, setMissingPiecesToRemind] = useState<string[]>([]);
 
-  if (!dossier || !synthesis) return null;
+  if (!dossier || !synthesis) return (
+    <div className="p-6 text-center space-y-4">
+      <div className="text-muted-foreground">
+        <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+        <h3 className="text-lg font-medium">Données en attente</h3>
+        <p className="text-sm">Le client n'a pas encore fourni les informations nécessaires.</p>
+      </div>
+    </div>
+  );
+
+  // Si pas de données client, afficher un état d'attente
+  if (!synthesis.hasClientData) {
+    return (
+      <div className="p-6 text-center space-y-4">
+        <div className="text-muted-foreground">
+          <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+          <h3 className="text-lg font-medium">En attente des données client</h3>
+          <p className="text-sm">Le questionnaire client doit être complété avant d'afficher la synthèse.</p>
+          <p className="text-sm">Client: {synthesis.identity.email}</p>
+          <Badge variant="outline" className="mt-2">{synthesis.status}</Badge>
+        </div>
+      </div>
+    );
+  }
 
   // Evidence statistics
   const evidenceStats = getEvidenceStats(dossier.id);

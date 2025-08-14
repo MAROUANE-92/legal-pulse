@@ -36,7 +36,24 @@ export const SyntheseTab = ({ dossier }: SyntheseTabProps) => {
   }
 
   if (!synthesis) {
-    return <div className="p-6 text-center text-muted-foreground">Aucune donnée disponible</div>;
+    return <div className="p-6 text-center text-muted-foreground">Erreur de chargement des données</div>;
+  }
+
+  // Afficher un message si le client n'a pas encore rempli le formulaire
+  if (!synthesis.hasClientData) {
+    return (
+      <div className="p-6 text-center space-y-4">
+        <div className="text-muted-foreground">
+          <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+          <h3 className="text-lg font-medium">Aucune donnée client disponible</h3>
+          <p className="text-sm">Le client n'a pas encore rempli le questionnaire pour ce dossier.</p>
+          <p className="text-sm">Statut du dossier: <Badge variant="outline">{synthesis.status}</Badge></p>
+        </div>
+        <Button variant="outline" size="sm">
+          Inviter le client à compléter le formulaire
+        </Button>
+      </div>
+    );
   }
 
   const handleSalaireEdit = async () => {

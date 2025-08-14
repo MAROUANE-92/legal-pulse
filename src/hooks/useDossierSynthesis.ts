@@ -43,6 +43,7 @@ export function useDossierSynthesis(dossierId: string) {
       return {
         dossier,
         clientData,
+        hasClientData: answers && answers.length > 0,
         identity: {
           fullName: clientData.identity?.full_name || dossier.client_name,
           email: clientData.identity?.email_personal || dossier.client_email,
