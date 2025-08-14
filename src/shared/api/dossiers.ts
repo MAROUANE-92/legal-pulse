@@ -82,6 +82,13 @@ export class DossiersAPI {
 
   static async createDossier(clientEmail: string, clientName?: string, description?: string): Promise<ApiResponse<{ token: string; dossierId: string }>> {
     try {
+      // Vérifier l'authentification
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      
+      if (authError || !user) {
+        throw new Error('Utilisateur non authentifié');
+      }
+
       // Générer un token unique pour le client
       const token = `client_${Date.now()}_${Math.random().toString(36).substring(2)}`;
       
@@ -89,7 +96,7 @@ export class DossiersAPI {
       const { data: dossier, error: dossierError } = await supabase
         .from('dossiers')
         .insert({
-          lawyer_id: (await supabase.auth.getUser()).data.user?.id,
+          lawyer_id: user.id,
           client_email: clientEmail,
           client_name: clientName,
           description,
