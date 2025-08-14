@@ -37,6 +37,9 @@ export interface QuestionsFormData {
 }
 
 export interface UploadFormData {
+  submissionId?: string;
+  uploadedFiles?: Record<string, string>;
+  lastUpdate?: string;
   files: Array<{
     id: string;
     name: string;

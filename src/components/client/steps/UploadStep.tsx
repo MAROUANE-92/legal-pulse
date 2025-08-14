@@ -21,13 +21,16 @@ interface FileExpected {
 }
 
 export function UploadStep() {
-  const { goTo, formData } = useStepper();
+  const { goTo, formData, savePartial } = useStepper();
   const [uploading, setUploading] = useState<Record<string, boolean>>({});
-  const [uploadedFiles, setUploadedFiles] = useState<Record<string, string>>({});
+  const [uploadedFiles, setUploadedFiles] = useState<Record<string, string>>(
+    formData.upload?.uploadedFiles || {}
+  );
   
   // Get current answers from all steps
   const allAnswers = {
     ...formData.identity,
+    ...formData.company,
     ...formData.contract,
     ...formData.remuneration,
     ...formData.working_time,
@@ -36,7 +39,11 @@ export function UploadStep() {
   };
 
   const { sections } = useQuestionnaireSchema(allAnswers);
-  const submissionId = 'demo_submission'; // À remplacer par l'ID réel
+  
+  // Générer un ID unique pour cette session
+  const submissionId = React.useMemo(() => {
+    return formData.upload?.submissionId || `client-${Date.now()}-${Math.random().toString(36).substring(2)}`;
+  }, [formData.upload?.submissionId]);
 
   // Algorithme exact selon spécifications
   const expected: FileExpected[] = React.useMemo(() => {
@@ -78,32 +85,14 @@ export function UploadStep() {
     ? expected.filter(e => e.uploaded).length / expected.length 
     : 1;
 
-  // Charger les fichiers déjà uploadés
-  useEffect(() => {
-    const loadUploadedFiles = async () => {
-      try {
-        const { data: answers } = await supabase
-          .from('answers')
-          .select('question_slug, uploaded_file_url')
-          .eq('submission_id', submissionId)
-          .not('uploaded_file_url', 'is', null);
-        
-        if (answers) {
-          const uploaded: Record<string, string> = {};
-          answers.forEach(answer => {
-            if (answer.uploaded_file_url) {
-              uploaded[answer.question_slug] = answer.uploaded_file_url;
-            }
-          });
-          setUploadedFiles(uploaded);
-        }
-      } catch (error) {
-        console.error('Erreur lors du chargement des fichiers:', error);
-      }
-    };
-    
-    loadUploadedFiles();
-  }, [submissionId]);
+  // Sauvegarder les données d'upload à chaque changement
+  React.useEffect(() => {
+    savePartial('upload', {
+      submissionId,
+      uploadedFiles,
+      lastUpdate: new Date().toISOString()
+    });
+  }, [uploadedFiles, submissionId, savePartial]);
 
   const handleFileUpload = async (file: File, filename: string) => {
     setUploading(prev => ({ ...prev, [filename]: true }));
@@ -134,8 +123,17 @@ export function UploadStep() {
         });
       
       if (saveError) throw saveError;
+      // Sauvegarder l'URL dans le state local ET dans formData
+      const newUploadedFiles = { ...uploadedFiles, [filename]: publicUrl };
+      setUploadedFiles(newUploadedFiles);
       
-      setUploadedFiles(prev => ({ ...prev, [filename]: publicUrl }));
+      // Sauvegarder immédiatement dans le formData
+      savePartial('upload', {
+        submissionId,
+        uploadedFiles: newUploadedFiles,
+        lastUpdate: new Date().toISOString()
+      });
+      
       toast({
         title: "Fichier uploadé",
         description: `${file.name} a été téléchargé avec succès`
@@ -154,9 +152,9 @@ export function UploadStep() {
   };
 
   const onNext = () => {
-    if (progress >= 0.8) {
-      goTo('signature');
-    }
+              if (progress >= 0.8) {
+                goTo('chronologie');
+              }
   };
 
   const onSkip = () => {
@@ -166,7 +164,7 @@ export function UploadStep() {
       description: "Certains documents manquent. Vous pourrez les ajouter plus tard.",
       variant: "destructive"
     });
-    goTo('signature');
+    goTo('chronologie');
   };
 
   return (
@@ -293,11 +291,11 @@ export function UploadStep() {
       <Card>
         <CardContent className="pt-6">
           <div className="flex justify-between items-center">
-            <Button 
-              variant="outline" 
-              onClick={() => goTo('questions')}
-              className="gap-2"
-            >
+              <Button 
+                variant="outline" 
+                onClick={() => goTo('damages')}
+                className="gap-2"
+              >
               Précédent
             </Button>
             
@@ -319,7 +317,7 @@ export function UploadStep() {
                 {progress >= 0.8 ? (
                   <>
                     <Check className="h-4 w-4" />
-                    Continuer vers signature
+                    Continuer vers chronologie
                   </>
                 ) : (
                   `Continuer (${Math.round(progress * 100)}% complété)`
