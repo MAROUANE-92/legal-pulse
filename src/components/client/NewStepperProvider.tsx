@@ -82,10 +82,12 @@ export function NewStepperProvider({ children, token }: NewStepperProviderProps)
   const [formData, setFormData] = useState<StepperContextData['formData']>({});
 
   const goTo = (step: string) => {
+    console.log(`Navigating from ${currentStep} to ${step}`);
     navigate(`/client/${token}/${step}`);
   };
 
   const savePartial = (step: string, data: any) => {
+    console.log(`Saving data for step ${step}:`, data);
     setFormData(prev => ({
       ...prev,
       [step]: { ...prev[step], ...data }

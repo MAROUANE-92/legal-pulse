@@ -39,7 +39,11 @@ export default function ClientWizard() {
 
   // Validation de l'étape
   const StepComponent = stepComponents[step as keyof typeof stepComponents];
+  
+  console.log(`Current step: ${step}, Component found: ${!!StepComponent}`);
+  
   if (!StepComponent) {
+    console.log(`Step ${step} not found, redirecting to urgency`);
     return <Navigate to={`/client/${token}/urgency`} replace />;
   }
 
