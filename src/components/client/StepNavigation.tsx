@@ -11,6 +11,7 @@ interface StepNavigationProps {
   showBack?: boolean;
   showNext?: boolean;
   nextDisabled?: boolean;
+  isLoading?: boolean;
 }
 
 export function StepNavigation({
@@ -20,7 +21,8 @@ export function StepNavigation({
   backLabel = "Précédent", 
   showBack = true,
   showNext = true,
-  nextDisabled = false
+  nextDisabled = false,
+  isLoading = false
 }: StepNavigationProps) {
   const { goTo } = useStepper();
 
@@ -53,11 +55,11 @@ export function StepNavigation({
         <Button 
           type={onNext ? "submit" : "button"}
           onClick={onNext}
-          disabled={nextDisabled}
+          disabled={nextDisabled || isLoading}
           className="flex items-center gap-2"
         >
           {nextLabel}
-          <ChevronRight className="h-4 w-4" />
+          {!isLoading && <ChevronRight className="h-4 w-4" />}
         </Button>
       )}
     </div>

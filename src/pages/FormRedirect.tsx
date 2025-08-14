@@ -21,38 +21,33 @@ export default function FormRedirect() {
         console.log('Session:', session?.user?.email, 'Metadata:', session?.user?.user_metadata);
         
         if (session?.user) {
-          console.log('Creating submission for user:', session.user.id);
+          console.log('Finding dossier for user email:', session.user.email);
           
-          // Créer la soumission avec l'ID utilisateur comme form_id
-          // (c'est ce que les politiques RLS attendent)
-          const { data: submission, error: submissionError } = await supabase
-            .from('Soumissions_formulaires_form_clients')
-            .insert({
-              form_id: session.user.id, // ID utilisateur comme form_id
-              status: 'in_progress'
-            })
-            .select()
+          // Trouver le dossier correspondant à l'email du client
+          const { data: dossier, error: dossierError } = await supabase
+            .from('dossiers')
+            .select('*')
+            .eq('client_email', session.user.email)
+            .eq('status', 'pending')
             .single();
             
-          if (submissionError) {
-            console.error('Error creating submission:', submissionError);
-            console.error('Full error details:', JSON.stringify(submissionError, null, 2));
-            console.error('User ID:', session.user.id);
-            console.error('User email:', session.user.email);
-            navigate(`/access?form=test&error=submission_failed&details=${encodeURIComponent(submissionError.message)}`);
+          if (dossierError || !dossier) {
+            console.error('Dossier not found:', dossierError);
+            navigate(`/access?form=test&error=dossier_not_found&details=${session.user.email}`);
             return;
           }
           
-          if (submission?.id) {
-            console.log('Submission created successfully:', submission.id);
-            // Rediriger vers le wizard client existant
-            navigate('/demo-client');
-            return;
-          } else {
-            console.error('No submission ID returned');
-            navigate('/access?form=test&error=no_submission_id');
-            return;
-          }
+          console.log('Found dossier:', dossier.id);
+          
+          // Créer un token unique pour ce client
+          const clientToken = `client-${dossier.id}-${Date.now()}`;
+          
+          // Stocker le dossier_id associé au token
+          localStorage.setItem(`dossier_id_${clientToken}`, dossier.id);
+          
+          // Rediriger vers le wizard client avec le token
+          navigate(`/client/${clientToken}/welcome`);
+          return;
         } else {
           console.log('No session found');
           navigate('/access?form=test&error=no_session');

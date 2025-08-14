@@ -78,6 +78,7 @@ export interface StepperContextData {
   goTo: (step: string) => void;
   savePartial: (step: string, data: any) => void;
   isStepValid: (step: string) => boolean;
+  submitQuestionnaire: () => Promise<boolean>;
 }
 
 export interface CCNOption {

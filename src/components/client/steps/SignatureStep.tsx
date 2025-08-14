@@ -1,13 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useStepper } from '../StepperProvider';
 import { StepNavigation } from '../StepNavigation';
+import { toast } from 'sonner';
 
 export function SignatureStep() {
-  const { goTo } = useStepper();
+  const { goTo, submitQuestionnaire } = useStepper();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const onNext = () => {
-    goTo('confirm');
+  const onNext = async () => {
+    setIsSubmitting(true);
+    try {
+      const success = await submitQuestionnaire();
+      if (success) {
+        toast.success('Questionnaire soumis avec succès !');
+        goTo('confirm');
+      } else {
+        toast.error('Erreur lors de la soumission du questionnaire');
+      }
+    } catch (error) {
+      console.error('Submission error:', error);
+      toast.error('Erreur lors de la soumission du questionnaire');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -28,7 +44,8 @@ export function SignatureStep() {
           <StepNavigation 
             onNext={onNext}
             onBack={() => goTo('upload')}
-            nextLabel="Terminer"
+            nextLabel={isSubmitting ? "Soumission..." : "Terminer"}
+            isLoading={isSubmitting}
           />
         </CardContent>
       </Card>
