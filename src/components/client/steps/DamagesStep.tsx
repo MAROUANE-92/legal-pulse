@@ -39,7 +39,7 @@ export function DamagesStep() {
 
   const onSubmit = (data: DamagesFormData) => {
     savePartial('damages', data);
-    goTo('upload');
+    goTo('summary');
   };
 
   return (
@@ -266,8 +266,8 @@ export function DamagesStep() {
 
               <StepNavigation 
                 onNext={form.handleSubmit(onSubmit)}
-                onBack={() => goTo('questions')}
-                nextLabel="Continuer vers les documents"
+                onBack={() => goTo('timeline')}
+                nextLabel="Voir le résumé"
               />
             </form>
           </Form>
