@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, Mail, Send } from 'lucide-react';
+import { ArrowLeft, Mail, Send, Copy, Check, ExternalLink } from 'lucide-react';
 import { DossiersAPI } from '@/shared/api/dossiers';
 import { useToast } from '@/hooks/use-toast';
 
@@ -13,6 +13,9 @@ function NewDossier() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [created, setCreated] = useState(false);
+  const [clientUrl, setClientUrl] = useState('');
+  const [copied, setCopied] = useState(false);
   const [formData, setFormData] = useState({
     clientEmail: '',
     clientName: '',
@@ -37,16 +40,14 @@ function NewDossier() {
 
       if (data?.token) {
         // Construire l'URL pour le client
-        const clientUrl = `${window.location.origin}/client/${data.token}/welcome`;
+        const url = `${window.location.origin}/client/${data.token}/welcome`;
+        setClientUrl(url);
+        setCreated(true);
         
         toast({
           title: "Dossier créé !",
-          description: `Lien client : ${clientUrl}`,
-          duration: 10000
+          description: "Le lien client est prêt",
         });
-
-        // Rediriger vers la liste des dossiers
-        navigate('/dossiers');
       }
     } catch (error) {
       toast({
@@ -58,6 +59,96 @@ function NewDossier() {
       setLoading(false);
     }
   };
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(clientUrl);
+      setCopied(true);
+      toast({
+        title: "Lien copié !",
+        description: "Le lien a été copié dans le presse-papiers"
+      });
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de copier le lien",
+        variant: "destructive"
+      });
+    }
+  };
+
+  if (created) {
+    return (
+      <div className="p-6 max-w-2xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold text-green-600">✅ Dossier créé !</h1>
+            <p className="text-muted-foreground">Le questionnaire client est prêt</p>
+          </div>
+        </div>
+
+        {/* Lien Client */}
+        <Card className="border-green-200 bg-green-50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ExternalLink className="h-5 w-5" />
+              Lien pour le client
+            </CardTitle>
+            <CardDescription>
+              Envoyez ce lien à {formData.clientEmail} pour qu'il remplisse son questionnaire
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {/* URL */}
+            <div className="flex gap-2">
+              <Input 
+                value={clientUrl} 
+                readOnly 
+                className="flex-1 font-mono text-sm"
+              />
+              <Button onClick={copyToClipboard} variant="outline" size="icon">
+                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+              </Button>
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-2">
+              <Button asChild className="flex-1">
+                <a href={`mailto:${formData.clientEmail}?subject=Votre questionnaire LegalPulse&body=Bonjour,%0D%0A%0D%0ACliquez sur ce lien pour remplir votre questionnaire : ${clientUrl}`}>
+                  <Mail className="h-4 w-4 mr-2" />
+                  Envoyer par email
+                </a>
+              </Button>
+              <Button variant="outline" asChild>
+                <a href={clientUrl} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Tester
+                </a>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Navigation */}
+        <div className="flex gap-2">
+          <Button onClick={() => navigate('/dossiers')} className="flex-1">
+            Voir les dossiers
+          </Button>
+          <Button variant="outline" onClick={() => {
+            setCreated(false);
+            setFormData({ clientEmail: '', clientName: '', description: '' });
+          }}>
+            Nouveau dossier
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 max-w-2xl mx-auto space-y-6">
