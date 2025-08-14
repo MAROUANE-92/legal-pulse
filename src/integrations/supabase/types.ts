@@ -48,10 +48,12 @@ export type Database = {
         Row: {
           client_email: string
           client_name: string | null
+          client_token: string | null
           created_at: string
           description: string | null
           id: string
           lawyer_id: string
+          questionnaire_completed: boolean | null
           status: string | null
           token: string
           updated_at: string
@@ -59,10 +61,12 @@ export type Database = {
         Insert: {
           client_email: string
           client_name?: string | null
+          client_token?: string | null
           created_at?: string
           description?: string | null
           id?: string
           lawyer_id: string
+          questionnaire_completed?: boolean | null
           status?: string | null
           token: string
           updated_at?: string
@@ -70,10 +74,12 @@ export type Database = {
         Update: {
           client_email?: string
           client_name?: string | null
+          client_token?: string | null
           created_at?: string
           description?: string | null
           id?: string
           lawyer_id?: string
+          questionnaire_completed?: boolean | null
           status?: string | null
           token?: string
           updated_at?: string
@@ -135,6 +141,44 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "invites_dossier_id_fkey"
+            columns: ["dossier_id"]
+            isOneToOne: false
+            referencedRelation: "dossiers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      questionnaire_submissions: {
+        Row: {
+          answers: Json
+          created_at: string | null
+          dossier_id: string | null
+          id: string
+          status: string | null
+          submission_id: string
+          submitted_at: string | null
+        }
+        Insert: {
+          answers: Json
+          created_at?: string | null
+          dossier_id?: string | null
+          id?: string
+          status?: string | null
+          submission_id: string
+          submitted_at?: string | null
+        }
+        Update: {
+          answers?: Json
+          created_at?: string | null
+          dossier_id?: string | null
+          id?: string
+          status?: string | null
+          submission_id?: string
+          submitted_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "questionnaire_submissions_dossier_id_fkey"
             columns: ["dossier_id"]
             isOneToOne: false
             referencedRelation: "dossiers"
