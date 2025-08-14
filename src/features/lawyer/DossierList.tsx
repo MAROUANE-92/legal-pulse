@@ -79,9 +79,11 @@ function DossierList() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Tous les Dossiers</h1>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          Nouveau Dossier
+        <Button asChild>
+          <Link to="/nouveau">
+            <Plus className="h-4 w-4 mr-2" />
+            Nouveau Dossier
+          </Link>
         </Button>
       </div>
 
