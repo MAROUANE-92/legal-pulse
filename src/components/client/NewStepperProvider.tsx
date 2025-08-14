@@ -211,20 +211,8 @@ export function NewStepperProvider({ children, token }: NewStepperProviderProps)
 
   const submitQuestionnaire = async (): Promise<boolean> => {
     try {
-      console.log('Token reçu:', token);
+      console.log('Submitting questionnaire with token from URL:', token);
       
-      // Récupérer dossier_id depuis le token ou localStorage
-      const dossierId = localStorage.getItem(`dossier_id_${token}`) || token;
-      console.log('Dossier ID trouvé:', dossierId);
-      
-      if (!dossierId || dossierId === ':token') {
-        console.error('No valid dossier ID found for token:', token);
-        // Créer un nouveau dossier ID pour la démo
-        const newDossierId = `demo-${Date.now()}`;
-        localStorage.setItem(`dossier_id_${token}`, newDossierId);
-        console.log('Nouveau dossier ID créé:', newDossierId);
-      }
-
       // Transformer formData en format answers
       const answers: any[] = [];
       Object.entries(formData).forEach(([step, data]) => {
@@ -242,14 +230,11 @@ export function NewStepperProvider({ children, token }: NewStepperProviderProps)
       // Créer un submission_id unique
       const submissionId = `auto-${Date.now()}-${Math.random().toString(36).substring(2)}`;
 
-      // Utiliser le dossier ID (récupéré ou créé)
-      const finalDossierId = localStorage.getItem(`dossier_id_${token}`) || `demo-${Date.now()}`;
-      
-      // Appeler l'edge function
-      console.log('Envoi de la soumission avec dossier ID:', finalDossierId);
+      // Utiliser directement le token de l'URL comme dossier_id
+      console.log('Envoi de la soumission avec token:', token);
       const { data, error } = await supabase.functions.invoke('process-client-submission', {
         body: {
-          dossier_id: finalDossierId,
+          dossier_id: token, // Utiliser le token de l'URL directement
           submission_id: submissionId,
           answers: answers,
           client_name: formData.identity?.full_name || formData.story?.narrative?.substring(0, 50) || 'Client Demo',
@@ -266,7 +251,6 @@ export function NewStepperProvider({ children, token }: NewStepperProviderProps)
       
       // Nettoyer le localStorage
       localStorage.removeItem(`questionnaire_${token}`);
-      localStorage.removeItem(`dossier_id_${token}`);
       
       return true;
     } catch (error) {
