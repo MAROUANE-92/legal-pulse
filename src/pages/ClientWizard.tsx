@@ -3,6 +3,8 @@ import { useParams, Navigate } from 'react-router-dom';
 import { NewStepperProvider } from '@/components/client/NewStepperProvider';
 
 // Import des nouvelles étapes optimisées
+import { WelcomeStep } from '@/components/client/steps/WelcomeStep';
+import { Step0Identity } from '@/components/client/steps/Step0Identity';
 import { UrgencyStep } from '@/components/client/steps/UrgencyStep';
 import { StoryStep } from '@/components/client/steps/StoryStep';
 import { QualificationStep } from '@/components/client/steps/QualificationStep';
@@ -14,23 +16,25 @@ import { CompanyStep } from '@/components/client/steps/CompanyStep';
 import { ContractStep } from '@/components/client/steps/ContractStep';
 import { DamagesStep } from '@/components/client/steps/DamagesStep';
 
-// Mapping des nouvelles étapes optimisées (10 étapes)
+// Mapping des nouvelles étapes optimisées (12 étapes avec welcome et identity)
 const stepComponents = {
-  'urgency': UrgencyStep,
-  'story': StoryStep,
-  'company': CompanyStep,
-  'qualification': QualificationStep,
-  'contract': ContractStep,
-  'proof_inventory': ProofInventoryStep,
-  'documents': DocumentsStep,
-  'timeline': TimelineStep,
-  'damages': DamagesStep,
-  'summary': SummaryStep,
+  'welcome': WelcomeStep,        // Nouvelle étape d'accueil + auth
+  'identity': Step0Identity,     // Étape 0 - Coordonnées personnelles
+  'urgency': UrgencyStep,        // Étape 1 - Évaluation de l'urgence
+  'story': StoryStep,            // Étape 2 - Récit des faits
+  'company': CompanyStep,        // Étape 3 - Informations sur l'entreprise
+  'qualification': QualificationStep, // Étape 4 - Analyse approfondie
+  'contract': ContractStep,      // Étape 5 - Situation contractuelle
+  'proof_inventory': ProofInventoryStep, // Étape 6 - Inventaire des pièces
+  'documents': DocumentsStep,    // Étape 7 - Téléversement des documents
+  'timeline': TimelineStep,      // Étape 8 - Chronologie des faits
+  'damages': DamagesStep,        // Étape 9 - Évaluation des préjudices
+  'summary': SummaryStep,        // Étape 10 - Synthèse
 };
 
 export default function ClientWizard() {
   const { token, step } = useParams();
-  const currentStep = step || 'urgency';
+  const currentStep = step || 'welcome';
   
   console.log(`ClientWizard - token: ${token}, step param: ${step}, currentStep: ${currentStep}`);
 
@@ -45,8 +49,8 @@ export default function ClientWizard() {
   console.log(`Current step: ${currentStep}, Component found: ${!!StepComponent}`);
   
   if (!StepComponent) {
-    console.log(`Step ${currentStep} not found, redirecting to urgency`);
-    return <Navigate to={`/client/${token}/urgency`} replace />;
+    console.log(`Step ${currentStep} not found, redirecting to welcome`);
+    return <Navigate to={`/client/${token}/welcome`} replace />;
   }
 
   return (
