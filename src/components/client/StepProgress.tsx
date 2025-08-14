@@ -5,13 +5,16 @@ import { Check } from 'lucide-react';
 const stepLabels = {
   welcome: "Accueil",
   identity: "Identité", 
+  company: "Entreprise",
   contract: "Contrat",
   remuneration: "Rémunération",
   working_time: "Temps de travail",
   motifs: "Motifs",
   questions: "Questions",
+  damages: "Préjudices",
   upload: "Documents",
   chronologie: "Chronologie",
+  summary: "Synthèse",
   signature: "Signature",
   confirm: "Confirmation"
 };
@@ -20,9 +23,20 @@ export function StepProgress() {
   const { currentStep, goTo } = useStepper();
   
   const stepOrder = [
-    'welcome', 'identity', 'contract', 'remuneration', 
-    'working_time', 'motifs', 'questions', 'upload', 
-    'chronologie', 'signature', 'confirm'
+    'welcome',
+    'identity',
+    'company',        // NOUVEAU
+    'contract',
+    'remuneration',
+    'working_time',   // REFONDÉ
+    'motifs',
+    'questions',
+    'damages',        // NOUVEAU
+    'upload',
+    'chronologie',
+    'summary',        // NOUVEAU
+    'signature',
+    'confirm'
   ];
   
   const currentIndex = stepOrder.indexOf(currentStep);
