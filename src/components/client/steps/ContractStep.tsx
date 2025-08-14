@@ -1,16 +1,23 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
+import { CalendarIcon } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
 import { useStepper } from '../StepperProvider';
 import { StepNavigation } from '../StepNavigation';
 
 interface ContractFormData {
   contract_type: string;
-  contract_start: string;
-  contract_end?: string;
+  contract_start: Date | undefined;
+  contract_end?: Date | undefined;
   position_title: string;
   idcc_code: string;
   trial_period: string;
@@ -27,8 +34,8 @@ export function ContractStep() {
   const form = useForm<ContractFormData>({
     defaultValues: formData.contract || {
       contract_type: '',
-      contract_start: '',
-      contract_end: '',
+      contract_start: undefined,
+      contract_end: undefined,
       position_title: '',
       idcc_code: '',
       trial_period: '',
@@ -92,11 +99,40 @@ export function ContractStep() {
                   name="contract_start"
                   rules={{ required: "Date de début requise" }}
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex flex-col">
                       <FormLabel>Date de début *</FormLabel>
-                      <FormControl>
-                        <Input type="date" {...field} />
-                      </FormControl>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              className={cn(
+                                "w-full pl-3 text-left font-normal",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP", { locale: fr })
+                              ) : (
+                                <span>Sélectionner une date</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            disabled={(date) =>
+                              date > new Date() || date < new Date("1900-01-01")
+                            }
+                            initialFocus
+                            className="p-3 pointer-events-auto"
+                          />
+                        </PopoverContent>
+                      </Popover>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -108,11 +144,40 @@ export function ContractStep() {
                     name="contract_end"
                     rules={{ required: "Date de fin requise pour ce type de contrat" }}
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="flex flex-col">
                         <FormLabel>Date de fin / préavis *</FormLabel>
-                        <FormControl>
-                          <Input type="date" {...field} />
-                        </FormControl>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant="outline"
+                                className={cn(
+                                  "w-full pl-3 text-left font-normal",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {field.value ? (
+                                  format(field.value, "PPP", { locale: fr })
+                                ) : (
+                                  <span>Sélectionner une date</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              disabled={(date) =>
+                                date < new Date("1900-01-01")
+                              }
+                              initialFocus
+                              className="p-3 pointer-events-auto"
+                            />
+                          </PopoverContent>
+                        </Popover>
                         <FormMessage />
                       </FormItem>
                     )}
